@@ -1,5 +1,5 @@
 # ECE651-RISK-Game 
-![pipeline](https://gitlab.oit.duke.edu/zz252/factorserver/badges/master/pipeline.svg) ![coverage](https://gitlab.oit.duke.edu/zz252/factorserver/badges/master/coverage.svg?job=test)
+![pipeline](https://gitlab.oit.duke.edu/zz252/ECE651-RISK-Game/badges/master/pipeline.svg) ![coverage](https://gitlab.oit.duke.edu/zz252/ECE651-RISK-Game/badges/master/coverage.svg?job=test)
 
 ======================================
 
