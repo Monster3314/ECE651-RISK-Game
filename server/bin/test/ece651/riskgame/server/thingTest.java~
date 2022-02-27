@@ -1,0 +1,14 @@
+package ece651.riskgame.server;
+
+import static org.junit.jupiter.api.Assertions.*;
+
+import org.junit.jupiter.api.Test;
+
+public class thingTest {
+  @Test
+  public void test_geta() {
+    thing temp = new thing(3);
+    assertEquals(3, temp.geta());
+  }
+
+}
