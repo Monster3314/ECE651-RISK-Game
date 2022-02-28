@@ -1,0 +1,25 @@
+package ece651.riskgame.shared;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class Territory<T> {
+  protected String name;
+  protected List<Unit> units;
+
+  public Territory(String name) {
+    this.name = name;
+    units = new ArrayList<Unit>();
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  /**
+   * Add a single unit to the terrority
+   */
+  public void addUnit(Unit u) {
+    units.add(u);
+  }
+}
