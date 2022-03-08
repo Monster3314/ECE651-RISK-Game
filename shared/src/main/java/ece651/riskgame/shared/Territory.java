@@ -3,7 +3,7 @@ package ece651.riskgame.shared;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Territory<T> {
+public abstract class Territory {
   protected String name;
   protected List<Unit> units;
 
