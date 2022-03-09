@@ -20,7 +20,7 @@ public class MapGeneratorTest {
     // Here all the territories for specified player numner is determined
     Board board1 = new Board();    
     mapGenerator.apply(board1, 1);
-    for (Territory t: board1.getTerritories()) {
+    for (Territory t: board1.getTerritoriesSet()) {
       assertEquals(mapGenerator.getTerritoryNameList().get(0), t.getName());
     }
   }
