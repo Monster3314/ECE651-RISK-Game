@@ -8,12 +8,17 @@ import java.io.IOException;
 public class App {
   public RiskGame riskGame;
 
-  public App() {
-    riskGame = new RiskGame();
+  public App(int n) {
+    riskGame = new RiskGame(n);
   }
 
-  public static void main(String[] args) {
-    App app = new App();
+  public static void main(String[] args) {    
+    if ((args.length != 1) || (args[0].length() != 1) || args[0].charAt(0) < '2' || args[0].charAt(0) > '5') {
+      System.out.println("Player number 2-5");
+      return;
+    }  
+    int playerNum = Integer.parseInt(args[0]);    
+    App app = new App(playerNum);
     try{
       app.riskGame.run();
     }

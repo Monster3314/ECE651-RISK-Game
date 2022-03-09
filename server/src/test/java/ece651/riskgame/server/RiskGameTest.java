@@ -23,12 +23,11 @@ import ece651.riskgame.shared.GameInfo;
 @ExtendWith(MockitoExtension.class)
 public class RiskGameTest {
 
-  @InjectMocks
   private RiskGame riskGame;
   
   @Test
   public void test_getCurrentGameInfo() throws Exception{
-    riskGame = new RiskGame();
+    riskGame = new RiskGame(1);
     Whitebox.invokeMethod(riskGame, "initBoard", 1);
     Object obj = Whitebox.invokeMethod(riskGame, "getCurrentGameInfo");
     GameInfo gi = (GameInfo)obj;
@@ -37,7 +36,7 @@ public class RiskGameTest {
 
   @Test
   public void test_sendGameInfo() throws IOException, Exception{
-    riskGame = new RiskGame();
+    riskGame = new RiskGame(1);
     Whitebox.invokeMethod(riskGame, "initBoard", 1);
 
     // insert socket map
