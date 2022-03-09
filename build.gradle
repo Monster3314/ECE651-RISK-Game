@@ -53,4 +53,15 @@ task resolveDependencies {
    }
 }
 
+tasks.register("run-server") {
+    dependsOn project('server').getTasksByName('run', false)
+    group = "Run Client/Server"
+    description = "Run the Server"
+}
+
+tasks.register("run-client") {
+    dependsOn project('client').getTasksByName('run', false)
+    group = "Run Client/Server"
+    description = "Run the Client"
+}
 
