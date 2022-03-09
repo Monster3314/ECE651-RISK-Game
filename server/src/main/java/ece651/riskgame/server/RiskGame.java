@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.HashMap;
 import java.util.Map;
 
 import ece651.riskgame.shared.Board;
@@ -15,6 +16,10 @@ public class RiskGame {
 
   private Board board;
 
+  public RiskGame() {
+    sockets = new HashMap<Socket, Integer>();
+  }
+  
   /**
    * Initialize territories based on given player number
    */
@@ -48,6 +53,7 @@ public class RiskGame {
     for (Socket socket: sockets.keySet()) {
       ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
       oos.writeObject(gi);
+      //      oos.close();
     }
   }
 
