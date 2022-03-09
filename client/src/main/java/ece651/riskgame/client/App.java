@@ -3,12 +3,42 @@
  */
 package ece651.riskgame.client;
 
-public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.net.Socket;
+import java.net.UnknownHostException;
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+import ece651.riskgame.shared.Board;
+
+public class App {
+  //private TextPlayer player;
+  //private String serverIp;
+  
+  public static void main(String[] args) {
+    //connect to server
+    Socket serverSocket;
+    ObjectInputStream socketIn;
+    String ip = "vcm-25368.vm.duke.edu";
+    int port = 1651;
+    try {
+      serverSocket = new Socket(ip, port);
+      socketIn = new ObjectInputStream(serverSocket.getInputStream());
+    } catch (UnknownHostException e) {
+      System.err.println("Don't know about host: " + ip);
+      System.exit(1);
+    } catch (IOException e) {
+      System.err.println("Couln't get I/O for the connection to: " + ip);
+      System.exit(1);
+    }
+    //recv GameInfo
+    //GameInfo game = (GameInfo) socketIn.readObject();
+    //Board b = game.getBoard();
+
+    //BoardTextView view = new BoardTextView(b);
+    //System.out.print(view.displayBoard());
+
+    //socketIn.close();
+    //serverSocket.close();
+    System.exit(0);
     }
 }
