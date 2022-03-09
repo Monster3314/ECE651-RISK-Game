@@ -8,7 +8,7 @@ import java.io.IOException;
 public class App {
   public RiskGame riskGame;
 
-  public App(int n) {
+  public App(int n) throws IOException {
     riskGame = new RiskGame(n);
   }
 
@@ -17,9 +17,9 @@ public class App {
       System.out.println("Player number 2-5");
       return;
     }  
-    int playerNum = Integer.parseInt(args[0]);    
-    App app = new App(playerNum);
+    int playerNum = Integer.parseInt(args[0]);
     try{
+      App app = new App(playerNum);
       app.riskGame.run();
     }
     catch (IOException e) {

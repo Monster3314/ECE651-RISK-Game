@@ -26,7 +26,7 @@ public class RiskGame {
   /**
    * Constructor with specifying player number
    */
-  public RiskGame(int playerNum) {
+  public RiskGame(int playerNum) throws IOException {
     sockets = new HashMap<Socket, Integer>();
     mapGenerator = new MapGenerator();
     board = new Board();
