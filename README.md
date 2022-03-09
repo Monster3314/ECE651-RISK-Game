@@ -10,5 +10,5 @@ This is a Risk Game, which allows 2-5 people to play online.
 
 ## Coverage
 
-[Detailed coverage](https://zz252.pages.oit.duke.edu/ECE651-RISK-Game/dashboard.html)
+[Detailed coverage](https://zz252.pages.oit.duke.edu/ece651-risk-game)
 
