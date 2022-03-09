@@ -44,10 +44,9 @@ public class RiskGame {
   /**
    * send gameInfo to all players(not exited)
    */
-  private void sendGameInfo() throws IOException {
+  private void sendGameInfo(GameInfo gi) throws IOException {
     for (Socket socket: sockets.keySet()) {
       ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-      GameInfo gi = getCurrentGameInfo();
       oos.writeObject(gi);
     }
   }
@@ -59,8 +58,7 @@ public class RiskGame {
     // only one player is allowed now
     waitForPlayers(ss, 1);
 
-    sendGameInfo();
-    
+    sendGameInfo(getCurrentGameInfo());    
     
     ss.close();
   }    

@@ -3,12 +3,22 @@
  */
 package ece651.riskgame.server;
 
-public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+import java.io.IOException;
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+public class App {
+  public RiskGame riskGame;
+
+  public App() {
+    riskGame = new RiskGame();
+  }
+
+  public static void main(String[] args) {
+    App app = new App();
+    try{
+      app.riskGame.run();
     }
+    catch (IOException e) {
+      System.out.println("IOException ouucred, server shut down");
+    }
+  }
 }
