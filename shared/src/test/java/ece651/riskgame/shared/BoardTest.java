@@ -2,21 +2,34 @@ package ece651.riskgame.shared;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class gameMapTest {
+class BoardTest {
 
     @Test
     void test_PutAndGetEntry() {
-        gameMap map = new gameMap();
+        Board map = new Board();
         Territory t1 = new BasicTerritory("A");
         LinkedList<Territory> neig = new LinkedList<>();
         neig.add(new BasicTerritory("B"));
         neig.add(new BasicTerritory("C"));
         map.putEntry(t1, neig);
         assertEquals(neig, map.getNeighbors(t1));
+    }
+
+    @Test
+    void test_AddandGetTerritory() {
+        Board b = new Board();
+        b.addTerritory(new BasicTerritory("A"));
+        b.addTerritory(new BasicTerritory("B"));
+        Set<Territory> expect = new HashSet<>();
+        expect.add(new BasicTerritory("A"));
+        expect.add(new BasicTerritory("B"));
+        assertEquals(expect, b.getTerritories());
     }
 
 }

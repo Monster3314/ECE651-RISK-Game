@@ -36,4 +36,19 @@ public abstract class Territory {
   public int getUnitNumber() {
     return units.size();
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Territory territory = (Territory) o;
+
+    return name != null ? name.equals(territory.name) : territory.name == null;
+  }
+
+  @Override
+  public int hashCode() {
+    return name != null ? name.hashCode() : 0;
+  }
 }
