@@ -1,5 +1,6 @@
 package ece651.riskgame.server;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -34,7 +35,7 @@ public class RiskGameTest {
     assertEquals(1, gi.getBoard().getTerritories().size());
   }
 
-  //@Test
+  @Test
   public void test_sendGameInfo() throws IOException, Exception{
     riskGame = new RiskGame();
     Whitebox.invokeMethod(riskGame, "initBoard", 1);
@@ -58,7 +59,7 @@ public class RiskGameTest {
     oos1.writeObject(gi);
 
     Whitebox.invokeMethod(riskGame, "sendGameInfo", gi);
-    assertEquals(byteArrayOutputStream.toByteArray(), bos.toByteArray());
+    assertArrayEquals(byteArrayOutputStream.toByteArray(), bos.toByteArray());
   }
 
 }
