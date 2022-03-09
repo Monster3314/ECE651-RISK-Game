@@ -1,6 +1,6 @@
 package ece651.riskgame.shared;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +27,14 @@ public class BasicTerritoryTest {
     bt.addUnitList(ul);
     assertEquals(bt.getUnitNumber(), 3);
   }
-    
+
+  @Test
+  public void test_equal() {
+    BasicTerritory a = new BasicTerritory("A");
+    BasicTerritory b = new BasicTerritory("B");
+    BasicTerritory a2 = new BasicTerritory("A");
+    assertEquals(a, a2);
+    assertNotEquals(b, a);
+  }
 
 }
