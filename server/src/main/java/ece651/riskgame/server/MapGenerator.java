@@ -14,6 +14,7 @@ public class MapGenerator {
   static void apply(Board m, int playerNum) {
     // currently only work for 1 player
     Territory t1 = new BasicTerritory("North Carolina");
+    m.addTerritory(t1);
     m.putEntry(t1, new LinkedList<Territory> ());
   }
 }
