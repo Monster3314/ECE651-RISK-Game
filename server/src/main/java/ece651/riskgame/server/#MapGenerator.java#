@@ -44,6 +44,19 @@ public class MapGenerator {
     territoryNameList.add("Hebei");    
   }
 
+  private void initAdjancencyMatrix() {
+    adjancencyMatrix[0][1] = true;
+    adjancencyMatrix[0][2] = true;
+    
+    adjancencyMatrix[1][0] = true;
+    adjancencyMatrix[1][2] = true;
+    adjancencyMatrix[1][3] = true;
+    adjancencyMatrix[1][4] = true;
+
+    adjancencyMatrix[2][0] = true;
+    
+  }
+
   public List<String> getTerritoryNameList() {
     return territoryNameList;
   }
