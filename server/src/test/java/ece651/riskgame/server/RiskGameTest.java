@@ -2,18 +2,19 @@ package ece651.riskgame.server;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.reflect.Whitebox;
@@ -31,6 +32,31 @@ public class RiskGameTest {
     Object obj = Whitebox.invokeMethod(riskGame, "getCurrentGameInfo");
     GameInfo gi = (GameInfo)obj;
     assertEquals(1, gi.getBoard().getTerritories().size());
+  }
+  
+  @Test
+  public void test_waitForPlayers() throws IOException, InterruptedException {
+    riskGame = new RiskGame(1);
+    Thread th = new Thread() {
+        @Override()
+        public void run() {
+          try {
+            ServerSocket ss = new ServerSocket(1651);            
+            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
+          } catch (Exception e) {
+            
+          }
+        }
+      };
+    th.start();
+    Thread.sleep(100); // this is abit of a hack
+
+    Socket s = new Socket("0.0.0.0", 1651);
+    assertTrue(s.isConnected());
+    s.close();
+    
+    th.interrupt();
+    th.join();
   }
 
   @Test

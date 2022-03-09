@@ -18,10 +18,22 @@ public class MapGenerator {
     territoryNameList.add("Shanghai");
     territoryNameList.add("Jiangsu");
     territoryNameList.add("Zhejiang");
-
+    // for 2 players
     territoryNameList.add("Anhui");
     territoryNameList.add("Shandong");
     territoryNameList.add("Fujian");
+    // for 3 players
+    territoryNameList.add("Taiwan");
+    territoryNameList.add("Guangdong");
+    territoryNameList.add("Henan");
+    // for 4 players
+    territoryNameList.add("Hubei");
+    territoryNameList.add("Hunan");
+    territoryNameList.add("Jiangxi");
+    // for 5 players
+    territoryNameList.add("Hongkong");
+    territoryNameList.add("Macau");
+    territoryNameList.add("Hebei");    
   }
 
   public List<String> getTerritoryNameList() {
@@ -37,6 +49,33 @@ public class MapGenerator {
   private void apply2Player(Board board) {
     // add board names
     for (int i = 0; i < 6; i++) {
+      Territory t = new BasicTerritory(territoryNameList.get(i));
+      board.addTerritory(t);
+    }
+    // TODO: add adjancency
+  }
+
+  private void apply3Player(Board board) {
+    // add board names
+    for (int i = 0; i < 9; i++) {
+      Territory t = new BasicTerritory(territoryNameList.get(i));
+      board.addTerritory(t);
+    }
+    // TODO: add adjancency
+  }
+
+  private void apply4Player(Board board) {
+    // add board names
+    for (int i = 0; i < 12; i++) {
+      Territory t = new BasicTerritory(territoryNameList.get(i));
+      board.addTerritory(t);
+    }
+    // TODO: add adjancency
+  }
+
+  private void apply5Player(Board board) {
+    // add board names
+    for (int i = 0; i < 15; i++) {
       Territory t = new BasicTerritory(territoryNameList.get(i));
       board.addTerritory(t);
     }
