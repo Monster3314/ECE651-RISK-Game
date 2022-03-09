@@ -1,18 +1,15 @@
 package ece651.riskgame.shared;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 public class Board implements Serializable {
      private HashMap<Territory, LinkedList<Territory>> adjacency;
-     private Set<Territory> territories;
+     private List<Territory> territories;
 
      public Board() {
          adjacency = new HashMap<Territory, LinkedList<Territory>>();
-         territories = new HashSet<>();
+         territories = new ArrayList<>();
      }
 
     public void putEntry(Territory territory, LinkedList<Territory> neighbors) {
@@ -25,9 +22,14 @@ public class Board implements Serializable {
 
     public void addTerritory(Territory t) {
          territories.add(t);
+         adjacency.put(t, new LinkedList<>());
     }
 
-    public Set<Territory> getTerritories() {
+    public Set<Territory> getTerritoriesSet() {
+         return adjacency.keySet();
+    }
+
+    public List<Territory> getTerritoriesList() {
          return territories;
     }
 }

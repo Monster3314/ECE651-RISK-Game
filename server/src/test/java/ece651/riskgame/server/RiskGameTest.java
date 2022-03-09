@@ -31,7 +31,7 @@ public class RiskGameTest {
     Whitebox.invokeMethod(riskGame, "initBoard", 1);
     Object obj = Whitebox.invokeMethod(riskGame, "getCurrentGameInfo");
     GameInfo gi = (GameInfo)obj;
-    assertEquals(1, gi.getBoard().getTerritories().size());
+    assertEquals(1, gi.getBoard().getTerritoriesSet().size());
   }
 
   @Test

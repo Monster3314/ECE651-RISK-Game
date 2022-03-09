@@ -2,9 +2,7 @@ package ece651.riskgame.shared;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Set;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -29,7 +27,9 @@ class BoardTest {
         Set<Territory> expect = new HashSet<>();
         expect.add(new BasicTerritory("A"));
         expect.add(new BasicTerritory("B"));
-        assertEquals(expect, b.getTerritories());
+        List<Territory> expect_list = new ArrayList<>(expect);
+        assertEquals(expect, b.getTerritoriesSet());
+        assertEquals(expect_list, b.getTerritoriesList());
     }
 
 }
