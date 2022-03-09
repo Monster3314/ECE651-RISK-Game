@@ -21,7 +21,7 @@ public class BoardTextView implements BoardView {
    * @return a string that represents the board  
    */
   public String displayBoard() {
-    Set<Territory> territories = toDisplay.getTerritories();
+    Set<Territory> territories = toDisplay.getTerritoriesSet();
     StringBuilder ans = new StringBuilder();
     for (Territory t: territories) {
       StringBuilder line = new StringBuilder();
