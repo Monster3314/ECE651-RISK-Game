@@ -11,13 +11,25 @@ import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.GameInfo;
 
 public class RiskGame {
-  private ServerSocket serverSocket;
+  /**
+   * A map of sockets and their ids
+   */
   private Map<Socket, Integer> sockets;
 
+  /**
+   * The board(map) of game, storing all territories and their adjacencies
+   */
   private Board board;
 
-  public RiskGame() {
+  private MapGenerator mapGenerator;
+  
+  /**
+   * Constructor with specifying player number
+   */
+  public RiskGame(int playerNum) {
     sockets = new HashMap<Socket, Integer>();
+    mapGenerator = new MapGenerator();
+    initBoard(playerNum);
   }
   
   /**
@@ -25,7 +37,7 @@ public class RiskGame {
    */
   private void initBoard(int playerNum) {
     board = new Board();
-    MapGenerator.apply(board, 1);
+    mapGenerator.apply(board, playerNum);
   }
 
   /**

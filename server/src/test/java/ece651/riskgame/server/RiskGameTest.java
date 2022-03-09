@@ -1,5 +1,6 @@
 package ece651.riskgame.server;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
@@ -22,21 +23,20 @@ import ece651.riskgame.shared.GameInfo;
 @ExtendWith(MockitoExtension.class)
 public class RiskGameTest {
 
-  @InjectMocks
   private RiskGame riskGame;
   
   @Test
   public void test_getCurrentGameInfo() throws Exception{
-    riskGame = new RiskGame();
+    riskGame = new RiskGame(1);
     Whitebox.invokeMethod(riskGame, "initBoard", 1);
     Object obj = Whitebox.invokeMethod(riskGame, "getCurrentGameInfo");
     GameInfo gi = (GameInfo)obj;
     assertEquals(1, gi.getBoard().getTerritories().size());
   }
 
-  //@Test
+  @Test
   public void test_sendGameInfo() throws IOException, Exception{
-    riskGame = new RiskGame();
+    riskGame = new RiskGame(1);
     Whitebox.invokeMethod(riskGame, "initBoard", 1);
 
     // insert socket map
@@ -58,7 +58,7 @@ public class RiskGameTest {
     oos1.writeObject(gi);
 
     Whitebox.invokeMethod(riskGame, "sendGameInfo", gi);
-    assertEquals(byteArrayOutputStream.toByteArray(), bos.toByteArray());
+    assertArrayEquals(byteArrayOutputStream.toByteArray(), bos.toByteArray());
   }
 
 }

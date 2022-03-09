@@ -13,22 +13,15 @@ import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Territory;
 
 public class MapGeneratorTest {
-  public static Set<String> territoryNames1;
-
-  @BeforeAll
-  public static void initTerritoryNames() {
-    territoryNames1 = new HashSet<String>();
-
-    territoryNames1.add("North Carolina");
-  }
+  public MapGenerator mapGenerator = new MapGenerator();
   
   @Test
-  public void test_apply() {
+  public void test_apply1() {
     // Here all the territories for specified player numner is determined
-    Board board1 = new Board();
-    MapGenerator.apply(board1, 1);
+    Board board1 = new Board();    
+    mapGenerator.apply(board1, 1);
     for (Territory t: board1.getTerritories()) {
-      assertTrue(territoryNames1.contains(t.getName()));
+      assertEquals(mapGenerator.getTerritoryNameList().get(0), t.getName());
     }
   }
 
