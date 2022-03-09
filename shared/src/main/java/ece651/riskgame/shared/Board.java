@@ -25,7 +25,11 @@ public class Board implements Serializable {
          adjacency.put(t, new LinkedList<>());
     }
 
-    public Set<Territory> getTerritories() {
+    public Set<Territory> getTerritoriesSet() {
          return adjacency.keySet();
+    }
+
+    public List<Territory> getTerritoriesList() {
+         return territories;
     }
 }
