@@ -39,3 +39,9 @@ test {
         exceptionFormat = 'full'
     }
 }
+
+clover{
+    compiler {
+        additionalArgs = "-g:lines,source,vars"
+    }
+}
