@@ -34,7 +34,7 @@ clover {
     }
     report {
         xml=true
-        html=true
+        html = true
     }
 }
 
