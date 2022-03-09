@@ -1,9 +1,10 @@
 package ece651.riskgame.shared;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Territory {
+public abstract class Territory implements Serializable{
   protected String name;
   protected List<Unit> units;
 

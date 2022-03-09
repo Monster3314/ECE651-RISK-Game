@@ -1,11 +1,12 @@
 package ece651.riskgame.shared;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Set;
 
-public class Board {
+public class Board implements Serializable {
      private HashMap<Territory, LinkedList<Territory>> adjacency;
      private Set<Territory> territories;
 

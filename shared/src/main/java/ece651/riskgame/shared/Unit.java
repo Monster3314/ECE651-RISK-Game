@@ -1,6 +1,8 @@
 package ece651.riskgame.shared;
 
-public abstract class Unit {
+import java.io.Serializable;
+
+public abstract class Unit implements Serializable{
   protected int attack;
   protected int HP;
 

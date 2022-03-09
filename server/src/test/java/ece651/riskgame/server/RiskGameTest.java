@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.HashMap;
 import java.util.Map;
@@ -18,7 +18,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.reflect.Whitebox;
 
 import ece651.riskgame.shared.GameInfo;
-import javassist.bytecode.ByteArray;
 
 @ExtendWith(MockitoExtension.class)
 public class RiskGameTest {
@@ -35,11 +34,12 @@ public class RiskGameTest {
     assertEquals(1, gi.getBoard().getTerritories().size());
   }
 
-  //  @Test
+  //@Test
   public void test_sendGameInfo() throws IOException, Exception{
     riskGame = new RiskGame();
     Whitebox.invokeMethod(riskGame, "initBoard", 1);
-    
+
+    // insert socket map
     Socket socket = Mockito.mock(Socket.class);
     Map<Socket, Integer> sm = new HashMap<Socket, Integer>();
     sm.put(socket, 1);
@@ -48,10 +48,17 @@ public class RiskGameTest {
     ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
     when(socket.getOutputStream()).thenReturn(byteArrayOutputStream);
 
-    Whitebox.invokeMethod(riskGame, "sendGameInfo");
-
+    // get GameInfo
     Object obj = Whitebox.invokeMethod(riskGame, "getCurrentGameInfo");
-    
+    GameInfo gi = (GameInfo)obj;
+
+    // get byte array
+    ByteArrayOutputStream bos = new ByteArrayOutputStream(); 
+    ObjectOutputStream oos1 = new ObjectOutputStream(bos) ;
+    oos1.writeObject(gi);
+
+    Whitebox.invokeMethod(riskGame, "sendGameInfo", gi);
+    assertEquals(byteArrayOutputStream.toByteArray(), bos.toByteArray());
   }
 
 }
