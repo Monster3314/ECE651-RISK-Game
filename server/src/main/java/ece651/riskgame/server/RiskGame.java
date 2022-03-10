@@ -5,9 +5,11 @@ import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import ece651.riskgame.shared.Board;
+import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
 
 public class RiskGame {
@@ -22,6 +24,7 @@ public class RiskGame {
   private Board board;
   private MapGenerator mapGenerator;
   private int playerNumber;
+  private List<Clan> clans;
   
   /**
    * Constructor with specifying player number
