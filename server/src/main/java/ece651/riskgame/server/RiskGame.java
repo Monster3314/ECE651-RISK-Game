@@ -16,6 +16,7 @@ public class RiskGame {
    */
   private Map<Socket, Integer> sockets;
   private List<String> colors = new ArrayList<>(Arrays.asList("Red", "Blue", "Green", "Yellow", "Pink"));
+  private Map<Socket, ObjectOutputStream> oosMap;
 
   /**
    * The board(map) of game, storing all territories and their adjacencies
@@ -34,16 +35,17 @@ public class RiskGame {
     board = new Board();
     playerNumber = playerNum;
     players = new HashMap<>();
+    oosMap = new HashMap<Socket, ObjectOutputStream>();
     
     mapGenerator.apply(board, playerNum);
   }
 
   private void initClan(int id) {
-    String color = colors.get(id-1);
+    String color = colors.get(id);
     List<Territory> occupies = new ArrayList<>();
-    occupies.add(board.getTerritoriesList().get(id*3 - 3));
-    occupies.add(board.getTerritoriesList().get(id*3 - 2));
-    occupies.add(board.getTerritoriesList().get(id*3 - 1));
+    occupies.add(board.getTerritoriesList().get(id*3));
+    occupies.add(board.getTerritoriesList().get(id*3+1));
+    occupies.add(board.getTerritoriesList().get(id*3+2));
     Clan c = new Clan(occupies);
     players.put(color, c);
   }
@@ -52,12 +54,13 @@ public class RiskGame {
    * Wait for players to login to start the game
    */
   private void waitForPlayers(ServerSocket ss, int playerNum) throws IOException{
-    for (int i = 1;i <= playerNum; i++) { // what if player exits while waiting for other players
+    for (int i = 0;i < playerNum; i++) { // what if player exits while waiting for other players
       Socket socket = ss.accept();
       sockets.put(socket, i);
       initClan(i);
       ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-      oos.writeObject(colors.get(i-1));
+      oos.writeObject(colors.get(i));
+      oosMap.put(socket, oos);
     }
   }
 
@@ -73,8 +76,9 @@ public class RiskGame {
    * send gameInfo to all players(not exited)
    */
   private void sendGameInfo(GameInfo gi) throws IOException {
-    for (Socket socket: sockets.keySet()) {
-      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+    for (Socket socket: sockets.keySet()) {      
+      //      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+      ObjectOutputStream oos = oosMap.get(socket);
       oos.writeObject(gi);
     }
   }
