@@ -56,6 +56,8 @@ public class RiskGame {
       Socket socket = ss.accept();
       sockets.put(socket, i);
       initClan(i);
+      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+      oos.writeObject(colors.get(i-1));
     }
   }
 
