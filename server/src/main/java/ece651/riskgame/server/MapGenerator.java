@@ -45,13 +45,13 @@ public class MapGenerator {
       String line;
       int row = 0;
       while ((line = br.readLine()) != null) {
-        if (row == 15) {
+        /*if (row == 15) {
           throw new IllegalArgumentException("adjancency matrix initialization file format is illegal");
-        }
+        }*/
         String[] values = line.split(",");
-        if (values.length != MaxTerritoryNum) {
+        /*if (values.length != MaxTerritoryNum) {
           throw new IllegalArgumentException("adjancency matrix initialization file format is illegal");
-        }
+          }*/
         for (int c = 0; c < MaxTerritoryNum; c++) {
           if (Integer.parseInt(values[c]) == 1) {
             adjancencyMatrix[row][c] = true;
@@ -59,9 +59,9 @@ public class MapGenerator {
         }
         row+=1;
       }
-      if (row != 15) {
+      /*if (row != 15) {
         throw new IllegalArgumentException("adjancency matrix initialization file format is illegal");
-      }
+        }*/
     }
   }
 
@@ -88,6 +88,15 @@ public class MapGenerator {
       addedTerritories.add(t);
     }
     // add adjancency
-    
+    for (int i = 0; i < numTer; i++) {
+      Territory ter = addedTerritories.get(i);
+      LinkedList<Territory> neighbors = new LinkedList<Territory>();
+      for (int j = 0; j < numTer; j++) {        
+        if (this.adjancencyMatrix[i][j]) {
+          neighbors.add(addedTerritories.get(j));
+        }
+      }
+      board.putEntry(ter, neighbors);      
+    }
   }
 }
