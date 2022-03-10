@@ -26,4 +26,8 @@ public class Clan implements Serializable {
         return active;
     }
 
+    public List<Territory> getOccupies() {
+        return occupies;
+    }
+
 }
