@@ -19,19 +19,19 @@ public class MapGenerator {
 
   private List<String> territoryNameList;
   private List<Territory> addedTerritories;
-  private boolean[][] adjancencyMatrix;
+  private boolean[][] adjacencyMatrix;
   private final int MaxTerritoryNum = 15;
   
-  public MapGenerator() throws IOException, FileNotFoundException{
+  public MapGenerator(String territoryNameSource, String adjacencyMatrixSource) throws IOException, FileNotFoundException{
     territoryNameList = new ArrayList<String>();
     addedTerritories = new ArrayList<Territory>();
-    adjancencyMatrix = new boolean[MaxTerritoryNum][MaxTerritoryNum];
-    initTerritoryNameList();
-    initAdjancencyMatrix();
+    adjacencyMatrix = new boolean[MaxTerritoryNum][MaxTerritoryNum];
+    initTerritoryNameList(territoryNameSource);
+    initAdjacencyMatrix(adjacencyMatrixSource);
   }
 
-  private void initTerritoryNameList() throws FileNotFoundException, IOException {
-    try (BufferedReader br = new BufferedReader(new FileReader("TerritoryNames.txt"))) {
+  private void initTerritoryNameList(String sourceFile) throws FileNotFoundException, IOException {
+    try (BufferedReader br = new BufferedReader(new FileReader(sourceFile))) {
       String line;
       for (int i =0 ; i < MaxTerritoryNum; i++) {
         line = br.readLine();
@@ -40,27 +40,27 @@ public class MapGenerator {
     }
   }
 
-  private void initAdjancencyMatrix() throws IOException, FileNotFoundException {
-    try (BufferedReader br = new BufferedReader(new FileReader("AMinit.csv"))) {
+  private void initAdjacencyMatrix(String sourceFile) throws IOException, FileNotFoundException {
+    try (BufferedReader br = new BufferedReader(new FileReader(sourceFile))) {
       String line;
       int row = 0;
       while ((line = br.readLine()) != null) {
         /*if (row == 15) {
-          throw new IllegalArgumentException("adjancency matrix initialization file format is illegal");
+          throw new IllegalArgumentException("adjacency matrix initialization file format is illegal");
         }*/
         String[] values = line.split(",");
         /*if (values.length != MaxTerritoryNum) {
-          throw new IllegalArgumentException("adjancency matrix initialization file format is illegal");
+          throw new IllegalArgumentException("adjacency matrix initialization file format is illegal");
           }*/
         for (int c = 0; c < MaxTerritoryNum; c++) {
           if (Integer.parseInt(values[c]) == 1) {
-            adjancencyMatrix[row][c] = true;
+            adjacencyMatrix[row][c] = true;
           }
         }
         row+=1;
       }
       /*if (row != 15) {
-        throw new IllegalArgumentException("adjancency matrix initialization file format is illegal");
+        throw new IllegalArgumentException("adjacency matrix initialization file format is illegal");
         }*/
     }
   }
@@ -69,8 +69,12 @@ public class MapGenerator {
     return territoryNameList;
   }
 
-  public boolean[][] getAdjancencyMatrix() {
-    return this.adjancencyMatrix;
+  public boolean[][] getAdjacencyMatrix() {
+    return this.adjacencyMatrix;
+  }
+
+  public List<Territory> getAddedTerritories() {
+    return addedTerritories;
   }
   
   /**
@@ -84,15 +88,15 @@ public class MapGenerator {
     // add board names
     for (int i = 0; i < numTer; i++) {
       Territory t = new BasicTerritory(territoryNameList.get(i));
-      board.addTerritory(t);
+      //      board.addTerritory(t);
       addedTerritories.add(t);
     }
-    // add adjancency
+    // add adjacency
     for (int i = 0; i < numTer; i++) {
       Territory ter = addedTerritories.get(i);
       LinkedList<Territory> neighbors = new LinkedList<Territory>();
       for (int j = 0; j < numTer; j++) {        
-        if (this.adjancencyMatrix[i][j]) {
+        if (this.adjacencyMatrix[i][j]) {
           neighbors.add(addedTerritories.get(j));
         }
       }

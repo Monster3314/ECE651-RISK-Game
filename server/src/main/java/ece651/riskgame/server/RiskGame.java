@@ -1,4 +1,3 @@
-
 package ece651.riskgame.server;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
@@ -31,7 +30,7 @@ public class RiskGame {
    */
   public RiskGame(int playerNum) throws IOException {
     sockets = new HashMap<Socket, Integer>();
-    mapGenerator = new MapGenerator();
+    mapGenerator = new MapGenerator("TerritoryNames.txt", "AMinit.csv");
     board = new Board();
     playerNumber = playerNum;
     players = new HashMap<>();
