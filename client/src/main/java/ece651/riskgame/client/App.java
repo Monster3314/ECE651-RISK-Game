@@ -8,17 +8,17 @@ import java.io.ObjectInputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-import ece651.riskgame.shared.Board;
+import ece651.riskgame.shared.GameInfo;
 
 public class App {
   //private TextPlayer player;
   //private String serverIp;
   
-  public static void main(String[] args) {
+  public static void main(String[] args) throws IOException{
     //connect to server
-    Socket serverSocket;
-    ObjectInputStream socketIn;
-    String ip = "vcm-25368.vm.duke.edu";
+    Socket serverSocket = null;
+    ObjectInputStream socketIn = null;
+    String ip = "vcm-25372.vm.duke.edu";
     int port = 1651;
     try {
       serverSocket = new Socket(ip, port);
@@ -26,19 +26,25 @@ public class App {
     } catch (UnknownHostException e) {
       System.err.println("Don't know about host: " + ip);
       System.exit(1);
-    } catch (IOException e) {
-      System.err.println("Couln't get I/O for the connection to: " + ip);
+    }
+    System.out.println("Connection Estabilished");
+    TextPlayer p = null;
+    //recv allocated player color
+    //recv GameInfo
+    try {
+      String color = (String) socketIn.readObject();
+      System.out.println("Your color is " + color);
+      GameInfo game = (GameInfo) socketIn.readObject();
+      p = new TextPlayer(game, color);
+    } catch (ClassNotFoundException e) {
+      System.err.println("Class Not Found when reading Object through socket");
       System.exit(1);
     }
-    //recv GameInfo
-    //GameInfo game = (GameInfo) socketIn.readObject();
-    //Board b = game.getBoard();
 
-    //BoardTextView view = new BoardTextView(b);
-    //System.out.print(view.displayBoard());
+    System.out.print(p.display());
 
-    //socketIn.close();
-    //serverSocket.close();
+    socketIn.close();
+    serverSocket.close();
     System.exit(0);
     }
 }

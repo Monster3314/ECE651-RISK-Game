@@ -1,15 +1,17 @@
 package ece651.riskgame.client;
 
-import ece651.riskgame.shared.Board;
+import ece651.riskgame.shared.GameInfo;
 
 public class TextPlayer {
-  //private id;
-  //final String color;
-  final Board theBoard;
-  final BoardTextView view;
-  public TextPlayer(Board b) {
-    //this.color = color;
-    this.theBoard = b;
-    this.view = new BoardTextView(theBoard);
+  final String color;
+  final GameInfo theGame;
+  final GameView view;
+  public TextPlayer(GameInfo g, String color) {
+    this.color = color;
+    this.theGame = g;
+    this.view = new GameTextView(theGame);
+  }
+  public String display() {
+    return view.displayGame();
   }
 }
