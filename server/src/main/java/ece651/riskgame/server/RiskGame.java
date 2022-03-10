@@ -20,25 +20,20 @@ public class RiskGame {
    * The board(map) of game, storing all territories and their adjacencies
    */
   private Board board;
-
   private MapGenerator mapGenerator;
+  private int playerNumber;
   
   /**
    * Constructor with specifying player number
    */
-  public RiskGame(int playerNum) {
+  public RiskGame(int playerNum) throws IOException {
     sockets = new HashMap<Socket, Integer>();
     mapGenerator = new MapGenerator();
-    initBoard(playerNum);
-  }
-  
-  /**
-   * Initialize territories based on given player number
-   */
-  private void initBoard(int playerNum) {
     board = new Board();
+    playerNumber = playerNum;
+    
     mapGenerator.apply(board, playerNum);
-  }
+  }  
 
   /**
    * Wait for players to login to start the game
@@ -65,17 +60,14 @@ public class RiskGame {
     for (Socket socket: sockets.keySet()) {
       ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
       oos.writeObject(gi);
-      //      oos.close();
     }
   }
 
-  public void run() throws IOException{
-    initBoard(1);
-    
+  public void run() throws IOException{    
     ServerSocket ss = new ServerSocket(1651);
     // only one player is allowed now
-    waitForPlayers(ss, 1);
-
+    waitForPlayers(ss, playerNumber);
+    System.out.println("Players connected");
     sendGameInfo(getCurrentGameInfo());    
     
     ss.close();
