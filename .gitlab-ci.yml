@@ -9,6 +9,7 @@ stages:
    - build
    - test
    - coverage
+   - deploy
    
 build:
   tags:
@@ -36,3 +37,9 @@ pages:
  artifacts:
    paths:
      - public
+
+deploy:
+  stage: deploy
+  tags:
+    - riskgame
+  script: scripts/redeploy.sh
