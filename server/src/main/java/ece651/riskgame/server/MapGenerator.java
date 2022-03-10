@@ -30,26 +30,14 @@ public class MapGenerator {
     initAdjancencyMatrix();
   }
 
-  private void initTerritoryNameList() {
-    territoryNameList.add("Shanghai");
-    territoryNameList.add("Jiangsu");
-    territoryNameList.add("Zhejiang");
-    // for 2 players
-    territoryNameList.add("Anhui");
-    territoryNameList.add("Shandong");
-    territoryNameList.add("Fujian");
-    // for 3 players
-    territoryNameList.add("Taiwan");
-    territoryNameList.add("Guangdong");
-    territoryNameList.add("Henan");
-    // for 4 players
-    territoryNameList.add("Hubei");
-    territoryNameList.add("Hunan");
-    territoryNameList.add("Jiangxi");
-    // for 5 players
-    territoryNameList.add("Hongkong");
-    territoryNameList.add("Macau");
-    territoryNameList.add("Hebei");    
+  private void initTerritoryNameList() throws FileNotFoundException, IOException {
+    try (BufferedReader br = new BufferedReader(new FileReader("TerritoryNames.txt"))) {
+      String line;
+      for (int i =0 ; i < MaxTerritoryNum; i++) {
+        line = br.readLine();
+        territoryNameList.add(line);
+      }
+    }
   }
 
   private void initAdjancencyMatrix() throws IOException, FileNotFoundException {
