@@ -29,7 +29,7 @@ public class Board implements Serializable {
          return adjacency.keySet();
     }
 
-    public List<Territory> getTerritoriesList() {
+  /*public List<Territory> getTerritoriesList() {
          return territories;
-    }
+         }*/
 }
