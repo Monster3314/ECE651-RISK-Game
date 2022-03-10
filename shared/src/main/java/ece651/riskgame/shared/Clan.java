@@ -30,4 +30,8 @@ public class Clan implements Serializable {
         return occupies;
     }
 
+    public void hasDied() {
+        active = false;
+    }
+
 }

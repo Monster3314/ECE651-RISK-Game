@@ -1,13 +1,15 @@
 package ece651.riskgame.shared;
 
 import java.io.Serializable;
+import java.util.Map;
 
 public class GameInfo implements Serializable{
   private Board board;
-  // clan
+  private Map<String, Clan> players;// clan
 
-  public GameInfo(Board b) {
-    board = b;
+  public GameInfo(Board b, Map<String, Clan> players) {
+    this.board = b;
+    this.players = players;
   }
   
   public Board getBoard() {
@@ -16,5 +18,13 @@ public class GameInfo implements Serializable{
 
   public void setBoard(Board b) {
     board = b;
+  }
+
+  public Map<String, Clan> getPlayers() {
+    return players;
+  }
+
+  public void setPlayers(Map<String, Clan> players) {
+    this.players = players;
   }
 }
