@@ -4,19 +4,19 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.Territory;
 
 public class RiskGame {
   /**
    * A map of sockets and their ids
    */
   private Map<Socket, Integer> sockets;
+  private List<String> colors = new ArrayList<>(Arrays.asList("Red", "Blue", "Green", "Yellow", "Pink"));
 
   /**
    * The board(map) of game, storing all territories and their adjacencies
@@ -24,7 +24,7 @@ public class RiskGame {
   private Board board;
   private MapGenerator mapGenerator;
   private int playerNumber;
-  private List<Clan> clans;
+  private Map<String, Clan> players;
   
   /**
    * Constructor with specifying player number
@@ -34,9 +34,20 @@ public class RiskGame {
     mapGenerator = new MapGenerator();
     board = new Board();
     playerNumber = playerNum;
+    players = new HashMap<>();
     
     mapGenerator.apply(board, playerNum);
-  }  
+  }
+
+  private void initClan(int id) {
+    String color = colors.get(id-1);
+    List<Territory> occupies = new ArrayList<>();
+    occupies.add(board.getTerritoriesList().get(id*3 - 3));
+    occupies.add(board.getTerritoriesList().get(id*3 - 2));
+    occupies.add(board.getTerritoriesList().get(id*3 - 1));
+    Clan c = new Clan(occupies);
+    players.put(color, c);
+  }
 
   /**
    * Wait for players to login to start the game
@@ -45,6 +56,7 @@ public class RiskGame {
     for (int i = 1;i <= playerNum; i++) { // what if player exits while waiting for other players
       Socket socket = ss.accept();
       sockets.put(socket, i);
+      initClan(i);
     }
   }
 
@@ -52,7 +64,7 @@ public class RiskGame {
    * Get the GameInfo of current round/initialization.
    */
   private GameInfo getCurrentGameInfo() {
-    GameInfo gi = new GameInfo(board);
+    GameInfo gi = new GameInfo(board, players);
     return gi;
   }
 
