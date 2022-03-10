@@ -1,5 +1,5 @@
-package ece651.riskgame.server;
 
+package ece651.riskgame.server;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
@@ -67,7 +67,6 @@ public class RiskGame {
     ServerSocket ss = new ServerSocket(1651);
     // only one player is allowed now
     waitForPlayers(ss, playerNumber);
-    System.out.println("Players connected");
     sendGameInfo(getCurrentGameInfo());    
     
     ss.close();
