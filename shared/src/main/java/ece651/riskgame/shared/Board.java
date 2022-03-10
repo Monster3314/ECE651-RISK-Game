@@ -28,8 +28,8 @@ public class Board implements Serializable {
     public Set<Territory> getTerritoriesSet() {
          return adjacency.keySet();
     }
-
-  /*public List<Territory> getTerritoriesList() {
+  
+  public List<Territory> getTerritoriesList() {
          return territories;
-         }*/
+  }
 }
