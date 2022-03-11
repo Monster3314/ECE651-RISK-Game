@@ -12,9 +12,9 @@ import ece651.riskgame.shared.Territory;
 
 public class RiskGame {
   /**
-   * A map of sockets and their ids
+   * A map of sockets and their colors
    */
-  private Map<Socket, Integer> sockets;
+  private Map<Socket, String> sockets;
   private List<String> colors = new ArrayList<>(Arrays.asList("Red", "Blue", "Green", "Yellow", "Pink"));
   private Map<Socket, ObjectOutputStream> oosMap;
 
@@ -30,7 +30,7 @@ public class RiskGame {
    * Constructor with specifying player number
    */
   public RiskGame(int playerNum) throws IOException {
-    sockets = new HashMap<Socket, Integer>();
+    sockets = new HashMap<Socket, String>();
     mapGenerator = new MapGenerator("TerritoryNames.txt", "AMinit.csv");
     board = new Board();
     playerNumber = playerNum;
@@ -40,8 +40,11 @@ public class RiskGame {
     mapGenerator.apply(board, playerNum);
   }
 
-  private void initClan(int id) {
-    String color = colors.get(id);
+  /**
+   * Allocate color and territories for each clan
+   */
+  private void initClan(String color) {
+    int id = colors.indexOf(color);
     List<Territory> occupies = new ArrayList<>();
     occupies.add(board.getTerritoriesList().get(id*3));
     occupies.add(board.getTerritoriesList().get(id*3+1));
@@ -51,16 +54,26 @@ public class RiskGame {
   }
 
   /**
+   * Initialize each player, send their clan color to them and 
+   * record their output stream
+   */
+  private void initPlayers() throws IOException{
+    for (Socket socket: sockets.keySet()) {
+      String color = sockets.get(socket);
+      initClan(color);
+      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+      oos.writeObject(color);
+      oosMap.put(socket, oos);
+    }
+  }
+  
+  /**
    * Wait for players to login to start the game
    */
   private void waitForPlayers(ServerSocket ss, int playerNum) throws IOException{
     for (int i = 0;i < playerNum; i++) { // what if player exits while waiting for other players
       Socket socket = ss.accept();
-      sockets.put(socket, i);
-      initClan(i);
-      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-      oos.writeObject(colors.get(i));
-      oosMap.put(socket, oos);
+      sockets.put(socket, colors.get(i));
     }
   }
 
@@ -77,7 +90,6 @@ public class RiskGame {
    */
   private void sendGameInfo(GameInfo gi) throws IOException {
     for (Socket socket: sockets.keySet()) {      
-      //      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
       ObjectOutputStream oos = oosMap.get(socket);
       oos.writeObject(gi);
     }
@@ -87,7 +99,8 @@ public class RiskGame {
     ServerSocket ss = new ServerSocket(1651);
     // only one player is allowed now
     waitForPlayers(ss, playerNumber);
-    sendGameInfo(getCurrentGameInfo());    
+    initPlayers();  // assign color and territories for each player
+    sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
     
     ss.close();
   }    
