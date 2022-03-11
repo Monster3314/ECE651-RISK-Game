@@ -13,7 +13,7 @@ public class App {
   }
 
   public static void main(String[] args) {    
-    if ((args.length != 1) || (args[0].length() != 1) || args[0].charAt(0) < '2' || args[0].charAt(0) > '5') {
+    if ((args.length != 1) || (args[0].length() != 1) || args[0].charAt(0) < '1' || args[0].charAt(0) > '5') {
       System.out.println("Player number 2-5");
       return;
     }  
