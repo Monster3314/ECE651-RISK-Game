@@ -20,7 +20,7 @@ public class App {
     int playerNum = Integer.parseInt(args[0]);
     try{
       App app = new App(playerNum);
-      app.riskGame.run();
+      app.riskGame.run(1651);
     }
     catch (IOException e) {
       System.out.println("IOException ouucred, server shut down");
