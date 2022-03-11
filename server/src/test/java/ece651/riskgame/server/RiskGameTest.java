@@ -93,13 +93,13 @@ public class RiskGameTest {
 
   @Test
   public void test_initPlayers() throws IOException, InterruptedException, ClassNotFoundException {
-    riskGame = new RiskGame(1);
+    riskGame = new RiskGame(2);
     Thread th = new Thread() {
         @Override()
         public void run() {
           try {
             ServerSocket ss = new ServerSocket(1651);            
-            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
+            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 2);
             Whitebox.invokeMethod(riskGame, "initPlayers");            
           } catch (Exception e) {
             
@@ -108,18 +108,16 @@ public class RiskGameTest {
       };
     th.start();
     Thread.sleep(100); // this is abit of a hack
-
     Socket s1 = new Socket("0.0.0.0", 1651);
     Socket s2 = new Socket("0.0.0.0", 1651);
     ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
     String color = (String)ois.readObject();
     assertEquals("Red", color);
-    //ObjectInputStream ois2 = new ObjectInputStream(s2.getInputStream());
-    //String color2 = (String)ois2.readObject();
-    //assertEquals("Blue", color2);
     s1.close();
-    //    s2.close();
-    
+    ObjectInputStream ois2 = new ObjectInputStream(s2.getInputStream());
+    String color2 = (String)ois2.readObject();
+    assertEquals("Blue", color2);    
+    s2.close();    
     th.interrupt();
     th.join();
     System.out.println("Test initplayers complete");
@@ -127,14 +125,14 @@ public class RiskGameTest {
 
   
   //@Test
-  public void test_sendGameInfo() throws IOException, InterruptedException {
+  public void test_sendGameInfo() throws IOException, InterruptedException, ClassNotFoundException {
     riskGame = new RiskGame(1);
     Thread th_server = new Thread() {
         @Override()
         public void run() {
           try {
             ServerSocket ss = new ServerSocket(1651);            
-            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 2);
+            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
             Object gi_object = Whitebox.invokeMethod(riskGame, "getCurrentGameInfo");
             GameInfo gi = (GameInfo)gi_object;
             Whitebox.invokeMethod(riskGame, "sendGameInfo", gi);
@@ -149,6 +147,10 @@ public class RiskGameTest {
     Socket s1 = new Socket("0.0.0.0", 1651);
     assertTrue(s1.isConnected());
     ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
+    GameInfo gi = (GameInfo) ois.readObject();
+    Object gi_object = Whitebox.invokeMethod(riskGame, "getCurrentGameInfo");
+    GameInfo expected_gi = (GameInfo)gi_object;
+    assertArrayEquals(expected_gi., null);
     
     s1.close();
     

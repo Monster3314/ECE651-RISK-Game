@@ -61,9 +61,9 @@ public class RiskGame {
     for (Socket socket: sockets.keySet()) {
       String color = sockets.get(socket);
       initClan(color);
-      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+      ObjectOutputStream oos = oosMap.get(socket);
       oos.writeObject(color);
-      oosMap.put(socket, oos);
+      
     }
   }
   
@@ -74,6 +74,8 @@ public class RiskGame {
     for (int i = 0;i < playerNum; i++) { // what if player exits while waiting for other players
       Socket socket = ss.accept();
       sockets.put(socket, colors.get(i));
+      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+      oosMap.put(socket, oos);
     }
   }
 
