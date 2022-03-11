@@ -20,6 +20,8 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.reflect.Whitebox;
 
+import ece651.riskgame.shared.Board;
+import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
 
 @ExtendWith(MockitoExtension.class)
@@ -58,7 +60,7 @@ public class RiskGameTest {
     
     th.interrupt();
     th.join();
-    System.out.println("Test wait for 1 player complete");
+    //System.out.println("Test wait for 1 player complete");
   }
 
   @Test
@@ -88,7 +90,7 @@ public class RiskGameTest {
     th_server.interrupt();
     th_server.join();
 
-    System.out.println("Test wait for 2 player complete");
+    //    System.out.println("Test wait for 2 player complete");
   }
 
   @Test
@@ -120,22 +122,21 @@ public class RiskGameTest {
     s2.close();    
     th.interrupt();
     th.join();
-    System.out.println("Test initplayers complete");
+    //    System.out.println("Test initplayers complete");
   }
 
   
-  //@Test
-  public void test_sendGameInfo() throws IOException, InterruptedException, ClassNotFoundException {
+  @Test
+  public void test_sendGameInfo() throws IOException, InterruptedException, ClassNotFoundException, Exception {
     riskGame = new RiskGame(1);
+    GameInfo gi_expected = new GameInfo(new Board(), new HashMap<String, Clan>());
     Thread th_server = new Thread() {
         @Override()
         public void run() {
           try {
-            ServerSocket ss = new ServerSocket(1651);            
-            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
-            Object gi_object = Whitebox.invokeMethod(riskGame, "getCurrentGameInfo");
-            GameInfo gi = (GameInfo)gi_object;
-            Whitebox.invokeMethod(riskGame, "sendGameInfo", gi);
+            ServerSocket ss = new ServerSocket(1751);            
+            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);            
+            Whitebox.invokeMethod(riskGame, "sendGameInfo", gi_expected);
           } catch (Exception e) {
             
           }
@@ -144,48 +145,15 @@ public class RiskGameTest {
     th_server.start();
     Thread.sleep(100); // this is abit of a hack
 
-    Socket s1 = new Socket("0.0.0.0", 1651);
+    Socket s1 = new Socket("0.0.0.0", 1751);
     assertTrue(s1.isConnected());
     ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
     GameInfo gi = (GameInfo) ois.readObject();
-    Object gi_object = Whitebox.invokeMethod(riskGame, "getCurrentGameInfo");
-    GameInfo expected_gi = (GameInfo)gi_object;
-    assertArrayEquals(expected_gi., null);
+    assertEquals(gi_expected.getBoard(), gi.getBoard());
     
     s1.close();
     
     th_server.interrupt();
     th_server.join();
-    System.out.println("Test send Game info complete");
   }
-
-  
-  // @Test
-  public void test_sendGameInf0() throws IOException, Exception{
-    riskGame = new RiskGame(1);
-
-    // insert socket map
-    Socket socket = Mockito.mock(Socket.class);
-    Map<Socket, Integer> sm = new HashMap<Socket, Integer>();
-    sm.put(socket, 1);
-    Whitebox.setInternalState(riskGame, "sockets", sm);
-    Map<Socket, ObjectOutputStream> oosMap = new HashMap<Socket, ObjectOutputStream>();
-    oosMap.put(socket, new ObjectOutputStream(socket.getOutputStream()));
-
-    
-    ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-    when(socket.getOutputStream()).thenReturn(byteArrayOutputStream);
-
-    // get GameInfo
-    Object obj = Whitebox.invokeMethod(riskGame, "getCurrentGameInfo");
-    GameInfo gi = (GameInfo)obj;
-
-    // get byte array
-    ByteArrayOutputStream bos = new ByteArrayOutputStream(); 
-    ObjectOutputStream oos1 = new ObjectOutputStream(bos) ;
-    oos1.writeObject(gi);
-
-    Whitebox.invokeMethod(riskGame, "sendGameInfo", gi);
-    assertArrayEquals(byteArrayOutputStream.toByteArray(), bos.toByteArray());
-  }  
 }

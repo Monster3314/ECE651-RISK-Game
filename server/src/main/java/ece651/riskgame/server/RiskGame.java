@@ -97,8 +97,8 @@ public class RiskGame {
     }
   }
 
-  public void run() throws IOException{    
-    ServerSocket ss = new ServerSocket(1651);
+  public void run(int port) throws IOException{    
+    ServerSocket ss = new ServerSocket(port);
     // only one player is allowed now
     waitForPlayers(ss, playerNumber);
     initPlayers();  // assign color and territories for each player
