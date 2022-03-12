@@ -5,24 +5,36 @@ package ece651.riskgame.client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.List;
 
 import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.Unit;
 
 public class App {
   //private TextPlayer player;
   //private String serverIp;
   
   public static void main(String[] args) throws IOException{
+    String ip = args[0];
+    int port = -1;
+    try {
+      port = Integer.parseInt(args[1]);
+    }
+    catch (NumberFormatException e) {
+      System.err.println("Argument" + args[1] + " must be an integer.");
+      System.exit(1);
+    }
     //connect to server
     Socket serverSocket = null;
     ObjectInputStream socketIn = null;
-    String ip = "vcm-25372.vm.duke.edu";
-    int port = 1651;
+    ObjectOutputStream socketOut = null;
     try {
       serverSocket = new Socket(ip, port);
       socketIn = new ObjectInputStream(serverSocket.getInputStream());
+      socketOut = new ObjectOutputStream(serverSocket.getOutputStream());
     } catch (UnknownHostException e) {
       System.err.println("Don't know about host: " + ip);
       System.exit(1);
@@ -31,17 +43,25 @@ public class App {
     TextPlayer p = null;
     //recv allocated player color
     //recv GameInfo
+    //recv Initial Units
+    String color = null;
+    GameInfo game = null;
+    List<Unit> units = null;
     try {
-      String color = (String) socketIn.readObject();
-      System.out.println("Your color is " + color);
-      GameInfo game = (GameInfo) socketIn.readObject();
-      p = new TextPlayer(game, color);
+      color = (String) socketIn.readObject();
+      game = (GameInfo) socketIn.readObject();
+      units = (List<Unit>) socketIn.readObject();
     } catch (ClassNotFoundException e) {
       System.err.println("Class Not Found when reading Object through socket");
       System.exit(1);
     }
+    p = new TextPlayer(color, game);
+    
 
-    System.out.print(p.display());
+    p.display();
+    socketOut.writeObject(p.doPlacementPhase(units));
+    
+   
 
     socketIn.close();
     serverSocket.close();
