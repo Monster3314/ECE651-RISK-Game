@@ -19,9 +19,25 @@ public class GameTextView implements GameView {
     this.clans = toDisplay.getPlayers();
   }
 
+  /**
+   * Display a single Territory in text
+   * @return a string that represents the territory  
+   */  
   protected String displayTerritory(Territory t) {
     StringBuilder line = new StringBuilder();
+    //territory units
+    //TODO: getUnits instead of getUnitNumber
+    int unitNumber = t.getUnitNumber();
+    line.append(Integer.toString(unitNumber));
+    if (unitNumber > 1) {
+      line.append(" units in ");
+    }
+    else {
+      line.append(" unit in ");
+    }
+    //territory name
     line.append(t.getName());
+    //territory neighbours
     line.append(" (next to: ");
     String sep = "";
     for (Territory neighbour: theBoard.getNeighbors(t)) {
@@ -55,6 +71,7 @@ public class GameTextView implements GameView {
     StringBuilder ans = new StringBuilder();
     for (String color: clans.keySet()) {
       ans.append(displayClan(color));
+      ans.append("\n");
     }
     return ans.toString();
   }
