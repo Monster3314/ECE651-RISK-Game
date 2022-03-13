@@ -28,6 +28,7 @@ public class RiskGame {
     world = new World(playerNum);
     sockets = new HashMap<Socket, String>();
     oosMap = new HashMap<Socket, ObjectOutputStream>();
+    oisMap = new HashMap<>();
   }
 
   /**
@@ -69,6 +70,8 @@ public class RiskGame {
   private void sendGameInfo(GameInfo gi) throws IOException {
     for (Socket socket: sockets.keySet()) {      
       ObjectOutputStream oos = oosMap.get(socket);
+      oos.flush();
+      oos.reset();
       oos.writeObject(gi);
     }
   }
