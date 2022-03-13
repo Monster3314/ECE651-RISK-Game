@@ -31,11 +31,8 @@ public abstract class Territory implements Serializable{
     units.addAll(toAdd);
   }
 
-  /**
-   * Get the total unit number, used for battle in version 1
-   */
-  public int getUnitNumber() {
-    return units.size();
+  public List<Unit> getUnits() {
+    return units;
   }
 
   @Override
