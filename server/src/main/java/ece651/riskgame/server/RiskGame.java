@@ -1,14 +1,12 @@
 package ece651.riskgame.server;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-import ece651.riskgame.shared.Board;
-import ece651.riskgame.shared.Clan;
-import ece651.riskgame.shared.GameInfo;
-import ece651.riskgame.shared.Territory;
+import ece651.riskgame.shared.*;
 
 public class RiskGame {
   /**
@@ -17,6 +15,7 @@ public class RiskGame {
   private Map<Socket, String> sockets;
   private List<String> colors = new ArrayList<>(Arrays.asList("Red", "Blue", "Green", "Yellow", "Pink"));
   private Map<Socket, ObjectOutputStream> oosMap;
+  private Map<Socket, ObjectInputStream> oisMap;
 
   /**
    * The board(map) of game, storing all territories and their adjacencies
@@ -76,6 +75,8 @@ public class RiskGame {
       sockets.put(socket, colors.get(i));
       ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
       oosMap.put(socket, oos);
+      ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
+      oisMap.put(socket, ois);
     }
   }
 
@@ -97,13 +98,34 @@ public class RiskGame {
     }
   }
 
-  public void run(int port) throws IOException{    
+  private void assignUnits(int unitNumber) throws IOException, ClassNotFoundException{
+    for(Map.Entry<Socket, String> player : sockets.entrySet()) {
+      Clan clan = players.get(player.getValue());
+      List<Unit> needToAssign = new ArrayList<>();
+      for(int i = 0; i < unitNumber; i++) {
+        needToAssign.add(new BasicUnit());
+      }
+      ObjectOutputStream oos = oosMap.get(player.getKey());
+      oos.writeObject(needToAssign);
+
+      ObjectInputStream ois = oisMap.get(player.getKey());
+      Map<Territory, List<Unit>> assignResult = (Map<Territory, List<Unit>>) ois.readObject();
+
+      for (Territory t : clan.getOccupies()) {
+        if (assignResult.containsKey(t)) {
+          t.addUnitList(assignResult.get(t));
+        } else throw new IllegalArgumentException("player " + player.getValue() + " did not assign units to " + t.getName() +"!");
+      }
+    }
+  }
+
+  public void run(int port) throws IOException, ClassNotFoundException {
     ServerSocket ss = new ServerSocket(port);
     // only one player is allowed now
     waitForPlayers(ss, playerNumber);
     initPlayers();  // assign color and territories for each player
     sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
-    
+    assignUnits(10);
     ss.close();
   }    
 }
