@@ -8,8 +8,6 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.apache.commons.math3.exception.OutOfRangeException;
-
 import ece651.riskgame.shared.BasicTerritory;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Territory;

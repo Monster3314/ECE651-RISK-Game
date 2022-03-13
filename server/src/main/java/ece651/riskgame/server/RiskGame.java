@@ -5,10 +5,7 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
-import ece651.riskgame.shared.Board;
-import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
-import ece651.riskgame.shared.Territory;
 
 public class RiskGame {
   /**
