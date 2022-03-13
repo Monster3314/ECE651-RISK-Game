@@ -1,7 +1,12 @@
 package ece651.riskgame.shared;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 public class Board implements Serializable {
      private HashMap<Territory, LinkedList<Territory>> adjacency;
@@ -31,5 +36,46 @@ public class Board implements Serializable {
   
   public List<Territory> getTerritoriesList() {
          return territories;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (o == null || getClass() != o.getClass()) return false;
+
+    Board board = (Board) o;
+    // compare list
+    List<Territory> myList = this.getTerritoriesList();
+    List<Territory> otherList = board.getTerritoriesList();
+    if(myList.size() != otherList.size()) {
+      return false;
+    }
+    for (int i = 0; i < myList.size(); i++) {
+      if (!myList.get(i).equals(otherList.get(i))) {
+        return false;
+      }
+    }
+
+    // compare adjacency
+    Set<Territory> mySet = this.getTerritoriesSet();
+    Set<Territory> otherSet = board.getTerritoriesSet();
+    if (mySet.size() != otherSet.size()) {
+      return false;
+    }
+    Iterator ot = otherSet.iterator();
+    for (Territory myt: mySet) {
+      List<Territory> myNs = this.getNeighbors(myt);
+      List<Territory> otherNs = board.getNeighbors((Territory)ot.next());
+      if (myNs.size() != otherNs.size()) {
+        return false;
+      }
+      for (int i = 0; i < myNs.size(); i++) {
+        if (!myNs.get(i).equals(otherNs.get(i))) {
+          return false;
+        }
+      }
+    }
+
+    return true;
   }
 }

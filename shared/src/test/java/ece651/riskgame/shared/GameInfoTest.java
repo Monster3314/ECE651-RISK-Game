@@ -16,6 +16,12 @@ public class GameInfoTest {
     assertSame(b, gi.getBoard());
     gi.setBoard(null);
     assertSame(null, gi.getBoard());
+
+    Clan c1 = new Clan();
+    Map<String, Clan> m = new HashMap<String, Clan>();
+    m.put("gui", c1);
+    gi.setPlayers(m);
+    assertEquals(m, gi.getPlayers());
   }
 
 }

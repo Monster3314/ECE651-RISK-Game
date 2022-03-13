@@ -33,8 +33,23 @@ public class BasicTerritoryTest {
     BasicTerritory a = new BasicTerritory("A");
     BasicTerritory b = new BasicTerritory("B");
     BasicTerritory a2 = new BasicTerritory("A");
+    BasicTerritory c = new BasicTerritory(null);
+    assertNotEquals(c, a);
     assertEquals(a, a2);
     assertNotEquals(b, a);
+    assertTrue(a.equals(a));
+    assertNotEquals(a, null);
+  }
+
+  @Test
+  public void test_hashCode() {
+    BasicTerritory a = new BasicTerritory("A");
+    BasicTerritory b = new BasicTerritory("B");
+    BasicTerritory a2 = new BasicTerritory("A");
+    assertEquals(a.hashCode(), a2.hashCode());
+    assertNotEquals(a.hashCode(), b.hashCode());
+    BasicTerritory c = new BasicTerritory(null);
+    assertEquals(0, c.hashCode());
   }
 
 }

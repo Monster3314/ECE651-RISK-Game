@@ -88,7 +88,7 @@ public class MapGenerator {
     // add board names
     for (int i = 0; i < numTer; i++) {
       Territory t = new BasicTerritory(territoryNameList.get(i));
-      //      board.addTerritory(t);
+      board.addTerritory(t);
       addedTerritories.add(t);
     }
     // add adjacency
