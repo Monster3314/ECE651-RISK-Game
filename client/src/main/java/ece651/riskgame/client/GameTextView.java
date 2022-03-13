@@ -30,7 +30,13 @@ public class GameTextView implements GameView {
     //territory units
     List<Unit> units = t.getUnits();
     //TODO: Display all unit info instead of basicunit only
-    int unitNumber = units[0].getNum();
+    int unitNumber;
+    if (units.size() == 0) {
+      unitNumber = 0;
+    }
+    else {
+      unitNumber = units.get(0).getNum();
+    }
     line.append(Integer.toString(unitNumber));
     if (unitNumber > 1) {
       line.append(" units in ");

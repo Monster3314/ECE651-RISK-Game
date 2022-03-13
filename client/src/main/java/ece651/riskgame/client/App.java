@@ -8,9 +8,13 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ece651.riskgame.shared.BasicUnit;
+import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
@@ -62,9 +66,44 @@ public class App {
     
 
     p.display();
-    Map<Unit, Territory> placements = p.doPlacementPhase(units);
-    System.out.print(placements);
+    
+    //Map<Territory, List<Unit>> placements = p.doPlacementPhase(units);
+    Map<Territory, List<Unit>> placements = new HashMap<Territory, List<Unit>>();
+    Clan myClan= game.getPlayers().get(color);
+    for (Territory occupy: myClan.getOccupies()) {
+      placements.put(occupy, new ArrayList<Unit>());
+      if (occupy.getName().equals("Shanghai")) {
+        placements.get(occupy).add(new BasicUnit(5));
+      }
+      else if (occupy.getName().equals("Jiangsu")) {
+        placements.get(occupy).add(new BasicUnit(2));
+      }
+      else if (occupy.getName().equals("Zhejiang")) {
+        placements.get(occupy).add(new BasicUnit(3));
+      }
+    }
+    
+    
     socketOut.writeObject(placements);
+
+    //recv GameInfo to check if the updated map is correct
+    try {
+      game = (GameInfo) socketIn.readObject();
+    } catch (ClassNotFoundException e) {
+      System.err.println("Class Not Found when reading Object through socket");
+      System.exit(1);
+    }
+
+    if (game.getPlayers().get("Red").isActive()) {
+      System.out.println("Alive");
+    }
+    else {
+      System.out.println("Dead");
+    }
+
+    //update game status
+    p.update(game);
+    p.display();
     
     socketIn.close();
     serverSocket.close();

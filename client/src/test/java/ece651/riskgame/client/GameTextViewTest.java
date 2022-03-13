@@ -32,15 +32,10 @@ public class GameTextViewTest {
     Clan c2 = new Clan(new LinkedList<Territory>(Arrays.asList(t2, t4)));
     players.put("Green", c1);
     players.put("Blue", c2);
-    for (int i = 0; i < 4; i++) {
-      t1.addUnit(new BasicUnit());
-    }
-    for (int i = 0; i < 3; i++) {
-      t2.addUnit(new BasicUnit());
-    }
-    for (int i = 0; i < 1; i++) {
-      t3.addUnit(new BasicUnit());
-    }
+    t1.addUnit(new BasicUnit(4));
+    t2.addUnit(new BasicUnit(3));
+    t3.addUnit(new BasicUnit(1));
+    
     b.addTerritory(t1);
     b.putEntry(t1, new LinkedList<Territory>(Arrays.asList(t2, t3)));
     b.addTerritory(t2);
