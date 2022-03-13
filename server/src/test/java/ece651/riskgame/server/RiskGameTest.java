@@ -44,7 +44,7 @@ public class RiskGameTest {
         @Override()
         public void run() {
           try {
-            ServerSocket ss = new ServerSocket(1651);            
+            ServerSocket ss = new ServerSocket(2651);            
             Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
           } catch (Exception e) {
             
@@ -54,7 +54,7 @@ public class RiskGameTest {
     th.start();
     Thread.sleep(100); // this is abit of a hack
 
-    Socket s = new Socket("0.0.0.0", 1651);
+    Socket s = new Socket("0.0.0.0", 2651);
     assertTrue(s.isConnected());    
     s.close();
     
@@ -70,7 +70,7 @@ public class RiskGameTest {
         @Override()
         public void run() {
           try {
-            ServerSocket ss = new ServerSocket(1651);            
+            ServerSocket ss = new ServerSocket(2751);            
             Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 2);
           } catch (Exception e) {
             
@@ -80,8 +80,8 @@ public class RiskGameTest {
     th_server.start();
     Thread.sleep(100); // this is abit of a hack
 
-    Socket s1 = new Socket("0.0.0.0", 1651);
-    Socket s2 = new Socket("0.0.0.0", 1651);
+    Socket s1 = new Socket("0.0.0.0", 2751);
+    Socket s2 = new Socket("0.0.0.0", 2751);
     assertTrue(s1.isConnected());
     assertTrue(s2.isConnected());
     s1.close();
@@ -100,7 +100,7 @@ public class RiskGameTest {
         @Override()
         public void run() {
           try {
-            ServerSocket ss = new ServerSocket(1651);            
+            ServerSocket ss = new ServerSocket(2851);            
             Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 2);
             Whitebox.invokeMethod(riskGame, "initPlayers");            
           } catch (Exception e) {
@@ -110,8 +110,8 @@ public class RiskGameTest {
       };
     th.start();
     Thread.sleep(100); // this is abit of a hack
-    Socket s1 = new Socket("0.0.0.0", 1651);
-    Socket s2 = new Socket("0.0.0.0", 1651);
+    Socket s1 = new Socket("0.0.0.0", 2851);
+    Socket s2 = new Socket("0.0.0.0", 2851);
     ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
     String color = (String)ois.readObject();
     assertEquals("Red", color);    
