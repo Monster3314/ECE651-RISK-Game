@@ -15,7 +15,7 @@ import ece651.riskgame.shared.Territory;
 
 public class World {
   private Board board;
-  private Map<String, Clan> clans;
+  private Map<String, Clan> clans;  //the map for color of player and his clan
 
   private MapGenerator mapGenerator;
   private List<String> colors = new ArrayList<>(Arrays.asList("Red", "Blue", "Green", "Yellow", "Pink"));
@@ -24,7 +24,7 @@ public class World {
 
   public World(int playerNum) throws IOException, FileNotFoundException {
     board = new Board();
-    clans = new HashMap<String, Clan>();
+    clans = new HashMap<>();
 
     mapGenerator = new MapGenerator("TerritoryNames.txt", "AMinit.csv");
     mapGenerator.apply(getBoard(), playerNum);
@@ -35,6 +35,10 @@ public class World {
   
   public Board getBoard() {
     return board;
+  }
+
+  public Map<String, Clan> getClans() {
+    return clans;
   }
 
   public String addClan() throws IllegalAccessException {

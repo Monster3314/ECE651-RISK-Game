@@ -9,10 +9,8 @@ import java.util.*;
 import ece651.riskgame.shared.*;
 
 public class RiskGame {
-  /**
-   * A map of sockets and their colors
-   */
-  private Map<Socket, String> sockets;
+
+  private Map<Socket, String> sockets;  //A map of sockets and their colors
   private Map<Socket, ObjectOutputStream> oosMap;
   private Map<Socket, ObjectInputStream> oisMap;
 
@@ -38,6 +36,7 @@ public class RiskGame {
   private void initPlayers() throws IOException, IllegalAccessException {
     for (Socket socket: sockets.keySet()) {
       String color = world.addClan();
+      sockets.put(socket, color);
       ObjectOutputStream oos = oosMap.get(socket);
       oos.writeObject(color);
     }
@@ -76,11 +75,9 @@ public class RiskGame {
 
   private void assignUnits(int unitNumber) throws IOException, ClassNotFoundException{
     for(Map.Entry<Socket, String> player : sockets.entrySet()) {
-      Clan clan = players.get(player.getValue());
+      Clan clan = world.getClans().get(player.getValue());
       List<Unit> needToAssign = new ArrayList<>();
-      for(int i = 0; i < unitNumber; i++) {
-        needToAssign.add(new BasicUnit());
-      }
+      needToAssign.add(new BasicUnit(unitNumber));
       ObjectOutputStream oos = oosMap.get(player.getKey());
       oos.writeObject(needToAssign);
 
@@ -95,13 +92,14 @@ public class RiskGame {
     }
   }
 
-  public void run(int port) throws IOException, ClassNotFoundException, IllegalArgumentException {
+  public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {
     ServerSocket ss = new ServerSocket(port);
     // only one player is allowed now
     waitForPlayers(ss, playerNumber);
     initPlayers();  // assign color and territories for each player
     sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
     assignUnits(10);
+    sendGameInfo(getCurrentGameInfo());
     ss.close();
   }    
 }
