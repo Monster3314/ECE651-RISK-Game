@@ -18,14 +18,11 @@ public class BasicTerritoryTest {
   public void test_units() {
     //add unit
     BasicTerritory bt = new BasicTerritory("Ox");
-    bt.addUnit(new BasicUnit());
-    assertEquals(bt.getUnitNumber(), 1);
-    //add unit list
-    List<Unit> ul = new ArrayList<Unit>();
-    ul.add(new BasicUnit());
-    ul.add(new BasicUnit());
-    bt.addUnitList(ul);
-    assertEquals(bt.getUnitNumber(), 3);
+    Unit a = new BasicUnit();
+    List<Unit> l = new ArrayList<>();
+    l.add(a);
+    bt.addUnit(a);
+    assertEquals(bt.getUnits(), l);
   }
 
   @Test
