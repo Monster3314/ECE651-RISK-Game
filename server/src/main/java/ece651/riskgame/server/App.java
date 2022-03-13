@@ -27,5 +27,8 @@ public class App {
     } catch (ClassNotFoundException e) {
       System.out.println("cannot parse input objects");
     }
+    catch (IllegalAccessException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }
