@@ -114,11 +114,11 @@ public class RiskGameTest {
     Socket s2 = new Socket("0.0.0.0", 1651);
     ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
     String color = (String)ois.readObject();
-    assertEquals("Red", color);
-    s1.close();
+    assertEquals("Red", color);    
     ObjectInputStream ois2 = new ObjectInputStream(s2.getInputStream());
     String color2 = (String)ois2.readObject();
     assertEquals("Blue", color2);    
+    s1.close();
     s2.close();    
     th.interrupt();
     th.join();
