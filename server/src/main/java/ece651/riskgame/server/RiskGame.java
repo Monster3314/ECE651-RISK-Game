@@ -73,6 +73,7 @@ public class RiskGame {
     }
   }
 
+  @SuppressWarnings("unchecked")
   private void assignUnits(int unitNumber) throws IOException, ClassNotFoundException{
     for(Map.Entry<Socket, String> player : sockets.entrySet()) {
       Clan clan = world.getClans().get(player.getValue());
