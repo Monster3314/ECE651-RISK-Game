@@ -24,6 +24,8 @@ public class App {
     }
     catch (IOException e) {
       System.out.println("IOException ouucred, server shut down");
+    } catch (ClassNotFoundException e) {
+      System.out.println("cannot parse input objects");
     }
     catch (IllegalAccessException e) {
       System.out.println(e.getMessage());

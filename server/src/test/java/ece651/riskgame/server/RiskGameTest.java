@@ -87,7 +87,7 @@ public class RiskGameTest {
     //    System.out.println("Test wait for 2 player complete");
   }
 
-  @Test
+  //@Test
   public void test_init1Player1() throws IOException, InterruptedException, ClassNotFoundException {
     riskGame = new RiskGame(1);
     Thread th = new Thread() {
@@ -147,7 +147,7 @@ public class RiskGameTest {
   }
 
   
-  @Test
+  //@Test
   public void test_sendGameInfo() throws IOException, InterruptedException, ClassNotFoundException, Exception {
     riskGame = new RiskGame(1);
     GameInfo gi_expected = new GameInfo(new Board(), new HashMap<String, Clan>());
