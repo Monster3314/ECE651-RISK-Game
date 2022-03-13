@@ -68,6 +68,7 @@ public class App {
     p.display();
     
     //Map<Territory, List<Unit>> placements = p.doPlacementPhase(units);
+    
     Map<Territory, List<Unit>> placements = new HashMap<Territory, List<Unit>>();
     Clan myClan= game.getPlayers().get(color);
     for (Territory occupy: myClan.getOccupies()) {
@@ -85,25 +86,12 @@ public class App {
     
     
     socketOut.writeObject(placements);
-
-    //recv GameInfo to check if the updated map is correct
-    try {
-      game = (GameInfo) socketIn.readObject();
-    } catch (ClassNotFoundException e) {
-      System.err.println("Class Not Found when reading Object through socket");
-      System.exit(1);
-    }
-
-    if (game.getPlayers().get("Red").isActive()) {
-      System.out.println("Alive");
-    }
-    else {
-      System.out.println("Dead");
-    }
+    
 
     //update game status
     p.update(game);
     p.display();
+    
     
     socketIn.close();
     serverSocket.close();

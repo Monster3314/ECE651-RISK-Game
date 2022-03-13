@@ -12,6 +12,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.checkerframework.checker.units.qual.g;
+
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
@@ -55,7 +57,29 @@ public class TextPlayer {
     theGame = game;
     view = new GameTextView(theGame);
   }
-
+  public void doOneMovement() throws IOException {
+    Territory src = readTerritory("Which territory do you want to move unit from?");
+    Territory dst = readTerritory("Which territory do you want to move unit to?");
+    
+  }
+  public Territory readTerritory(String prompt) throws IOException {
+    String s;
+    List<Territory> territories = theGame.getBoard().getTerritoriesList();
+    while (true) {
+      out.println(prompt);
+      s = inputReader.readLine();
+      if (s == null) {
+        throw new EOFException("EOF");
+      }
+      //TODO:catch KeyNotFoundException instead of find manually
+      for (Territory t: territories) {
+        if (t.getName().equals(s)) {
+          return t;
+        }
+      }
+      out.println(s + " is not one of the existing territories");
+    }
+  }
   public Map<Territory, List<Unit>> doPlacementPhase(List<Unit> units) throws IOException {
     //TODO:Unit should have name, counter according to type
     Map<Territory, List<Unit>> ans = new HashMap<Territory, List<Unit>>();
