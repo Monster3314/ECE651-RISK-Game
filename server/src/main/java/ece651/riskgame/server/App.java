@@ -25,5 +25,8 @@ public class App {
     catch (IOException e) {
       System.out.println("IOException ouucred, server shut down");
     }
+    catch (IllegalAccessException e) {
+      System.out.println(e.getMessage());
+    }
   }
 }

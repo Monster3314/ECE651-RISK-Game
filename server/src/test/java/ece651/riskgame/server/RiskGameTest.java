@@ -44,7 +44,7 @@ public class RiskGameTest {
         @Override()
         public void run() {
           try {
-            ServerSocket ss = new ServerSocket(1651);            
+            ServerSocket ss = new ServerSocket(2651);            
             Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
           } catch (Exception e) {
             
@@ -54,7 +54,7 @@ public class RiskGameTest {
     th.start();
     Thread.sleep(100); // this is abit of a hack
 
-    Socket s = new Socket("0.0.0.0", 1651);
+    Socket s = new Socket("0.0.0.0", 2651);
     assertTrue(s.isConnected());    
     s.close();
     
@@ -70,7 +70,7 @@ public class RiskGameTest {
         @Override()
         public void run() {
           try {
-            ServerSocket ss = new ServerSocket(1651);            
+            ServerSocket ss = new ServerSocket(2751);            
             Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 2);
           } catch (Exception e) {
             
@@ -80,8 +80,8 @@ public class RiskGameTest {
     th_server.start();
     Thread.sleep(100); // this is abit of a hack
 
-    Socket s1 = new Socket("0.0.0.0", 1651);
-    Socket s2 = new Socket("0.0.0.0", 1651);
+    Socket s1 = new Socket("0.0.0.0", 2751);
+    Socket s2 = new Socket("0.0.0.0", 2751);
     assertTrue(s1.isConnected());
     assertTrue(s2.isConnected());
     s1.close();
@@ -94,13 +94,40 @@ public class RiskGameTest {
   }
 
   @Test
-  public void test_initPlayers() throws IOException, InterruptedException, ClassNotFoundException {
+  public void test_init1Player1() throws IOException, InterruptedException, ClassNotFoundException {
+    riskGame = new RiskGame(1);
+    Thread th = new Thread() {
+        @Override()
+        public void run() {
+          try {
+            ServerSocket ss = new ServerSocket(2801);            
+            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
+            Whitebox.invokeMethod(riskGame, "initPlayers");            
+          } catch (Exception e) {
+            
+          }
+        }
+      };
+    th.start();
+    Thread.sleep(100); // this is abit of a hack
+    Socket s1 = new Socket("0.0.0.0", 2801);
+    ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
+    String color = (String)ois.readObject();
+    assertEquals("Red", color);    
+    s1.close();
+    th.interrupt();
+    th.join();
+    //    System.out.println("Test initplayers complete");
+  }
+  
+  //@Test
+  public void test_init2Players() throws IOException, InterruptedException, ClassNotFoundException {
     riskGame = new RiskGame(2);
     Thread th = new Thread() {
         @Override()
         public void run() {
           try {
-            ServerSocket ss = new ServerSocket(1651);            
+            ServerSocket ss = new ServerSocket(2851);            
             Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 2);
             Whitebox.invokeMethod(riskGame, "initPlayers");            
           } catch (Exception e) {
@@ -110,15 +137,15 @@ public class RiskGameTest {
       };
     th.start();
     Thread.sleep(100); // this is abit of a hack
-    Socket s1 = new Socket("0.0.0.0", 1651);
-    Socket s2 = new Socket("0.0.0.0", 1651);
+    Socket s1 = new Socket("0.0.0.0", 2851);
+    Socket s2 = new Socket("0.0.0.0", 2851);
     ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
     String color = (String)ois.readObject();
-    assertEquals("Red", color);
-    s1.close();
+    assertEquals("Red", color);    
     ObjectInputStream ois2 = new ObjectInputStream(s2.getInputStream());
     String color2 = (String)ois2.readObject();
     assertEquals("Blue", color2);    
+    s1.close();
     s2.close();    
     th.interrupt();
     th.join();
