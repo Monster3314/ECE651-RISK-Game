@@ -1,11 +1,13 @@
 package ece651.riskgame.client;
 
+import java.util.List;
 import java.util.Map;
 
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.Territory;
+import ece651.riskgame.shared.Unit;
 
 public class GameTextView implements GameView {
   private final Board theBoard;
@@ -26,8 +28,9 @@ public class GameTextView implements GameView {
   protected String displayTerritory(Territory t) {
     StringBuilder line = new StringBuilder();
     //territory units
-    //TODO: getUnits instead of getUnitNumber
-    int unitNumber = t.getUnitNumber();
+    List<Unit> units = t.getUnits();
+    //TODO: Display all unit info instead of basicunit only
+    int unitNumber = units[0].getNum();
     line.append(Integer.toString(unitNumber));
     if (unitNumber > 1) {
       line.append(" units in ");

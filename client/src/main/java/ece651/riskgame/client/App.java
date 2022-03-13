@@ -9,14 +9,17 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.List;
+import java.util.Map;
 
 import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
 public class App {
   //private TextPlayer player;
   //private String serverIp;
-  
+
+  @SuppressWarnings("unchecked")
   public static void main(String[] args) throws IOException{
     String ip = args[0];
     int port = -1;
@@ -59,10 +62,10 @@ public class App {
     
 
     p.display();
-    socketOut.writeObject(p.doPlacementPhase(units));
+    Map<Unit, Territory> placements = p.doPlacementPhase(units);
+    System.out.print(placements);
+    socketOut.writeObject(placements);
     
-   
-
     socketIn.close();
     serverSocket.close();
     System.exit(0);

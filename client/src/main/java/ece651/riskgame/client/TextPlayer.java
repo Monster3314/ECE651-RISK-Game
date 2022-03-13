@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.Territory;
@@ -50,20 +51,43 @@ public class TextPlayer {
 
   public Map<Unit, Territory> doPlacementPhase(List<Unit> units) throws IOException {
     //TODO:Unit should have name, counter according to type
-    Map<Unit, Territory> ans = new HashMap<Unit, Territory>();
+    Map<Territory, List<Unit>> ans = new HashMap<Territory, List<Unit>>();
     String s;
-    for (Unit u:units) {
-      out.println("Where do you want to put an unit?");
+    for (Unit u : units) {
+      //TODO: Unit name
+      out.println("You have %d units", u.getNum());
+      out.println("How many and where do you want to put the unit(e.g. 2 Durham)?");
       s = inputReader.readLine();
       if (s == null) {
-        throw new EOFException("EOF");
+        throw new  EOFException("EOF");
+      }
+      //parse placement and rule check
+      String[] arr = s.split(" ", 2);
+      int placeNum = Integer.parseInt(arr[0]);
+      String dest = arr[1];
+
+      //TODO: rule check
+      //ReEnter when placement invalid
+      while (true) {
+        try {
+          u.decSoldiers(placeNum);
+          break;
+        } catch (IllegalArgumentException e) {
+          s = inputReader.readLine();
+          if (s == null) {
+            throw new  EOFException("EOF");
+          }
+          //parse placement and rule check
+          arr = s.split(" ", 2);
+          placeNum = Integer.parseInt(arr[0]);
+          dest = arr[1];
+        }
       }
       Clan myClan= theGame.getPlayers().get(color);
-      boolean find = false;
       for (Territory occupy:myClan.getOccupies()) {
-        if (occupy.getName() == s) {
-          ans.put(u, occupy);
-          find = true;
+        if (occupy.getName() == dest) {
+          //TODO:change BasicUnit to unit according to unit
+          ans.put(occupy, new BasicUnit(placeNum));
           break;
         }
       }
