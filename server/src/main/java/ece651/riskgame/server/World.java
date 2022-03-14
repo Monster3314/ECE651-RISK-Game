@@ -8,12 +8,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ece651.riskgame.shared.Board;
-import ece651.riskgame.shared.Clan;
-import ece651.riskgame.shared.GameInfo;
-import ece651.riskgame.shared.Territory;
+import ece651.riskgame.shared.*;
 
-public class World {
+public class World implements Actable{
   private Board board;
   private Map<String, Clan> clans;  //the map for color of player and his clan
 
@@ -32,11 +29,13 @@ public class World {
     colorUsed = 0;
     this.playerNum = playerNum;
   }
-  
+
+  @Override
   public Board getBoard() {
     return board;
   }
 
+  @Override
   public Map<String, Clan> getClans() {
     return clans;
   }
@@ -64,5 +63,9 @@ public class World {
     occupies.add(getBoard().getTerritoriesList().get(id*3+1));
     occupies.add(getBoard().getTerritoriesList().get(id*3+2));
     clans.put(color, new Clan(occupies));
+  }
+
+  public void acceptAction(Action action) {
+    action.apply(this);
   }
 }

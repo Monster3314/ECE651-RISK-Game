@@ -12,6 +12,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
@@ -57,14 +58,17 @@ public class TextPlayer {
     theGame = game;
     view = new GameTextView(theGame);
   }
-  /*
+  public List<Action> readActions() throws IOException {
+    List<Action> actions = new ArrayList<Action>();
+    actions.add(readMove());
+    return actions;
+  }
   public Move readMove() throws IOException {
     Territory src = readTerritory("Which territory do you want to move unit from?");
     Unit toMove = readUnit(src, "How many units do you want to move?");
     Territory dst = readTerritory("Which territory do you want to move unit to?");
     return new Move(toMove, src.getName(), dst.getName());
     }
-  */
   public Unit readUnit(Territory src, String prompt) throws IOException, IllegalArgumentException{
     List<Unit> units = src.getUnits();
     if (units.size() == 0) {

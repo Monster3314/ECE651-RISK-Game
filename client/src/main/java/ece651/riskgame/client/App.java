@@ -13,6 +13,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
@@ -56,8 +57,11 @@ public class App {
     List<Unit> units = null;
     try {
       color = (String) socketIn.readObject();
+      System.out.println("Color recved");
       game = (GameInfo) socketIn.readObject();
+      System.out.println("Game recved");
       units = (List<Unit>) socketIn.readObject();
+      System.out.println("Units recved");
     } catch (ClassNotFoundException e) {
       System.err.println("Class Not Found when reading Object through socket");
       System.exit(1);
@@ -83,11 +87,31 @@ public class App {
         placements.get(occupy).add(new BasicUnit(3));
       }
     }
-    
-    
     socketOut.writeObject(placements);
-    
+    socketOut.flush();
+    socketOut.reset();
+    //recv gameinfo
+    try {
+      game = (GameInfo) socketIn.readObject();
+    } catch (ClassNotFoundException e) {
+      System.err.println("Class Not Found when reading Object through socket");
+      System.exit(1);
+    }
+    //update game status
+    p.update(game);
 
+    //read Actions
+    p.display();
+    List<Action> actions = p.readActions();
+    socketOut.writeObject(actions);
+
+    //recv gameinfo
+    try {
+      game = (GameInfo) socketIn.readObject();
+    } catch (ClassNotFoundException e) {
+      System.err.println("Class Not Found when reading Object through socket");
+      System.exit(1);
+    }
     //update game status
     p.update(game);
     p.display();
