@@ -21,7 +21,7 @@ public class BasicTerritoryTest {
     Unit a = new BasicUnit();
     List<Unit> l = new ArrayList<>();
     l.add(a);
-    bt.addUnit(a);
+    bt.addUnitList(l);
     assertEquals(bt.getUnits(), l);
   }
 
@@ -47,6 +47,21 @@ public class BasicTerritoryTest {
     assertNotEquals(a.hashCode(), b.hashCode());
     BasicTerritory c = new BasicTerritory(null);
     assertEquals(0, c.hashCode());
+  }
+
+  @Test
+  public void test_add_dec() {
+    BasicTerritory a = new BasicTerritory("A");
+    a.addUnit(new BasicUnit());
+    BasicUnit u = new BasicUnit(10);
+    a.addUnit(u);
+    assertEquals(11, a.getUnits().get(0).getNum());
+    BasicUnit u2 = new BasicUnit(5);
+    a.decUnit(u2);
+    assertEquals(6, a.getUnits().get(0).getNum());
+
+    BasicTerritory b = new BasicTerritory("B");
+    assertThrows(IllegalArgumentException.class, ()->b.decUnit(u));
   }
 
 }

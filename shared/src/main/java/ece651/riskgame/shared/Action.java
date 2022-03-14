@@ -1,5 +1,7 @@
 package ece651.riskgame.shared;
 
+import java.util.Map;
+
 public interface Action {
-    public void apply(GameInfo gi);
+    public void apply(Actable world);
 }
