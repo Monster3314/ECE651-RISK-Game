@@ -9,33 +9,46 @@ import java.util.List;
 import java.util.Set;
 
 public class Board implements Serializable {
-     private HashMap<Territory, LinkedList<Territory>> adjacency;
-     private List<Territory> territories;
+  private HashMap<Territory, LinkedList<Territory>> adjacency;
+  private List<Territory> territories;
+  
+  public Board() {
+    adjacency = new HashMap<Territory, LinkedList<Territory>>();
+    territories = new ArrayList<>();
+  }
 
-     public Board() {
-         adjacency = new HashMap<Territory, LinkedList<Territory>>();
-         territories = new ArrayList<>();
-     }
+  public void putEntry(Territory territory, LinkedList<Territory> neighbors) {
+    adjacency.put(territory, neighbors);
+  }
 
-    public void putEntry(Territory territory, LinkedList<Territory> neighbors) {
-         adjacency.put(territory, neighbors);
-    }
+  public LinkedList<Territory> getNeighbors(Territory territory) {
+    return adjacency.get(territory);
+  }
 
-    public LinkedList<Territory> getNeighbors(Territory territory) {
-         return adjacency.get(territory);
-    }
+  public void addTerritory(Territory t) {
+    territories.add(t);
+    adjacency.put(t, new LinkedList<>());
+  }
 
-    public void addTerritory(Territory t) {
-         territories.add(t);
-         adjacency.put(t, new LinkedList<>());
-    }
-
-    public Set<Territory> getTerritoriesSet() {
-         return adjacency.keySet();
-    }
+  public Set<Territory> getTerritoriesSet() {
+    return adjacency.keySet();
+  }
   
   public List<Territory> getTerritoriesList() {
-         return territories;
+    return territories;
+  }
+
+  /**
+   * Get territory by its name
+   * @throws IllegalArgumentException if no territory in list has the name
+   */
+  public Territory getTerritory(String name) throws IllegalArgumentException {
+    for (Territory t: this.territories) {
+      if (name.equals(t.getName())) {
+        return t;
+      }
+    }
+    throw new IllegalArgumentException("Territory name not found.");
   }
 
   @Override
