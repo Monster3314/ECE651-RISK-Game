@@ -115,6 +115,7 @@ public class RiskGame {
     initPlayers();  // assign color and territories for each player
     sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
     assignUnits(10);
+    sendGameInfo(getCurrentGameInfo());
     doMoveAction();
     sendGameInfo(getCurrentGameInfo());
     ss.close();
