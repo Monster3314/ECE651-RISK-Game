@@ -26,8 +26,8 @@ public class RiskGame {
   public RiskGame(int playerNum) throws IOException {
     playerNumber = playerNum;
     world = new World(playerNum);
-    sockets = new HashMap<Socket, String>();
-    oosMap = new HashMap<Socket, ObjectOutputStream>();
+    sockets = new HashMap<>();
+    oosMap = new HashMap<>();
     oisMap = new HashMap<>();
   }
 
@@ -96,6 +96,18 @@ public class RiskGame {
     }
   }
 
+  @SuppressWarnings("unchecked")
+  private void doMoveAction() throws IOException, ClassNotFoundException{
+    List<Action> moveActions = new ArrayList<>();
+    for(Map.Entry<Socket, String> player : sockets.entrySet()) {
+      ObjectInputStream ois = oisMap.get(player.getKey());
+      List<Action> temp = (List<Action>) ois.readObject();
+      moveActions.addAll(temp);
+    }
+
+    for(Action a: moveActions) world.acceptAction(a);
+  }
+
   public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {
     ServerSocket ss = new ServerSocket(port);
     // only one player is allowed now
@@ -103,6 +115,7 @@ public class RiskGame {
     initPlayers();  // assign color and territories for each player
     sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
     assignUnits(10);
+    doMoveAction();
     sendGameInfo(getCurrentGameInfo());
     ss.close();
   }    
