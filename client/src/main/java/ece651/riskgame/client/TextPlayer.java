@@ -16,6 +16,7 @@ import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
@@ -56,12 +57,14 @@ public class TextPlayer {
     theGame = game;
     view = new GameTextView(theGame);
   }
+  /*
   public Move readMove() throws IOException {
     Territory src = readTerritory("Which territory do you want to move unit from?");
     Unit toMove = readUnit(src, "How many units do you want to move?");
     Territory dst = readTerritory("Which territory do you want to move unit to?");
     return new Move(toMove, src.getName(), dst.getName());
     }
+  */
   public Unit readUnit(Territory src, String prompt) throws IOException, IllegalArgumentException{
     List<Unit> units = src.getUnits();
     if (units.size() == 0) {
