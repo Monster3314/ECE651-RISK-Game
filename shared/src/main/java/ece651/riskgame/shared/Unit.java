@@ -10,7 +10,7 @@ public abstract class Unit implements Serializable{
   public Unit(int attack, int hp, int number) {
     this.attack = attack;
     this.HP = hp;
-    this.number = number;
+    this.number = Math.max(number, 0);
   }
 
   public int getAttack() {
