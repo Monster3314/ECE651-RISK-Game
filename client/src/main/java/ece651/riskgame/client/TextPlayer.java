@@ -12,11 +12,10 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import org.checkerframework.checker.units.qual.g;
-
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
@@ -57,10 +56,36 @@ public class TextPlayer {
     theGame = game;
     view = new GameTextView(theGame);
   }
-  public void doOneMovement() throws IOException {
+  public Move readMove() throws IOException {
     Territory src = readTerritory("Which territory do you want to move unit from?");
-
+    Unit toMove = readUnit(src, "How many units do you want to move?");
     Territory dst = readTerritory("Which territory do you want to move unit to?");
+    return new Move(src.getName(), dst.getName(), toMove);
+  }
+  public Unit readUnit(Territory src, String prompt) throws IOException, IllegalArgumentException{
+    List<Unit> units = src.getUnits();
+    if (units.size() == 0) {
+      throw new IllegalArgumentException("This Territory has no unit.");      
+    }
+    String s;
+    int moveNumber;
+    while (true) {
+      //TODO:Support multiple units
+      Unit u = units.get(0);
+      out.println("You have " + Integer.toString(u.getNum()) + "units. How many of the m do you want to move?");
+      s = inputReader.readLine();
+      if (s == null) {
+        throw new EOFException("EOF");
+      }
+      moveNumber = Integer.parseInt(s);
+      try {
+        u.decSoldiers(moveNumber);
+        return new BasicUnit(moveNumber);
+      } catch (IllegalArgumentException e) {
+        out.println("Not enough units in this territory.");
+      }
+    }
+    
   }
   public Territory readTerritory(String prompt) throws IOException {
     String s;
