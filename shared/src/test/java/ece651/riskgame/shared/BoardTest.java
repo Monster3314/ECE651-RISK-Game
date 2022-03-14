@@ -69,5 +69,13 @@ class BoardTest {
       b2.putEntry(new BasicTerritory("holy"), neig2);
       assertNotEquals(b1, b2);      
     }
-  
+
+  @Test
+  public void test_getTerritory() {
+    Board b = new Board();
+    b.addTerritory(new BasicTerritory("A"));
+    b.addTerritory(new BasicTerritory("B"));    
+    assertEquals(new BasicTerritory("A"), b.getTerritory("A"));
+    assertThrows(IllegalArgumentException.class, ()->{b.getTerritory("C");});
+  }
 }
