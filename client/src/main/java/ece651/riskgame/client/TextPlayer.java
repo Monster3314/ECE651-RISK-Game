@@ -56,14 +56,12 @@ public class TextPlayer {
     theGame = game;
     view = new GameTextView(theGame);
   }
-  /*
   public Move readMove() throws IOException {
     Territory src = readTerritory("Which territory do you want to move unit from?");
     Unit toMove = readUnit(src, "How many units do you want to move?");
     Territory dst = readTerritory("Which territory do you want to move unit to?");
-    //return new Move(src.getName(), dst.getName(), toMove);
-    return new Move();
-    }*/
+    return new Move(toMove, src.getName(), dst.getName());
+    }
   public Unit readUnit(Territory src, String prompt) throws IOException, IllegalArgumentException{
     List<Unit> units = src.getUnits();
     if (units.size() == 0) {
