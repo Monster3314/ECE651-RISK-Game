@@ -3,16 +3,10 @@ package ece651.riskgame.shared;
 import java.io.Serializable;
 import java.util.Map;
 
-public class Move implements Action, Serializable {
+public class Move extends MigrationAction implements Serializable {
 
-    private Unit moveUnit;
-    private String fromTerritory;
-    private String toTerritory;
-
-    public Move(Unit moveUnit, String fromTerritory, String toTerritory) {
-        this.moveUnit = moveUnit;
-        this.fromTerritory = fromTerritory;
-        this.toTerritory = toTerritory;
+    public Move(Unit moveUnit, String fromTerritory, String toTerritory, String color) {
+        super(moveUnit, fromTerritory, toTerritory, color);
     }
 
     @Override

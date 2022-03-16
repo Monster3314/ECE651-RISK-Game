@@ -38,6 +38,15 @@ public class Board implements Serializable {
          return territories;
   }
 
+  public Territory getTerritory(String name) {
+         for (Territory territory : territories) {
+             if (territory.getName().equals(name)) {
+                 return territory;
+             }
+         }
+         return null;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
