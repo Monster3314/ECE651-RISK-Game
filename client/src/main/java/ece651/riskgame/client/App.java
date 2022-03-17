@@ -104,10 +104,10 @@ public class App {
     player.display();
     List<Move> placements = player.readPlacementPhase(toPlace);
     //adapting
-    Map<Territory, List<Unit>> serverPlacements = new HashMap<>();
+    Map<String, List<Unit>> serverPlacements = new HashMap<>();
     List<Territory> occupies = player.getOccupies();
     for (Territory occupy : occupies) {
-      serverPlacements.put(occupy, new ArrayList<Unit>());
+      serverPlacements.put(occupy.getName(), new ArrayList<Unit>());
     }
     for (Move placement: placements) {
       serverPlacements.get(placement.getDst()).add(placement.getUnit());
