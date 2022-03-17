@@ -113,12 +113,16 @@ public class TextPlayer {
         Territory src = readTerritory("Which territory do you want to move unit from?");
         Unit toMove = readUnit(src, "How many units do you want to move?");
         Territory dst = readTerritory("Which territory do you want to move unit to?");
-        return new Move(toMove, src.getName(), dst.getName());
+        //TODO:put apply to higher hierachy
+        Move toSend = new Move(toMove, src.getName(), dst.getName());
+        toSend.apply(theGame);
+        return toSend;
       } catch (IOException e) {
+        //out.println();
       }
     }
   }
-  
+
   /**
   public Attack readAttack() {
     while (true){
@@ -149,7 +153,7 @@ public class TextPlayer {
     while (true) {
       //TODO:Support multiple units
       Unit u = units.get(0);
-      out.println("You have " + Integer.toString(u.getNum()) + " units. How many of the m do you want to move?");
+      out.println("You have " + Integer.toString(u.getNum()) + " units. How many units do you want to move?");
       s = inputReader.readLine();
       if (s == null) {
         throw new EOFException("EOF");
@@ -201,12 +205,13 @@ public class TextPlayer {
   }
   public List<Move> readPlacementPhase(List<Unit> toPlace) throws IOException {
     Territory unassigned = new BasicTerritory("unassigned");
+    unassigned.addUnitList(toPlace);
     Clan myClan = theGame.getPlayers().get(color);
     theGame.getBoard().addTerritory(unassigned);
     theGame.getBoard().putEntry(unassigned, myClan.getOccupies());
-
     List<Move> placements = new ArrayList<Move>();
 
+    out.println("You are the "+color+" player.");
     while (!unassigned.isEmpty()) {
       placements.add(readPlacement());
     }
