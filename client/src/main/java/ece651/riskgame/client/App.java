@@ -5,24 +5,44 @@ package ece651.riskgame.client;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
+import ece651.riskgame.shared.Action;
+import ece651.riskgame.shared.BasicUnit;
+import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.Territory;
+import ece651.riskgame.shared.Unit;
 
 public class App {
   //private TextPlayer player;
   //private String serverIp;
-  
+
+  @SuppressWarnings("unchecked")
   public static void main(String[] args) throws IOException{
+    String ip = args[0];
+    int port = -1;
+    try {
+      port = Integer.parseInt(args[1]);
+    }
+    catch (NumberFormatException e) {
+      System.err.println("Argument" + args[1] + " must be an integer.");
+      System.exit(1);
+    }
     //connect to server
     Socket serverSocket = null;
     ObjectInputStream socketIn = null;
-    String ip = "vcm-25372.vm.duke.edu";
-    int port = 1651;
+    ObjectOutputStream socketOut = null;
     try {
       serverSocket = new Socket(ip, port);
       socketIn = new ObjectInputStream(serverSocket.getInputStream());
+      socketOut = new ObjectOutputStream(serverSocket.getOutputStream());
     } catch (UnknownHostException e) {
       System.err.println("Don't know about host: " + ip);
       System.exit(1);
@@ -31,18 +51,72 @@ public class App {
     TextPlayer p = null;
     //recv allocated player color
     //recv GameInfo
+    //recv Initial Units
+    String color = null;
+    GameInfo game = null;
+    List<Unit> units = null;
     try {
-      String color = (String) socketIn.readObject();
-      System.out.println("Your color is " + color);
-      GameInfo game = (GameInfo) socketIn.readObject();
-      p = new TextPlayer(game, color);
+      color = (String) socketIn.readObject();
+      System.out.println("Color recved");
+      game = (GameInfo) socketIn.readObject();
+      System.out.println("Game recved");
+      units = (List<Unit>) socketIn.readObject();
+      System.out.println("Units recved");
     } catch (ClassNotFoundException e) {
       System.err.println("Class Not Found when reading Object through socket");
       System.exit(1);
     }
+    p = new TextPlayer(color, game);
+    
 
-    System.out.print(p.display());
+    p.display();
+    
+    //Map<Territory, List<Unit>> placements = p.doPlacementPhase(units);
+    
+    Map<Territory, List<Unit>> placements = new HashMap<Territory, List<Unit>>();
+    Clan myClan= game.getPlayers().get(color);
+    for (Territory occupy: myClan.getOccupies()) {
+      placements.put(occupy, new ArrayList<Unit>());
+      if (occupy.getName().equals("Shanghai")) {
+        placements.get(occupy).add(new BasicUnit(5));
+      }
+      else if (occupy.getName().equals("Jiangsu")) {
+        placements.get(occupy).add(new BasicUnit(2));
+      }
+      else if (occupy.getName().equals("Zhejiang")) {
+        placements.get(occupy).add(new BasicUnit(3));
+      }
+    }
+    socketOut.writeObject(placements);
+    socketOut.flush();
+    socketOut.reset();
+    //recv gameinfo
+    try {
+      game = (GameInfo) socketIn.readObject();
+    } catch (ClassNotFoundException e) {
+      System.err.println("Class Not Found when reading Object through socket");
+      System.exit(1);
+    }
+    //update game status
+    p.update(game);
 
+    //read Actions
+    p.display();
+    List<Action> actions = p.readActions();
+    socketOut.writeObject(actions);
+
+    //recv gameinfo
+    try {
+      game = (GameInfo) socketIn.readObject();
+    } catch (ClassNotFoundException e) {
+      System.err.println("Class Not Found when reading Object through socket");
+      System.exit(1);
+    }
+    //update game status
+    p.update(game);
+    p.display();
+    
+    
     socketIn.close();
     serverSocket.close();
     System.exit(0);

@@ -83,7 +83,7 @@ public class RiskGame {
       List<Unit> needToAssign = new ArrayList<>();
       needToAssign.add(new BasicUnit(unitNumber));
       ObjectOutputStream oos = oosMap.get(player.getKey());
-      oos.writeObject(needToAssign);
+      oos.writeObject(needToAssign); // send List of Unit to be allocated to client
 
       ObjectInputStream ois = oisMap.get(player.getKey());
       Map<Territory, List<Unit>> assignResult = (Map<Territory, List<Unit>>) ois.readObject();
@@ -91,7 +91,10 @@ public class RiskGame {
       for (Territory t : clan.getOccupies()) {
         if (assignResult.containsKey(t)) {
           t.addUnitList(assignResult.get(t));
-        } else throw new IllegalArgumentException("player " + player.getValue() + " did not assign units to " + t.getName() +"!");
+        }
+        else {
+          throw new IllegalArgumentException("player " + player.getValue() + " did not assign units to " + t.getName() +"!");
+        }
       }
     }
   }
@@ -115,6 +118,7 @@ public class RiskGame {
     initPlayers();  // assign color and territories for each player
     sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
     assignUnits(10);
+    sendGameInfo(getCurrentGameInfo());
     doMoveAction();
     sendGameInfo(getCurrentGameInfo());
     ss.close();
