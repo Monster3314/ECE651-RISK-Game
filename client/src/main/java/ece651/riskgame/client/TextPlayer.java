@@ -114,7 +114,7 @@ public class TextPlayer {
         Unit toMove = readUnit(src, "How many units do you want to move?");
         Territory dst = readTerritory("Which territory do you want to move unit to?");
         //TODO:put apply to higher hierachy
-        Move toSend = new Move(toMove, src.getName(), dst.getName());
+        Move toSend = new Move(toMove, src.getName(), dst.getName(), this.color);
         toSend.apply(theGame);
         return toSend;
       } catch (IOException e) {
@@ -197,7 +197,7 @@ public class TextPlayer {
       try {
         Territory dst = readTerritory("Which territory do you want to place?");
         Unit placed = readUnit(src, "How many units do you place?");
-        return new Move(placed, "unassigned", dst.getName());
+        return new Move(placed, "unassigned", dst.getName(), this.color);
       } catch (Exception e) {
         //out.println("You don't have enough units to place.");
       }

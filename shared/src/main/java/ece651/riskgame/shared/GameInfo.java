@@ -29,4 +29,13 @@ public class GameInfo implements Serializable, Actable{
   public void setPlayers(Map<String, Clan> players) {
     this.players = players;
   }
+
+  public String getTerritoryOwnership(String name) {
+    for (Map.Entry<String, Clan> clan : players.entrySet()) {
+      if (clan.getValue().occupyTerritory(name)) {
+        return clan.getKey();
+      }
+    }
+    return null;
+  }
 }
