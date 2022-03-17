@@ -34,6 +34,7 @@ public abstract class Territory implements Serializable{
     for(Unit i: units) {
       if(i.getClass() == u.getClass()) {
         i.decSoldiers(u.getNum());
+        if(i.getNum() == 0) units.remove(i);
         return;
       }
     }
@@ -51,6 +52,23 @@ public abstract class Territory implements Serializable{
 
   public List<Unit> getUnits() {
     return units;
+  }
+
+  public boolean beAttacked(Unit attacker) {
+    for(Unit i: units) {
+      if(i.getClass() == attacker.getClass()) {
+        if(i.getNum() > attacker.getNum()) {  //equal?
+          i.decSoldiers(attacker.getNum());
+          return false;
+        } else {
+          attacker.decSoldiers(i.getNum());
+          units.remove(i);
+          addUnit(attacker);
+          return true;
+        }
+      }
+    }
+    return false;
   }
 
   @Override
