@@ -14,7 +14,7 @@ class MoveTest {
   @Test
   void test_constructor_getter_setter() {    
     Unit units = new BasicUnit(10);
-    Move move = new Move(units, "SD", "JS");
+    Move move = new Move(units, "SD", "JS", null);
     assertEquals("JS", move.getDst());
     assertEquals(units, move.getUnit());
   }
@@ -36,7 +36,7 @@ class MoveTest {
     assertEquals(5, fakeWorld.getBoard().getTerritory("Taiwan").getUnits().get(0).getNum());
     
     Unit units = new BasicUnit(10);
-    Move move = new Move(units, "HK", "Taiwan");
+    Move move = new Move(units, "HK", "Taiwan", null);
     move.apply(fakeWorld);
 
    assertEquals(5, fakeWorld.getBoard().getTerritory("HK").getUnits().get(0).getNum());

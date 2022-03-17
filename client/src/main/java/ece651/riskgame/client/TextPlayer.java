@@ -113,7 +113,7 @@ public class TextPlayer {
         Territory src = readTerritory("Which territory do you want to move unit from?");
         Unit toMove = readUnit(src, "How many units do you want to move?");
         Territory dst = readTerritory("Which territory do you want to move unit to?");
-        return new Move(toMove, src.getName(), dst.getName());
+        return new Move(toMove, src.getName(), dst.getName(), this.color);
       } catch (IOException e) {
       }
     }
