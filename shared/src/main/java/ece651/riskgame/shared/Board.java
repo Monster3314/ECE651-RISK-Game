@@ -51,6 +51,15 @@ public class Board implements Serializable {
     throw new IllegalArgumentException("Territory name not found.");
   }
 
+  public Territory getTerritory(String name) {
+         for (Territory territory : territories) {
+             if (territory.getName().equals(name)) {
+                 return territory;
+             }
+         }
+         return null;
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

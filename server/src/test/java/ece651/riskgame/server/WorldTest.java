@@ -29,7 +29,7 @@ public class WorldTest {
     b.get(0).addUnit(new BasicUnit(5));
     b.get(1).addUnit(new BasicUnit());
     assertEquals(b.get(0).getUnits().get(0).getNum(), 5);
-    Move m = new Move(new BasicUnit(3), b.get(0).getName(), b.get(1).getName());
+    Move m = new Move(new BasicUnit(3), b.get(0).getName(), b.get(1).getName(), "Red");
     w.acceptAction(m);
     assertEquals(b.get(0).getUnits().get(0).getNum(), 2);
     assertEquals(b.get(1).getUnits().get(0).getNum(), 4);
