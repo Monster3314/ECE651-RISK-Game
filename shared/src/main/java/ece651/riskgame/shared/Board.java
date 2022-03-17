@@ -42,22 +42,13 @@ public class Board implements Serializable {
    * Get territory by its name
    * @throws IllegalArgumentException if no territory in list has the name
    */
-  public Territory getTerritory(String name) throws IllegalArgumentException {
+  public Territory getTerritory(String name) {
     for (Territory t: this.territories) {
       if (name.equals(t.getName())) {
         return t;
       }
     }
     throw new IllegalArgumentException("Territory name not found.");
-  }
-
-  public Territory getTerritory(String name) {
-         for (Territory territory : territories) {
-             if (territory.getName().equals(name)) {
-                 return territory;
-             }
-         }
-         return null;
   }
 
   @Override
