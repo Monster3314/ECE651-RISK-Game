@@ -2,6 +2,8 @@ package ece651.riskgame.shared;
 
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.List;
 import java.util.Queue;
 
 public class MovePathChecker extends ActionRuleChecker {
@@ -27,7 +29,7 @@ public class MovePathChecker extends ActionRuleChecker {
         visited.add(src);
         while (!queue.isEmpty()) {
             Territory territory = queue.remove();
-            LinkedList<Territory> neighbors = b.getNeighbors(territory);
+            List<Territory> neighbors = b.getNeighbors(territory);
             for (Territory t : neighbors) {
                 String name = t.getName();
                 if (!visited.contains(name) && gameInfo.getTerritoryOwnership(name).equals(move.color)) {

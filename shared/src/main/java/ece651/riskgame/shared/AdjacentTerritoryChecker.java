@@ -1,6 +1,6 @@
 package ece651.riskgame.shared;
 
-import java.util.LinkedList;
+import java.util.List;
 
 public class AdjacentTerritoryChecker extends ActionRuleChecker {
     public AdjacentTerritoryChecker(ActionRuleChecker next) {
@@ -13,7 +13,7 @@ public class AdjacentTerritoryChecker extends ActionRuleChecker {
         MigrationAction ma = (MigrationAction) action;
         Board b = gameInfo.getBoard();
         String toTerritory = ma.getToTerritory();
-        LinkedList<Territory> adjacent = b.getNeighbors(b.getTerritory(ma.getFromTerritory()));
+        List<Territory> adjacent = b.getNeighbors(b.getTerritory(ma.getFromTerritory()));
         for (Territory territory : adjacent) {
             if (territory.getName().equals(toTerritory)) {
                 return null;
