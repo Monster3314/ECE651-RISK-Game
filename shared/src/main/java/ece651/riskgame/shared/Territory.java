@@ -67,4 +67,13 @@ public abstract class Territory implements Serializable{
   public int hashCode() {
     return name != null ? name.hashCode() : 0;
   }
+  public boolean isEmpty() {
+    for (Unit u: units) {
+      if (u.getNum() > 0) {
+        return false;
+      }
+    }
+    return true;
+    
+  }
 }

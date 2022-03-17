@@ -22,6 +22,28 @@ public class GameTextView implements GameView {
   }
 
   /**
+   * Display Units information in text
+   * @return a string that represents the units  
+   */
+  public String displayUnits(List<Unit> units) {
+    StringBuilder line = new StringBuilder();
+    if (units.size() == 0) {
+      line.append("0 unit ");
+    }
+    else {
+      for (Unit unit : units) {
+        line.append(Integer.toString(unit.getNum()));
+        //TODO:unit has name
+        if (unit.getNum() > 1) {
+          line.append(" units ");
+        } else {
+          line.append(" unit ");
+        }
+      }
+    }
+    return line.toString();
+  }
+  /**
    * Display a single Territory in text
    * @return a string that represents the territory  
    */  
@@ -29,22 +51,9 @@ public class GameTextView implements GameView {
     StringBuilder line = new StringBuilder();
     //territory units
     List<Unit> units = t.getUnits();
-    //TODO: Display all unit info instead of basicunit only
-    int unitNumber;
-    if (units.size() == 0) {
-      unitNumber = 0;
-    }
-    else {
-      unitNumber = units.get(0).getNum();
-    }
-    line.append(Integer.toString(unitNumber));
-    if (unitNumber > 1) {
-      line.append(" units in ");
-    }
-    else {
-      line.append(" unit in ");
-    }
+    line.append(displayUnits(units));
     //territory name
+    line.append("in ");
     line.append(t.getName());
     //territory neighbours
     line.append(" (next to: ");

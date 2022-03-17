@@ -6,13 +6,12 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.function.Supplier;
 
 import ece651.riskgame.shared.Action;
+import ece651.riskgame.shared.BasicTerritory;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
@@ -27,6 +26,9 @@ public class TextPlayer {
   private GameView view;
   final BufferedReader inputReader;
   final PrintStream out;
+
+  final ArrayList<String> actionChoices;
+  final HashMap<String, Supplier<Action>> actionReadingFns;
 
   /**
    * Construct the TextPlayer using Standard I/O
@@ -50,25 +52,93 @@ public class TextPlayer {
     this.view = new GameTextView(theGame);
     this.inputReader = input;
     this.out = out;
+
+    this.actionChoices = new ArrayList<String>();
+    this.actionReadingFns = new HashMap<String, Supplier<Action>>();
+    setupActionList();
+    setupActionReadingMap();
   }
+  public List<Territory> getOccupies() {
+    return theGame.getPlayers().get(color).getOccupies();
+  }
+
+  /**
+   * Display the Game, including territory information(name, ownership, and neighbourhood) and  unit deployment
+   */  
   public void display() {
     out.print(view.displayGame());
   }
-  public void update(GameInfo game) {
-    theGame = game;
+  
+  /**
+   * Update current Game according to the GameInfo recieved
+   * @param latestGame is the latest GameInfo recieved from server
+   */
+  public void update(GameInfo latestGame) {
+    theGame = latestGame;
     view = new GameTextView(theGame);
   }
-  public List<Action> readActions() throws IOException {
+  public List<Action> readActionsPhase() throws IOException {
     List<Action> actions = new ArrayList<Action>();
-    actions.add(readMove());
+    while (true) {
+      Action currentAction = readOneAction();
+      if (currentAction != null) {
+        actions.add(currentAction);
+      }
+      else {
+        break;
+      }
+    }
     return actions;
   }
-  public Move readMove() throws IOException {
-    Territory src = readTerritory("Which territory do you want to move unit from?");
-    Unit toMove = readUnit(src, "How many units do you want to move?");
-    Territory dst = readTerritory("Which territory do you want to move unit to?");
-    return new Move(toMove, src.getName(), dst.getName());
+
+  public Action readOneAction() throws IOException {
+    out.println("You are the " + color + " player, what would you like to do?");
+    for (String actionType: actionChoices) {
+      out.println(actionType);
     }
+    String inputAction;
+    inputAction = inputReader.readLine();
+    //TODO:inputAction invalid;
+    return actionReadingFns.get(inputAction).get();
+  }
+    
+  /**
+   * read a Move action from terminal
+   * @throws IOException when nothing fetched from input(Standard input or BufferedReader)
+   *   
+   */
+  public Move readMove() {
+    while (true){
+      try {
+        Territory src = readTerritory("Which territory do you want to move unit from?");
+        Unit toMove = readUnit(src, "How many units do you want to move?");
+        Territory dst = readTerritory("Which territory do you want to move unit to?");
+        return new Move(toMove, src.getName(), dst.getName());
+      } catch (IOException e) {
+      }
+    }
+  }
+  
+  /**
+  public Attack readAttack() {
+    while (true){
+      try {
+        Territory src = readTerritory("Which territory do you want to attack from?");
+        Territory dst = readTerritory("Which territory do you want to attack?");
+        Unit toAttack = readUnit(src, "How many units do you want to dispatch?");
+        return new Attack(toAttack, src.getName(), dst.getName(), color);
+      } catch (IOException e) {
+      }
+    }
+  }
+  */  
+  
+  /**
+   * read Unit to move/attack from terminal
+   * @param src is the source territory to move unit from
+   * @throws IOException when nothing fetched from input (STD input or BufferedReader)
+   * @throws IllegalArgumentException when entered number is less than the unit inside the territory    
+  */
   public Unit readUnit(Territory src, String prompt) throws IOException, IllegalArgumentException{
     List<Unit> units = src.getUnits();
     if (units.size() == 0) {
@@ -79,7 +149,7 @@ public class TextPlayer {
     while (true) {
       //TODO:Support multiple units
       Unit u = units.get(0);
-      out.println("You have " + Integer.toString(u.getNum()) + "units. How many of the m do you want to move?");
+      out.println("You have " + Integer.toString(u.getNum()) + " units. How many of the m do you want to move?");
       s = inputReader.readLine();
       if (s == null) {
         throw new EOFException("EOF");
@@ -94,6 +164,12 @@ public class TextPlayer {
     }
     
   }
+
+  /**
+   * read Territory from the terminal
+   * @param prompt is the prompt message when reading territory  
+   * @throws IOException when nothing fetched from terminal  
+   */
   public Territory readTerritory(String prompt) throws IOException {
     String s;
     Board b = theGame.getBoard();
@@ -103,7 +179,6 @@ public class TextPlayer {
       if (s == null) {
         throw new EOFException("EOF");
       }
-      //TODO:catch KeyNotFoundException instead of find manually
       try {
         return b.getTerritory(s);
       } catch (IllegalArgumentException e) {
@@ -111,52 +186,43 @@ public class TextPlayer {
       }
     }
   }
-  public Map<Territory, List<Unit>> doPlacementPhase(List<Unit> units) throws IOException {
-    //TODO:Unit should have name, counter according to type
-    Map<Territory, List<Unit>> ans = new HashMap<Territory, List<Unit>>();
-    Clan myClan= theGame.getPlayers().get(color);
-    for (Territory occupy: myClan.getOccupies()) {
-      ans.put(occupy, new ArrayList<Unit>());
-    }
-    String s;
-    for (Unit u : units) {
-      //TODO: Unit name
-      out.println("You have " + Integer.toString(u.getNum()) + " units");
-      out.println("How many and where do you want to put the unit(e.g. 2 Durham)?");
-      s = inputReader.readLine();
-      if (s == null) {
-        throw new  EOFException("EOF");
+  public Move readPlacement() {
+    Territory src = theGame.getBoard().getTerritory("unassigned");
+    out.println("You have " + view.displayUnits(src.getUnits()) + "to place.");
+    while (true) {
+      try {
+        Territory dst = readTerritory("Which territory do you want to place?");
+        Unit placed = readUnit(src, "How many units do you place?");
+        return new Move(placed, "unassigned", dst.getName());
+      } catch (Exception e) {
+        //out.println("You don't have enough units to place.");
       }
-      //parse placement and rule check
-      String[] arr = s.split(" ", 2);
-      int placeNum = Integer.parseInt(arr[0]);
-      String dest = arr[1];
+    }
+  }
+  public List<Move> readPlacementPhase(List<Unit> toPlace) throws IOException {
+    Territory unassigned = new BasicTerritory("unassigned");
+    Clan myClan = theGame.getPlayers().get(color);
+    theGame.getBoard().addTerritory(unassigned);
+    theGame.getBoard().putEntry(unassigned, myClan.getOccupies());
 
-      //TODO: rule check
-      //ReEnter when placement invalid
-      while (true) {
-        try {
-          u.decSoldiers(placeNum);
-          break;
-        } catch (IllegalArgumentException e) {
-          s = inputReader.readLine();
-          if (s == null) {
-            throw new  EOFException("EOF");
-          }
-          //parse placement and rule check
-          arr = s.split(" ", 2);
-          placeNum = Integer.parseInt(arr[0]);
-          dest = arr[1];
-        }
-      }
-      for (Territory occupy:myClan.getOccupies()) { 
-        if (occupy.getName().equals(dest)) {
-          //TODO:change BasicUnit to unit according to unit
-          ans.put(occupy, new LinkedList<Unit>(Arrays.asList(new BasicUnit(placeNum))));
-          break;
-        }
-      }
+    List<Move> placements = new ArrayList<Move>();
+
+    while (!unassigned.isEmpty()) {
+      placements.add(readPlacement());
     }
-    return ans;
+    return placements;
+  }
+  protected void setupActionList() {
+    actionChoices.add("(M)ove");
+    actionChoices.add("(A)ttack");
+    actionChoices.add("(D)one)");
+  }
+
+  protected void setupActionReadingMap() {
+    actionReadingFns.put("M", () -> readMove());
+    //actionReadingFns.put("A", () -> readAttack());
+    actionReadingFns.put("D", () -> {
+      return null;
+    });
   }
 }
