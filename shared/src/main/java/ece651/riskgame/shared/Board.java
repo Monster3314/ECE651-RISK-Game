@@ -9,19 +9,19 @@ import java.util.List;
 import java.util.Set;
 
 public class Board implements Serializable {
-  private HashMap<Territory, LinkedList<Territory>> adjacency;
+  private HashMap<Territory, List<Territory>> adjacency;
   private List<Territory> territories;
   
   public Board() {
-    adjacency = new HashMap<Territory, LinkedList<Territory>>();
+    adjacency = new HashMap<Territory, List<Territory>>();
     territories = new ArrayList<>();
   }
 
-  public void putEntry(Territory territory, LinkedList<Territory> neighbors) {
+  public void putEntry(Territory territory, List<Territory> neighbors) {
     adjacency.put(territory, neighbors);
   }
 
-  public LinkedList<Territory> getNeighbors(Territory territory) {
+  public List<Territory> getNeighbors(Territory territory) {
     return adjacency.get(territory);
   }
 

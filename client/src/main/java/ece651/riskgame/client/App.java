@@ -17,21 +17,22 @@ import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
 public class App {
-  //private TextPlayer player;
-  //private String serverIp;
+  private TextPlayer player;
+  private ObjectInputStream socketIn;
+  private ObjectOutputStream socketOut;
 
   @SuppressWarnings("unchecked")
-  public static void main(String[] args) throws IOException{
+  public static void main(String[] args) throws IOException {
     String ip = args[0];
     int port = -1;
     try {
       port = Integer.parseInt(args[1]);
-    }
-    catch (NumberFormatException e) {
+    } catch (NumberFormatException e) {
       System.err.println("Argument" + args[1] + " must be an integer.");
       System.exit(1);
     }
@@ -48,77 +49,84 @@ public class App {
       System.exit(1);
     }
     System.out.println("Connection Estabilished");
-    TextPlayer p = null;
     //recv allocated player color
     //recv GameInfo
     //recv Initial Units
     String color = null;
     GameInfo game = null;
-    List<Unit> units = null;
     try {
       color = (String) socketIn.readObject();
       System.out.println("Color recved");
       game = (GameInfo) socketIn.readObject();
       System.out.println("Game recved");
-      units = (List<Unit>) socketIn.readObject();
+    } catch (ClassNotFoundException e) {
+      System.err.println("Class Not Found when reading Object through socket");
+      System.exit(1);
+    }
+    TextPlayer p = new TextPlayer(color, game);
+    App app = new App(p, socketIn, socketOut);
+
+    app.doPlacementPhase();
+    app.doActionPhase();
+
+    socketIn.close();
+    socketOut.close();
+    serverSocket.close();
+    System.exit(0);
+  }
+  
+  public App(TextPlayer player, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
+    this.player = player;
+    this.socketIn = socketIn;
+    this.socketOut = socketOut;
+  }
+  private GameInfo recvGame() throws IOException{
+    GameInfo game;
+    try {
+      game = (GameInfo) socketIn.readObject();
+      return game;
+    } catch (ClassNotFoundException e) {
+      System.err.println("Class Not Found when reading Object through socket");
+      System.exit(1);
+      return null;
+    }
+  }
+  @SuppressWarnings("unchecked")
+  public void doPlacementPhase() throws IOException {
+    List<Unit> toPlace = null;
+    try {
+      toPlace = (List<Unit>) socketIn.readObject();
       System.out.println("Units recved");
     } catch (ClassNotFoundException e) {
       System.err.println("Class Not Found when reading Object through socket");
       System.exit(1);
     }
-    p = new TextPlayer(color, game);
-    
-
-    p.display();
-    
-    //Map<Territory, List<Unit>> placements = p.doPlacementPhase(units);
-    
-    Map<Territory, List<Unit>> placements = new HashMap<Territory, List<Unit>>();
-    Clan myClan= game.getPlayers().get(color);
-    for (Territory occupy: myClan.getOccupies()) {
-      placements.put(occupy, new ArrayList<Unit>());
-      if (occupy.getName().equals("Shanghai")) {
-        placements.get(occupy).add(new BasicUnit(5));
-      }
-      else if (occupy.getName().equals("Jiangsu")) {
-        placements.get(occupy).add(new BasicUnit(2));
-      }
-      else if (occupy.getName().equals("Zhejiang")) {
-        placements.get(occupy).add(new BasicUnit(3));
-      }
+    player.display();
+    List<Move> placements = player.readPlacementPhase(toPlace);
+    //adapting
+    Map<Territory, List<Unit>> serverPlacements = new HashMap<>();
+    List<Territory> occupies = player.getOccupies();
+    for (Territory occupy : occupies) {
+      serverPlacements.put(occupy, new ArrayList<Unit>());
     }
-    socketOut.writeObject(placements);
+    for (Move placement: placements) {
+      serverPlacements.get(placement.getDst()).add(placement.getUnit());
+    }
+
+    socketOut.writeObject(serverPlacements);
     socketOut.flush();
     socketOut.reset();
-    //recv gameinfo
-    try {
-      game = (GameInfo) socketIn.readObject();
-    } catch (ClassNotFoundException e) {
-      System.err.println("Class Not Found when reading Object through socket");
-      System.exit(1);
+  }
+  public void doActionPhase() throws IOException {
+    while (true) {
+      GameInfo game = recvGame();
+      //TODO:player lost
+      player.update(game);
+      player.display();
+      List<Action> actions = player.readActionsPhase();
+      socketOut.writeObject(actions);
+      socketOut.flush();
+      socketOut.reset();
     }
-    //update game status
-    p.update(game);
-
-    //read Actions
-    p.display();
-    List<Action> actions = p.readActions();
-    socketOut.writeObject(actions);
-
-    //recv gameinfo
-    try {
-      game = (GameInfo) socketIn.readObject();
-    } catch (ClassNotFoundException e) {
-      System.err.println("Class Not Found when reading Object through socket");
-      System.exit(1);
-    }
-    //update game status
-    p.update(game);
-    p.display();
-    
-    
-    socketIn.close();
-    serverSocket.close();
-    System.exit(0);
-    }
-}
+  }
+} 

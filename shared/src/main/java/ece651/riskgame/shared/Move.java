@@ -28,4 +28,11 @@ public class Move implements Action, Serializable {
             }
         }
     }
+  public String getDst() {
+    return toTerritory;
+  }
+  public Unit getUnit() {
+    return moveUnit;
+  }
+  
 }
