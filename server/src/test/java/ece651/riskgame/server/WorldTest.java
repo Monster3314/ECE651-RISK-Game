@@ -40,6 +40,11 @@ public class WorldTest {
     w.addClan();
     w.addClan();
     Move m1 = new Move(new BasicUnit(), "Shanghai", "Jiangsu", "Red");
-    assertNull(actionRuleChecker.checkAction(w.getGameInfo(), m1));
+    Move m2 = new Move(new BasicUnit(), "Shandong", "Fujian", "Blue");
+    Move m3 = new Move(new BasicUnit(), "Anhui", "Jiangsu", "Blue");
+    assertNull(actionRuleChecker.checkAction(w, m1));
+    assertNotNull(actionRuleChecker.checkAction(w, m2));
+    assertNotNull(actionRuleChecker.checkAction(w, m3));
+
   }
 }

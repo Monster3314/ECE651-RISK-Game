@@ -13,18 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ece651.riskgame.shared.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.reflect.Whitebox;
-
-import ece651.riskgame.shared.BasicTerritory;
-import ece651.riskgame.shared.BasicUnit;
-import ece651.riskgame.shared.Board;
-import ece651.riskgame.shared.Clan;
-import ece651.riskgame.shared.GameInfo;
-import ece651.riskgame.shared.Territory;
-import ece651.riskgame.shared.Unit;
 
 @ExtendWith(MockitoExtension.class)
 public class RiskGameTest {
@@ -236,5 +229,12 @@ public class RiskGameTest {
     
     th_server.interrupt();
     th_server.join();
+  }
+
+  @Test
+  public void test_action() {
+    Action a1 = new Move(new BasicUnit(1), "A", "B", "Red");
+    Action a2 = new Attack(new BasicUnit(1), "c", "D", "Blue");
+    System.out.println(a1.getClass() == a2.getClass());
   }
 }

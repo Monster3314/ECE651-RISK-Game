@@ -43,4 +43,8 @@ public class Clan implements Serializable {
         return false;
     }
 
+    public void removeTerritory(Territory t) {
+        occupies.remove(t);
+    }
+
 }
