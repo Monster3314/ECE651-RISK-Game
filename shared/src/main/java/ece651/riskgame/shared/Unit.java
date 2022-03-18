@@ -34,4 +34,9 @@ public abstract class Unit implements Serializable{
     if(n > number) throw new IllegalArgumentException("n is larger than the number of soldiers");
     number -= n;
   }
+
+  @Override
+  public String toString() {
+    return number + (number <= 1 ? " Unit" : " Units");
+  }
 }

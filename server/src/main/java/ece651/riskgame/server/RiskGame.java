@@ -21,7 +21,9 @@ public class RiskGame {
   private int playerNumber;
   private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(null));
   private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
-  
+
+  private Logger logger = Logger.getInstance();
+
   /**
    * Constructor with specifying player number
    */
@@ -37,26 +39,31 @@ public class RiskGame {
    * Initialize each connected player, send color to client
    */
   private void initPlayers() throws IOException, IllegalAccessException {
+    logger.writeLog("Begin to initialize players information.");
     for (Socket socket: sockets.keySet()) {
       String color = world.addClan();
       sockets.put(socket, color);
       ObjectOutputStream oos = oosMap.get(socket);
       oos.writeObject(color);
     }
+    logger.flushBuffer();
   }
-  
+
   /**
    * Wait for players to connect
    */
   private void waitForPlayers(ServerSocket ss, int playerNum) throws IOException{
-    for (int i = 0;i < playerNum; i++) { // what if player exits while waiting for other players
+    logger.writeLog("Begin to wait for " + playerNum + "players.");
+    for (int i = 0; i < playerNum; i++) { // what if player exits while waiting for other players
       Socket socket = ss.accept();
+      logger.writeLog("Player " + i + " connected successfully!");
       sockets.put(socket, null);
       ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
       oosMap.put(socket, oos);
       ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
       oisMap.put(socket, ois);
     }
+    logger.flushBuffer();
   }
 
   /**
@@ -70,7 +77,7 @@ public class RiskGame {
    * send gameInfo to all players(not exited)
    */
   private void sendGameInfo(GameInfo gi) throws IOException {
-    for (Socket socket: sockets.keySet()) {      
+    for (Socket socket: sockets.keySet()) {
       ObjectOutputStream oos = oosMap.get(socket);
       oos.flush();
       oos.reset();
@@ -93,13 +100,13 @@ public class RiskGame {
 
       for (Territory t : clan.getOccupies()) {
         if (assignResult.containsKey(t.getName())) {
-          t.addUnitList(assignResult.get(t.getName()));
-        }
-        else {
-          throw new IllegalArgumentException("player " + player.getValue() + " did not assign units to " + t.getName() +"!");
+          List<Unit> units = assignResult.get(t.getName());
+          logger.writeLog(player.getValue() + " player added " + units + " to " + t.getName() + ".");
+          t.addUnitList(units);
         }
       }
     }
+    logger.flushBuffer();
   }
 
   @SuppressWarnings("unchecked")
@@ -133,12 +140,16 @@ public class RiskGame {
 
     doMoveAction(moves);
     doAttackAction(attacks);
+
+    // TODO: Send to players before flushing
+    logger.flushBuffer();
   }
 
   private void doMoveAction(List<Move> moveActions) {
     for(Move a: moveActions) {
       if(MoveActionChecker.checkAction(world, a) != null) continue;
       world.acceptAction(a);
+      logger.writeLog(a.getColor() + " player moves " + a.getUnit() + " from " + a.getFromTerritory() + " to " + a.getToTerritory() + ".");
     }
   }
 
@@ -162,7 +173,7 @@ public class RiskGame {
     // only one player is allowed now
     waitForPlayers(ss, playerNumber);
     initPlayers();  // assign color and territories for each player
-    sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
+    sendGameInfo(getCurrentGameInfo());    // send an initial board without unit number to client
     assignUnits(30);
     sendGameInfo(getCurrentGameInfo());
     while(true) {
@@ -171,5 +182,5 @@ public class RiskGame {
       sendGameInfo(getCurrentGameInfo());
     }
     //ss.close();
-  }    
+  }
 }

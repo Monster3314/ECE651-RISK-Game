@@ -11,6 +11,7 @@ public class BasicUnitTest {
     assertEquals(1, bu.getAttack());
     assertEquals(1, bu.getHP());
     assertEquals(10, bu.getNum());
+    assertEquals("10 Units", bu.toString());
   }
 
   @Test
