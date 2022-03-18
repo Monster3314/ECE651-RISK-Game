@@ -217,7 +217,7 @@ public class TextPlayer {
           return new BasicUnit(readNumber);
         }
         else {
-          out.println("Not enough units in this territory.");
+          out.println("You don't have enough units.");
         }
       } catch (NumberFormatException e) {
         out.println("You should type a valid positive number.");
