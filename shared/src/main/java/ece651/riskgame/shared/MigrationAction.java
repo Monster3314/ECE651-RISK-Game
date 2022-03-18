@@ -1,6 +1,8 @@
 package ece651.riskgame.shared;
 
-public abstract class MigrationAction implements Action {
+import java.io.Serializable;
+
+public abstract class MigrationAction implements Action, Serializable{
     protected Unit Unit;
     protected String fromTerritory;
     protected String toTerritory;
