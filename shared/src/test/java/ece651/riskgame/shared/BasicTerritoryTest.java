@@ -72,4 +72,11 @@ public class BasicTerritoryTest {
     assertEquals(false, t.isEmpty());
     
   }
+
+  @Test
+  public void test_beAttacked() {
+    Territory t = new BasicTerritory("A");
+    t.addUnit(new BasicUnit(30));
+    t.beAttacked(new BasicUnit(15));
+  }
 }

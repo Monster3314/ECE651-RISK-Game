@@ -112,6 +112,24 @@ public class RiskGame {
     for(Action a: moveActions) world.acceptAction(a);
   }
 
+  @SuppressWarnings("unchecked")
+  private void doAttackAction() throws IOException, ClassNotFoundException {
+    List<Action> attackActions = new ArrayList<>();
+    for(Map.Entry<Socket, String> player : sockets.entrySet()) {
+      ObjectInputStream ois = oisMap.get(player.getKey());
+      List<Action> temp = (List<Action>) ois.readObject();
+      attackActions.addAll(temp);
+    }
+    for(Action i : attackActions) {
+      Attack a = (Attack) i;
+      a.onTheWay(world);
+    }
+    for(Action i: attackActions) {
+      Attack a = (Attack) i;
+      world.acceptAction(a);
+    }
+  }
+
   public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {
     ServerSocket ss = new ServerSocket(port);
     // only one player is allowed now
