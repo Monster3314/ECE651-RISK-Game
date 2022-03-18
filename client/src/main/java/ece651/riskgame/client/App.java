@@ -123,6 +123,7 @@ public class App {
       player.update(game);
       List<Action> actions = player.readActionsPhase();
       socketOut.writeObject(actions);
+      System.out.println("Actions sent.");
       socketOut.flush();
       socketOut.reset();
     }

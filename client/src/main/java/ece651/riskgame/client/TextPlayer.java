@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import ece651.riskgame.shared.Action;
+import ece651.riskgame.shared.Attack;
 import ece651.riskgame.shared.BasicTerritory;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
@@ -124,19 +125,19 @@ public class TextPlayer {
     }
   }
 
-  /**
   public Attack readAttack() {
     while (true){
       try {
         Territory src = readTerritory("Which territory do you want to attack from?");
         Territory dst = readTerritory("Which territory do you want to attack?");
         Unit toAttack = readUnit(src, "How many units do you want to dispatch?");
-        return new Attack(toAttack, src.getName(), dst.getName(), color);
+        Attack toSend = new Attack(toAttack, src.getName(), dst.getName(), color);
+        toSend.onTheWay(theGame);
+        return toSend;
       } catch (IOException e) {
       }
     }
-  }
-  */  
+  }  
   
   /**
    * read Unit to move/attack from terminal
@@ -230,7 +231,7 @@ public class TextPlayer {
 
   protected void setupActionReadingMap() {
     actionReadingFns.put("M", () -> readMove());
-    //actionReadingFns.put("A", () -> readAttack());
+    actionReadingFns.put("A", () -> readAttack());
     actionReadingFns.put("D", () -> {
       return null;
     });
