@@ -33,6 +33,9 @@ public class Attack extends MigrationAction implements Serializable {
         }
 
     }
+  public void clientApply(Actable game) {
+    onTheWay(game);
+  }
 
     public void onTheWay(Actable world) {
         Board board = world.getBoard();

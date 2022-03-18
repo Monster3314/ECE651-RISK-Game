@@ -145,13 +145,10 @@ public class TextPlayer {
         Territory src = readTerritory("Which territory do you want to move unit from?");
         Unit toMove = readUnit(src, "How many units do you want to move?");
         Territory dst = readTerritory("Which territory do you want to move unit to?");
-        //TODO:put apply to higher hierachy
         Move toSend = new Move(toMove, src.getName(), dst.getName(), this.color);
         //TODO:can be optimized by using tryAct
-        ActionRuleChecker checker = new MovePathChecker(new UnitsRuleChecker(null));
-        String msg = checker.checkAction(theGame, toSend);
+        String msg = tryAct(toSend, new MovePathChecker(new UnitsRuleChecker(null)));
         if (msg == null) {
-          toSend.apply(theGame);
           return toSend;
         }
         else {
@@ -162,8 +159,14 @@ public class TextPlayer {
       }
     }
   }
-  //TODO:Use tryAct to accept action and checker
-  //public String tryAct(Action)
+  
+  public String tryAct(Action toAct, ActionRuleChecker checker) {
+    String msg = checker.checkAction(theGame, toAct);
+    if (msg == null) {
+      toAct.clientApply(theGame);
+    }
+    return msg;
+  }
 
   /**
    * read a valid Attack action from terminal
@@ -178,10 +181,8 @@ public class TextPlayer {
         Unit toAttack = readUnit(src, "How many units do you want to dispatch?");
         Attack toSend = new Attack(toAttack, src.getName(), dst.getName(), color);
         //TODO:can be optimized by using tryAct
-        ActionRuleChecker checker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
-        String msg = checker.checkAction(theGame, toSend);
+        String msg = tryAct(toSend, new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null))));
         if (msg == null) {
-          toSend.onTheWay(theGame);
           return toSend;
         }
         else {
