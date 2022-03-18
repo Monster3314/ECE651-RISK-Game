@@ -12,6 +12,12 @@ public class TerritoryTest {
     public DemoUnit(int number) {
       super(2, 2, number);
     }
+
+    @Override
+    public int getRandomAttack() {    
+      return 0;
+    }
+    
   }
 
   @Test
@@ -34,6 +40,9 @@ public class TerritoryTest {
 
     t.addUnit(new BasicUnit(1));
     assertEquals(1, t.getUnits().get(0).getNum());
+
+    Unit du = new DemoUnit(1);
+    assertEquals(0, du.getRandomAttack()); 
   }
 
   @Test
@@ -42,6 +51,8 @@ public class TerritoryTest {
     t.addUnit(new BasicUnit(1));
 
     assertThrows(IllegalArgumentException.class, ()->t.beAttacked(new DemoUnit(1)));
+
+    
   }
 
 }

@@ -1,8 +1,11 @@
 package ece651.riskgame.shared;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
 
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 
 public class BasicUnitTest {
   @Test
@@ -25,6 +28,14 @@ public class BasicUnitTest {
 
   @Test
   public void test_throw() {
-    assertThrows(IllegalArgumentException.class, ()->new BasicUnit(-2));
+    assertThrows(IllegalArgumentException.class, () -> new BasicUnit(-2));
+  }
+
+  @Test
+  public void test_getRandomAttack() {
+    BasicUnit bu = Mockito.spy(new BasicUnit(1));
+    when(bu.getRandomAttack()).thenReturn(10);
+    assertEquals(10, bu.getRandomAttack());
+
   }
 }
