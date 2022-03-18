@@ -19,6 +19,8 @@ public class RiskGame {
    */
   private World world;
   private int playerNumber;
+  private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(null));
+  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
   
   /**
    * Constructor with specifying player number
@@ -101,13 +103,19 @@ public class RiskGame {
   }
 
   @SuppressWarnings("unchecked")
-  private void doAction() throws IOException, ClassNotFoundException {
+  private List<Action> readActions() throws IOException, ClassNotFoundException {
     List<Action> Actions = new ArrayList<>();
     for(Map.Entry<Socket, String> player : sockets.entrySet()) {
       ObjectInputStream ois = oisMap.get(player.getKey());
       List<Action> temp = (List<Action>) ois.readObject();
       Actions.addAll(temp);
     }
+    return Actions;
+  }
+
+
+  private void doAction() throws IOException, ClassNotFoundException {
+    List<Action> Actions = readActions();
 
     List<Move> moves = new ArrayList<>();
     List<Attack> attacks = new ArrayList<>();
@@ -128,13 +136,25 @@ public class RiskGame {
   }
 
   private void doMoveAction(List<Move> moveActions) {
-    for(Move a: moveActions) world.acceptAction(a);
+    for(Move a: moveActions) {
+      if(MoveActionChecker.checkAction(world, a) != null) continue;
+      world.acceptAction(a);
+    }
   }
 
 
   private void doAttackAction(List<Attack> attackActions) {
-    for(Attack i : attackActions) i.onTheWay(world);
+    for(Attack i : attackActions) {
+      if(AttackActionChecker.checkAction(world, i) != null) continue;
+      i.onTheWay(world);
+    }
     for(Attack i: attackActions) world.acceptAction(i);
+  }
+
+  private void afterTurn() {
+    for(Territory t : world.getBoard().getTerritoriesList()) {
+      t.addUnit(new BasicUnit(1));
+    }
   }
 
   public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {
@@ -147,6 +167,7 @@ public class RiskGame {
     sendGameInfo(getCurrentGameInfo());
     while(true) {
       doAction();
+      afterTurn();
       sendGameInfo(getCurrentGameInfo());
     }
     //ss.close();

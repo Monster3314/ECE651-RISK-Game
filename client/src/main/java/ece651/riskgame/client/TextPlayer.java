@@ -11,15 +11,20 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import ece651.riskgame.shared.Action;
+import ece651.riskgame.shared.ActionRuleChecker;
+import ece651.riskgame.shared.AdjacentTerritoryChecker;
 import ece651.riskgame.shared.Attack;
 import ece651.riskgame.shared.BasicTerritory;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
+import ece651.riskgame.shared.EnemyTerritoryChecker;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.Move;
+import ece651.riskgame.shared.MovePathChecker;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
+import ece651.riskgame.shared.UnitsRuleChecker;
 
 public class TextPlayer {
   final String color;
@@ -69,7 +74,10 @@ public class TextPlayer {
   private void display() {
     out.print(view.displayGame());
   }
-  
+
+  public boolean isLost() {
+    return theGame.getPlayers().get(color).isActive();
+  }
   /**
    * Update current Game according to the GameInfo recieved
    * @param latestGame is the latest GameInfo recieved from server
@@ -117,13 +125,23 @@ public class TextPlayer {
         Territory dst = readTerritory("Which territory do you want to move unit to?");
         //TODO:put apply to higher hierachy
         Move toSend = new Move(toMove, src.getName(), dst.getName(), this.color);
-        toSend.apply(theGame);
-        return toSend;
+        //TODO:can be optimized by using tryAct
+        ActionRuleChecker checker = new MovePathChecker(new UnitsRuleChecker(null));
+        String msg = checker.checkAction(theGame, toSend);
+        if (msg == null) {
+          toSend.apply(theGame);
+          return toSend;
+        }
+        else {
+          out.println(msg);
+        }
       } catch (IOException e) {
         //out.println();
       }
     }
   }
+  //TODO:Use tryAct to accept action and checker
+  //public String tryAct(Action)
 
   public Attack readAttack() {
     while (true){
@@ -132,8 +150,16 @@ public class TextPlayer {
         Territory dst = readTerritory("Which territory do you want to attack?");
         Unit toAttack = readUnit(src, "How many units do you want to dispatch?");
         Attack toSend = new Attack(toAttack, src.getName(), dst.getName(), color);
-        toSend.onTheWay(theGame);
-        return toSend;
+        //TODO:can be optimized by using tryAct
+        ActionRuleChecker checker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
+        String msg = checker.checkAction(theGame, toSend);
+        if (msg == null) {
+          toSend.onTheWay(theGame);
+          return toSend;
+        }
+        else {
+          out.println(msg);
+        }
       } catch (IOException e) {
       }
     }
@@ -156,7 +182,7 @@ public class TextPlayer {
       //TODO:Support multiple units
       Unit u = units.get(0);
       out.println("You have " + Integer.toString(u.getNum()) + " units.");
-      out.println("How many units do you want to move?");
+      out.println(prompt);
       s = inputReader.readLine();
       if (s == null) {
         throw new EOFException("EOF");
@@ -170,7 +196,9 @@ public class TextPlayer {
           out.println("Not enough units in this territory.");
         }
       } catch (NumberFormatException e) {
-        out.println("You should type a valid positive integer.");
+        out.println("You should type a valid positive number.");
+      } catch (IllegalArgumentException e) {
+        out.println("You should not type a negative number.");
       }
     }
     

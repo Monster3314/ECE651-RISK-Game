@@ -10,7 +10,8 @@ public abstract class Unit implements Serializable{
   public Unit(int attack, int hp, int number) {
     this.attack = attack;
     this.HP = hp;
-    this.number = Math.max(number, 0);
+    if(number < 0) throw new IllegalArgumentException("the number is less than 0");
+    this.number = number;
   }
 
   public int getAttack() {
