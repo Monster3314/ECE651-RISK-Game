@@ -34,4 +34,9 @@ public abstract class Unit implements Serializable{
     if(n > number) throw new IllegalArgumentException("n is larger than the number of soldiers");
     number -= n;
   }
+
+  /**
+   * Get a random attack number for attack phase
+   */
+  public abstract int getRandomAttack();
 }
