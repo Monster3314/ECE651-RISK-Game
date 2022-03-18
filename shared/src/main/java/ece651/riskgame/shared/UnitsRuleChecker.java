@@ -14,12 +14,12 @@ public class UnitsRuleChecker extends ActionRuleChecker {
         Territory territory = actable.getBoard().getTerritory(ma.getFromTerritory());
         for (Unit unit : territory.getUnits()) {
             if (unit.getClass().equals(unitToMove.getClass())) {
-                if (unit.getNum() >= unitToMove.getNum()) {
-                    return null;
-                }
-                else {
-                    return "No enough number of Unit remaining";
-                }
+              if (unit.getNum() >= unitToMove.getNum()) {
+                return null;
+              }
+              else {
+                return "No enough number of Unit remaining";
+              }
             }
         }
         return "No specified Unit found";
