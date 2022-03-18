@@ -68,6 +68,7 @@ public class App {
 
     app.doPlacementPhase();
     app.doActionPhase();
+    
 
     
     socketIn.close();
@@ -120,7 +121,7 @@ public class App {
   public void doActionPhase() throws IOException {
     GameInfo game = recvGame();
     player.update(game);
-    while (!player.isLost() && game.getWinner() == null) {
+    while (!player.isLost()) {
       List<Action> actions = player.readActionsPhase();
       socketOut.writeObject(actions);
       socketOut.flush();
