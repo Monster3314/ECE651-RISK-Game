@@ -148,7 +148,7 @@ public class TextPlayer {
         Unit toAttack = readUnit(src, "How many units do you want to dispatch?");
         Attack toSend = new Attack(toAttack, src.getName(), dst.getName(), color);
         //TODO:can be optimized by using tryAct
-        ActionRuleChecker checker = new UnitsRuleChecker(new AdjacentTerritoryChecker(new EnemyTerritoryChecker(null)));
+        ActionRuleChecker checker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
         String msg = checker.checkAction(theGame, toSend);
         if (msg == null) {
           toSend.onTheWay(theGame);
