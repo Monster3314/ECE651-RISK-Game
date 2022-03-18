@@ -8,10 +8,10 @@ public class EnemyTerritoryChecker extends ActionRuleChecker {
     }
 
     @Override
-    protected String checkMyRule(GameInfo gameInfo, Action action) {
+    protected String checkMyRule(Actable actable, Action action) {
         MigrationAction ma = (MigrationAction) action;
-        String from = gameInfo.getTerritoryOwnership(ma.getFromTerritory());
-        String to = gameInfo.getTerritoryOwnership(ma.getToTerritory());
+        String from = actable.getTerritoryOwnership(ma.getFromTerritory());
+        String to = actable.getTerritoryOwnership(ma.getToTerritory());
         if (from.equals(to)) {
             return "Territories belong to same clan";
         }

@@ -30,6 +30,10 @@ public class GameInfo implements Serializable, Actable{
     this.players = players;
   }
 
+  /*
+    Input: territory name
+    Return: Clan's color
+   */
   public String getTerritoryOwnership(String name) {
     for (Map.Entry<String, Clan> clan : players.entrySet()) {
       if (clan.getValue().occupyTerritory(name)) {

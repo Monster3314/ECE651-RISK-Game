@@ -8,10 +8,10 @@ public class UnitsRuleChecker extends ActionRuleChecker {
     }
 
     @Override
-    protected String checkMyRule(GameInfo gameInfo, Action action) {
+    protected String checkMyRule(Actable actable, Action action) {
         MigrationAction ma = (MigrationAction) action;
         Unit unitToMove = ma.getMoveUnit();
-        Territory territory = gameInfo.getBoard().getTerritory(ma.getFromTerritory());
+        Territory territory = actable.getBoard().getTerritory(ma.getFromTerritory());
         for (Unit unit : territory.getUnits()) {
             if (unit.getClass().equals(unitToMove.getClass())) {
                 if (unit.getNum() >= unitToMove.getNum()) {
