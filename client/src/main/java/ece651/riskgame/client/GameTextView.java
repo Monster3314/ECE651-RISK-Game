@@ -10,6 +10,7 @@ import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
 public class GameTextView implements GameView {
+  private final GameInfo theGame;
   private final Board theBoard;
   private final Map<String, Clan> clans;
   /**
@@ -17,10 +18,23 @@ public class GameTextView implements GameView {
    * @param toDisplay is the Board to display  
    */
   public GameTextView(GameInfo toDisplay) {
+    this.theGame = toDisplay;
     this.theBoard = toDisplay.getBoard();
     this.clans = toDisplay.getPlayers();
   }
 
+  /**
+   * Display the winner of the game
+   * @return a string that represents the winner
+   * precondition: game is over  
+   */  
+  public String displayWinner() {
+    StringBuilder line = new StringBuilder();
+    line.append(theGame.getWinner());
+    line.append(" player wins!\n");
+    return line.toString();
+  }
+  
   /**
    * Display Units information in text
    * @return a string that represents the units  

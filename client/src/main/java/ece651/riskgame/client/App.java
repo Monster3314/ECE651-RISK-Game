@@ -9,6 +9,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -63,16 +64,22 @@ public class App {
       System.err.println("Class Not Found when reading Object through socket");
       System.exit(1);
     }
-    TextPlayer p = new TextPlayer(color, game);
-    App app = new App(p, socketIn, socketOut);
+    TextPlayer player = new TextPlayer(color, game);
+    App app = new App(player, socketIn, socketOut);
 
     app.doPlacementPhase();
     app.doActionPhase();
+
+    if (player.isGameOver()) {
+      app.doGameOverPhase();
+    }
+    else {
+      //app.doLostPhase();
+      app.doGameOverPhase();
+    }
     
 
     
-    socketIn.close();
-    socketOut.close();
     serverSocket.close();
     System.exit(0);
   }
@@ -108,7 +115,7 @@ public class App {
     Map<String, List<Unit>> serverPlacements = new HashMap<>();
     List<Territory> occupies = player.getOccupies();
     for (Territory occupy : occupies) {
-      serverPlacements.put(occupy.getName(), new ArrayList<Unit>());
+      serverPlacements.put(occupy.getName(), new ArrayList<Unit>(Arrays.asList(new BasicUnit(0))));
     }
     for (Move placement: placements) {
       serverPlacements.get(placement.getDst()).add(placement.getUnit());
@@ -121,13 +128,32 @@ public class App {
   public void doActionPhase() throws IOException {
     GameInfo game = recvGame();
     player.update(game);
-    while (!player.isLost()) {
+    while (!player.isLost() && !player.isGameOver()) {
       List<Action> actions = player.readActionsPhase();
       socketOut.writeObject(actions);
       socketOut.flush();
       socketOut.reset();
       game = recvGame();
       player.update(game);
+    }
+  }
+  public void doGameOverPhase() throws IOException {
+    player.doGameOverPhase();
+    socketIn.close();
+    socketOut.close();
+  }
+  public void doSpeculationPhase() throws IOException{
+    GameInfo game;
+    while(!player.isGameOver()) {
+      player.doOneSpeculation();
+      List<Action> noAction = new ArrayList<Action>();
+      socketOut.writeObject(noAction);
+      socketOut.flush();
+      socketOut.reset();
+      game = recvGame();
+      player.update(game);
+      
+      
     }
   }
 } 

@@ -75,8 +75,16 @@ public class TextPlayer {
     out.print(view.displayGame());
   }
 
+  /**
+   * Check if the player is lost
+   * @return a boolean, if true player is lost 
+   */  
   public boolean isLost() {
-    return theGame.getPlayers().get(color).isActive();
+    return !theGame.getPlayers().get(color).isActive();
+  }
+
+  public boolean isGameOver() {
+    return !(theGame.getWinner() == null); 
   }
   /**
    * Update current Game according to the GameInfo recieved
@@ -100,22 +108,36 @@ public class TextPlayer {
     return actions;
   }
 
+  /**
+   * select and read a valid action from terminal
+   * @throws IOException when nothing fetched from input(Standard input or BufferedReader)
+   * @return an valid action specified by the user  
+   */  
   public Action readOneAction() throws IOException {
     display();
-    out.println("You are the " + color + " player, what would you like to do?");
-    for (String actionType: actionChoices) {
-      out.println(actionType);
+    while(true) {
+      out.println("You are the " + color + " player, what would you like to do?");
+      for (String actionType: actionChoices) {
+        out.println(actionType);
+      }
+      String inputAction;
+      inputAction = inputReader.readLine();
+      try {
+        return actionReadingFns.get(inputAction).get();
+      } catch (NullPointerException e) {
+        out.print("Your action should be within");
+        for (String choice:actionChoices) {
+          out.print(" " + choice);
+        }
+        out.println(".");
+      }
     }
-    String inputAction;
-    inputAction = inputReader.readLine();
-    //TODO:inputAction invalid;
-    return actionReadingFns.get(inputAction).get();
   }
     
   /**
-   * read a Move action from terminal
+   * read a valid Move action from terminal
    * @throws IOException when nothing fetched from input(Standard input or BufferedReader)
-   *   
+   * @return a valid move action specified by the user
    */
   public Move readMove() {
     while (true){
@@ -143,6 +165,11 @@ public class TextPlayer {
   //TODO:Use tryAct to accept action and checker
   //public String tryAct(Action)
 
+  /**
+   * read a valid Attack action from terminal
+   * @throws IOException when nothing fetched from input(Standard input or BufferedReader)
+   * @return a valid attack action specified by the user
+   */
   public Attack readAttack() {
     while (true){
       try {
@@ -238,6 +265,7 @@ public class TextPlayer {
       }
     }
   }
+
   public List<Move> readPlacementPhase(List<Unit> toPlace) throws IOException {
     Territory unassigned = new BasicTerritory("unassigned");
     unassigned.addUnitList(toPlace);
@@ -247,13 +275,32 @@ public class TextPlayer {
     List<Move> placements = new ArrayList<Move>();
 
     display();
-    out.println("You are the "+color+" player.");
+    out.println("You are the " + color + " player.");
     while (!unassigned.isEmpty()) {
       Move placement = readPlacement();
       placement.apply(theGame);
       placements.add(placement);
     }
     return placements;
+  }
+
+  /**
+   * print game result and close I/O after game over
+   * @throws IOException when failed to close I/O  
+   * @throws IllegalStateException when game is not over  
+   */
+  public void doGameOverPhase() throws IOException, IllegalStateException{
+    if (isGameOver()) {
+      out.println(view.displayWinner());
+      inputReader.close();
+      out.close();
+    }
+    else {
+      throw new IllegalStateException("Game is not over yet.");
+    }
+  }
+  public void doOneSpeculation() {
+    out.println(view.displayGame());
   }
   protected void setupActionList() {
     actionChoices.add("(M)ove");
