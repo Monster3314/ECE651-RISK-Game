@@ -5,17 +5,14 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Clan implements Serializable {
-    private boolean active;
     private final List<Territory> occupies;
 
     public Clan() {
         this.occupies = new ArrayList<>();
-        this.active = true;
     }
 
     public Clan(List<Territory> occupies) {
         this.occupies = occupies;
-        this.active = true;
     }
 
     public void addTerritory(Territory t) {
@@ -23,16 +20,13 @@ public class Clan implements Serializable {
     }
 
     public boolean isActive() {
-        return active;
+        return occupies.size() != 0;
     }
 
     public List<Territory> getOccupies() {
         return occupies;
     }
 
-    public void hasDied() {
-        active = false;
-    }
 
     public boolean occupyTerritory(String name) {
         for (Territory territory : occupies) {

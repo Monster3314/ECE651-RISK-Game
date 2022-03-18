@@ -35,6 +35,11 @@ public abstract class Unit implements Serializable{
     number -= n;
   }
 
+  @Override
+  public String toString() {
+    return number + (number <= 1 ? " Unit" : " Units");
+  }
+
   /**
    * Get a random attack number for attack phase
    */

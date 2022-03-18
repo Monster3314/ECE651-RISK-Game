@@ -167,14 +167,16 @@ public class RiskGameTest {
     riskGame = new RiskGame(1);
     GameInfo gi_expected = new GameInfo(new Board(), new HashMap<String, Clan>());
     Thread th_server = new Thread() {
-      @Override()
-      public void run() {
-        try {
-          ServerSocket ss = new ServerSocket(1751);
-          Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
-          Whitebox.invokeMethod(riskGame, "sendGameInfo", gi_expected);
-        } catch (Exception e) {
-
+        @Override()
+        public void run() {
+          try {
+            ServerSocket ss = new ServerSocket(1751);            
+            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
+            Whitebox.invokeMethod(riskGame, "initPlayers");
+            Whitebox.invokeMethod(riskGame, "sendGameInfo", gi_expected);
+          } catch (Exception e) {
+            
+          }
         }
       }
     };
@@ -185,6 +187,7 @@ public class RiskGameTest {
     assertTrue(s1.isConnected());
     ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
     ObjectOutputStream oos = new ObjectOutputStream(s1.getOutputStream());
+    ois.readObject();
     GameInfo gi = (GameInfo) ois.readObject();
     assertEquals(gi_expected.getBoard(), gi.getBoard());
 

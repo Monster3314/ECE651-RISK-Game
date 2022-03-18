@@ -22,11 +22,11 @@ public class MovePathChecker extends ActionRuleChecker {
         if (src.equals(dest)) {
             return "The departure and destination territory are the same territory!";
         }
-        if (!move.color.equals(actable.getTerritoryOwnership(src))) {
-            return "The departure territory does not belong to " + move.color + " player.";
+        if (!move.getColor().equals(actable.getTerritoryOwnership(src))) {
+            return "The departure territory does not belong to " + move.getColor() + " player.";
         }
-        if (!move.color.equals(actable.getTerritoryOwnership(dest))) {
-            return "The destination territory does not belong to " + move.color + " player.";
+        if (!move.getColor().equals(actable.getTerritoryOwnership(dest))) {
+            return "The destination territory does not belong to " + move.getColor() + " player.";
         }
         Queue<Territory> queue = new LinkedList<>();
         HashSet<String> visited = new HashSet<>();
@@ -37,7 +37,7 @@ public class MovePathChecker extends ActionRuleChecker {
             List<Territory> neighbors = b.getNeighbors(territory);
             for (Territory t : neighbors) {
                 String name = t.getName();
-                if (!visited.contains(name) && actable.getTerritoryOwnership(name).equals(move.color)) {
+                if (!visited.contains(name) && actable.getTerritoryOwnership(name).equals(move.getColor())) {
                     if (name.equals(dest)) {
                         return null;
                     }

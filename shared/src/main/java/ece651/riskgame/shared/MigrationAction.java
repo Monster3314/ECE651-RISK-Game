@@ -15,7 +15,7 @@ public abstract class MigrationAction implements Action, Serializable{
         this.color = color;
     }
 
-    public Unit getMoveUnit() {
+    public Unit getUnit() {
         return Unit;
     }
 
@@ -25,5 +25,9 @@ public abstract class MigrationAction implements Action, Serializable{
 
     public String getToTerritory() {
         return toTerritory;
+    }
+
+    public String getColor() {
+        return color;
     }
 }

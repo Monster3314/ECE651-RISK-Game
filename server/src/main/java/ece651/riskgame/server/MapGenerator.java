@@ -20,7 +20,7 @@ public class MapGenerator {
   private boolean[][] adjacencyMatrix;
   private final int MaxTerritoryNum = 15;
   
-  public MapGenerator(String territoryNameSource, String adjacencyMatrixSource) throws IOException, FileNotFoundException{
+  public MapGenerator(String territoryNameSource, String adjacencyMatrixSource) throws IOException {
     territoryNameList = new ArrayList<String>();
     addedTerritories = new ArrayList<Territory>();
     adjacencyMatrix = new boolean[MaxTerritoryNum][MaxTerritoryNum];
@@ -28,7 +28,7 @@ public class MapGenerator {
     initAdjacencyMatrix(adjacencyMatrixSource);
   }
 
-  private void initTerritoryNameList(String sourceFile) throws FileNotFoundException, IOException {
+  private void initTerritoryNameList(String sourceFile) throws IOException {
     try (BufferedReader br = new BufferedReader(new FileReader(sourceFile))) {
       String line;
       for (int i =0 ; i < MaxTerritoryNum; i++) {
@@ -38,7 +38,7 @@ public class MapGenerator {
     }
   }
 
-  private void initAdjacencyMatrix(String sourceFile) throws IOException, FileNotFoundException {
+  private void initAdjacencyMatrix(String sourceFile) throws IOException {
     try (BufferedReader br = new BufferedReader(new FileReader(sourceFile))) {
       String line;
       int row = 0;

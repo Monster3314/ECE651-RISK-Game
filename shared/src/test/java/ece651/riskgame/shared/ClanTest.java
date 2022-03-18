@@ -21,8 +21,9 @@ class ClanTest {
     @Test
     void isActive() {
         Clan c = new Clan();
-        c.hasDied();
         assertFalse(c.isActive());
+        c.addTerritory(new BasicTerritory("A"));
+        assertTrue(c.isActive());
     }
 
     @Test
