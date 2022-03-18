@@ -42,9 +42,12 @@ public class WorldTest {
     Move m1 = new Move(new BasicUnit(), "Shanghai", "Jiangsu", "Red");
     Move m2 = new Move(new BasicUnit(), "Shandong", "Fujian", "Blue");
     Move m3 = new Move(new BasicUnit(), "Anhui", "Jiangsu", "Blue");
+    Move m4 = new Move(new BasicUnit(), "Anhui", "Jiangsu", "Red");
+    Move m5 = new Move(new BasicUnit(), "Anhui", "Anhui", "Blue");
     assertNull(actionRuleChecker.checkAction(w, m1));
     assertNotNull(actionRuleChecker.checkAction(w, m2));
     assertNotNull(actionRuleChecker.checkAction(w, m3));
-
+    assertNotNull(actionRuleChecker.checkAction(w, m4));
+    assertNotNull(actionRuleChecker.checkAction(w, m5));
   }
 }
