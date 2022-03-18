@@ -19,6 +19,8 @@ public class RiskGame {
    */
   private World world;
   private int playerNumber;
+  private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(null));
+  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new AdjacentTerritoryChecker(new EnemyTerritoryChecker(null)));
   
   /**
    * Constructor with specifying player number
@@ -128,13 +130,25 @@ public class RiskGame {
   }
 
   private void doMoveAction(List<Move> moveActions) {
-    for(Move a: moveActions) world.acceptAction(a);
+    for(Move a: moveActions) {
+      if(MoveActionChecker.checkAction(world, a) != null) continue;
+      world.acceptAction(a);
+    }
   }
 
 
   private void doAttackAction(List<Attack> attackActions) {
-    for(Attack i : attackActions) i.onTheWay(world);
+    for(Attack i : attackActions) {
+      if(AttackActionChecker.checkAction(world, i) != null) continue;
+      i.onTheWay(world);
+    }
     for(Attack i: attackActions) world.acceptAction(i);
+  }
+
+  private void afterTurn() {
+    for(Territory t : world.getBoard().getTerritoriesList()) {
+      t.addUnit(new BasicUnit(1));
+    }
   }
 
   public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {
