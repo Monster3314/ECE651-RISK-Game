@@ -24,11 +24,17 @@ public class GameInfoTest {
     Map<String, Clan> m = new HashMap<String, Clan>();
     m.put("gui", c1);
     gi.setPlayers(m);
+    assertEquals("gui", gi.getWinner());
     assertEquals(m, gi.getPlayers());
     assertEquals(m, gi.getClans());
+    Clan c2 = new Clan();
+    c2.addTerritory(new BasicTerritory("B"));
+    m.put("nihao", c2);
+    assertNull(gi.getWinner());
 
     assertEquals(null, gi.getTerritoryOwnership("Shanghai"));
     assertEquals("gui", gi.getTerritoryOwnership("Beijing"));
+
   }
 
 }
