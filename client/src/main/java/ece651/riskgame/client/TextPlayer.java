@@ -74,7 +74,10 @@ public class TextPlayer {
   private void display() {
     out.print(view.displayGame());
   }
-  
+
+  public boolean isLost() {
+    return theGame.getPlayers().get(color).isActive();
+  }
   /**
    * Update current Game according to the GameInfo recieved
    * @param latestGame is the latest GameInfo recieved from server

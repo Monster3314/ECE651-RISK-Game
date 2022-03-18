@@ -69,6 +69,7 @@ public class App {
     app.doPlacementPhase();
     app.doActionPhase();
 
+    
     socketIn.close();
     socketOut.close();
     serverSocket.close();
@@ -117,15 +118,15 @@ public class App {
     socketOut.reset();
   }
   public void doActionPhase() throws IOException {
-    while (true) {
-      GameInfo game = recvGame();
-      //TODO:player lost
-      player.update(game);
+    GameInfo game = recvGame();
+    player.update(game);
+    while (!player.isLost() && game.getWinner() == null) {
       List<Action> actions = player.readActionsPhase();
       socketOut.writeObject(actions);
-      System.out.println("Actions sent.");
       socketOut.flush();
       socketOut.reset();
+      game = recvGame();
+      player.update(game);
     }
   }
 } 
