@@ -35,7 +35,7 @@ public class TextPlayer {
 
   final ArrayList<String> actionChoices;
   final HashMap<String, Supplier<Action>> actionReadingFns;
-
+  final HashMap<Class, ActionRuleChecker> actionCheckers;
   /**
    * Construct the TextPlayer using Standard I/O
    * @param color is the color of the player, "Red", "Blue", etc
@@ -61,8 +61,10 @@ public class TextPlayer {
 
     this.actionChoices = new ArrayList<String>();
     this.actionReadingFns = new HashMap<String, Supplier<Action>>();
+    this.actionCheckers = new HashMap<Class, ActionRuleChecker>();
     setupActionList();
     setupActionReadingMap();
+    setupActionCheckers();
   }
   public List<Territory> getOccupies() {
     return theGame.getPlayers().get(color).getOccupies();
@@ -99,7 +101,13 @@ public class TextPlayer {
     while (true) {
       Action currentAction = readOneAction();
       if (currentAction != null) {
-        actions.add(currentAction);
+        String msg = tryAct(currentAction, actionCheckers.get(currentAction.getClass()));
+        if (msg == null) {
+          actions.add(currentAction);
+        }
+        else {
+          out.println(msg);
+        }
       }
       else {
         break;
@@ -109,7 +117,7 @@ public class TextPlayer {
   }
 
   /**
-   * select and read a valid action from terminal
+   * select and read a action from terminal
    * @throws IOException when nothing fetched from input(Standard input or BufferedReader)
    * @return an valid action specified by the user  
    */  
@@ -135,7 +143,7 @@ public class TextPlayer {
   }
     
   /**
-   * read a valid Move action from terminal
+   * read a Move action from terminal, validity unchecked
    * @throws IOException when nothing fetched from input(Standard input or BufferedReader)
    * @return a valid move action specified by the user
    */
@@ -145,15 +153,8 @@ public class TextPlayer {
         Territory src = readTerritory("Which territory do you want to move unit from?");
         Unit toMove = readUnit(src, "How many units do you want to move?");
         Territory dst = readTerritory("Which territory do you want to move unit to?");
-        Move toSend = new Move(toMove, src.getName(), dst.getName(), this.color);
-        //TODO:can be optimized by using tryAct
-        String msg = tryAct(toSend, new MovePathChecker(new UnitsRuleChecker(null)));
-        if (msg == null) {
-          return toSend;
-        }
-        else {
-          out.println(msg);
-        }
+        return new Move(toMove, src.getName(), dst.getName(), this.color);
+        
       } catch (IOException e) {
         //out.println();
       }
@@ -167,9 +168,9 @@ public class TextPlayer {
     }
     return msg;
   }
-
+  
   /**
-   * read a valid Attack action from terminal
+   * read a valid Attack action from terminal validity unchecked
    * @throws IOException when nothing fetched from input(Standard input or BufferedReader)
    * @return a valid attack action specified by the user
    */
@@ -179,15 +180,7 @@ public class TextPlayer {
         Territory src = readTerritory("Which territory do you want to attack from?");
         Territory dst = readTerritory("Which territory do you want to attack?");
         Unit toAttack = readUnit(src, "How many units do you want to dispatch?");
-        Attack toSend = new Attack(toAttack, src.getName(), dst.getName(), color);
-        //TODO:can be optimized by using tryAct
-        String msg = tryAct(toSend, new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null))));
-        if (msg == null) {
-          return toSend;
-        }
-        else {
-          out.println(msg);
-        }
+        return new Attack(toAttack, src.getName(), dst.getName(), color);
       } catch (IOException e) {
       }
     }
@@ -303,6 +296,22 @@ public class TextPlayer {
   public void doOneSpeculation() {
     out.println(view.displayGame());
   }
+  
+  //TODO:multiple post death choices
+  public String getPostDeathChoice() throws IOException{
+    while (true) {
+      out.println("You are dead. What would you like to do?");
+      out.println("(S)peculate");
+      out.println("(Q)uit");
+      String choice = inputReader.readLine();
+      if (choice.equals("S") || choice.equals("Q")) {
+        return choice;
+      }
+      else {
+        out.println("Please choose from (S)peculate (Q)uit");
+      }
+    }
+  }
   protected void setupActionList() {
     actionChoices.add("(M)ove");
     actionChoices.add("(A)ttack");
@@ -315,5 +324,9 @@ public class TextPlayer {
     actionReadingFns.put("D", () -> {
       return null;
     });
+  }
+  protected void setupActionCheckers() {
+    actionCheckers.put(Attack.class, new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null))));
+    actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(null)));
   }
 }

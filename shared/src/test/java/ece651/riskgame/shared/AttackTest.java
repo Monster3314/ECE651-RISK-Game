@@ -52,7 +52,7 @@ class AttackTest {
         attack1.apply(fakeWorld);
         attack2.onTheWay(fakeWorld);
         attack2.apply(fakeWorld);
-        attack3.onTheWay(fakeWorld);
+        attack3.clientApply(fakeWorld);
         attack3.apply(fakeWorld);
 
         assertEquals(1, fakeWorld.getBoard().getTerritory("Anhui").getUnits().get(0).getNum());

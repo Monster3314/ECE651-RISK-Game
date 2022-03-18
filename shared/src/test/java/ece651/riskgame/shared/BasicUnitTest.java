@@ -37,6 +37,13 @@ public class BasicUnitTest {
     BasicUnit bu = Mockito.spy(new BasicUnit(1));
     when(bu.getRandomAttack()).thenReturn(10);
     assertEquals(10, bu.getRandomAttack());
+  }
 
+  @Test
+  public void test_toString() {
+    BasicUnit u = new BasicUnit(2);
+    assertEquals("2 Units", u.toString());
+    BasicUnit u2 = new BasicUnit();
+    assertEquals("1 Unit", u2.toString());
   }
 }
