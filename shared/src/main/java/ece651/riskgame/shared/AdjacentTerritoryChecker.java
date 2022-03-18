@@ -7,6 +7,9 @@ public class AdjacentTerritoryChecker extends ActionRuleChecker {
         super(next);
     }
 
+  /**
+   * Check if the destination territory is adjacent to source territory
+   */
     @Override
     protected String checkMyRule(Actable actable, Action action) {
         // TODO : test broken data (territory not exist)
