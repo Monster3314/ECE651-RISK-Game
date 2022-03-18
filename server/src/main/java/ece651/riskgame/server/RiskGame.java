@@ -79,18 +79,19 @@ public class RiskGame {
   @SuppressWarnings("unchecked")
   private void assignUnits(int unitNumber) throws IOException, ClassNotFoundException{
     for(Map.Entry<Socket, String> player : sockets.entrySet()) {
-      Clan clan = world.getClans().get(player.getValue());
       List<Unit> needToAssign = new ArrayList<>();
       needToAssign.add(new BasicUnit(unitNumber));
       ObjectOutputStream oos = oosMap.get(player.getKey());
       oos.writeObject(needToAssign); // send List of Unit to be allocated to client
-
+    }
+    for(Map.Entry<Socket, String> player : sockets.entrySet()) {
+      Clan clan = world.getClans().get(player.getValue());
       ObjectInputStream ois = oisMap.get(player.getKey());
-      Map<Territory, List<Unit>> assignResult = (Map<Territory, List<Unit>>) ois.readObject();
+      Map<String, List<Unit>> assignResult = (Map<String, List<Unit>>) ois.readObject();
 
       for (Territory t : clan.getOccupies()) {
-        if (assignResult.containsKey(t)) {
-          t.addUnitList(assignResult.get(t));
+        if (assignResult.containsKey(t.getName())) {
+          t.addUnitList(assignResult.get(t.getName()));
         }
         else {
           throw new IllegalArgumentException("player " + player.getValue() + " did not assign units to " + t.getName() +"!");
@@ -111,13 +112,31 @@ public class RiskGame {
     for(Action a: moveActions) world.acceptAction(a);
   }
 
+  @SuppressWarnings("unchecked")
+  private void doAttackAction() throws IOException, ClassNotFoundException {
+    List<Action> attackActions = new ArrayList<>();
+    for(Map.Entry<Socket, String> player : sockets.entrySet()) {
+      ObjectInputStream ois = oisMap.get(player.getKey());
+      List<Action> temp = (List<Action>) ois.readObject();
+      attackActions.addAll(temp);
+    }
+    for(Action i : attackActions) {
+      Attack a = (Attack) i;
+      a.onTheWay(world);
+    }
+    for(Action i: attackActions) {
+      Attack a = (Attack) i;
+      world.acceptAction(a);
+    }
+  }
+
   public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {
     ServerSocket ss = new ServerSocket(port);
     // only one player is allowed now
     waitForPlayers(ss, playerNumber);
     initPlayers();  // assign color and territories for each player
     sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
-    assignUnits(10);
+    assignUnits(30);
     sendGameInfo(getCurrentGameInfo());
     doMoveAction();
     sendGameInfo(getCurrentGameInfo());

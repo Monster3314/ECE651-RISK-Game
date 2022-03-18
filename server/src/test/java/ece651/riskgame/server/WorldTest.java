@@ -2,12 +2,10 @@ package ece651.riskgame.server;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import ece651.riskgame.shared.BasicUnit;
-import ece651.riskgame.shared.Board;
-import ece651.riskgame.shared.Move;
-import ece651.riskgame.shared.Territory;
+import ece651.riskgame.shared.*;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.List;
 
 public class WorldTest {
@@ -29,9 +27,24 @@ public class WorldTest {
     b.get(0).addUnit(new BasicUnit(5));
     b.get(1).addUnit(new BasicUnit());
     assertEquals(b.get(0).getUnits().get(0).getNum(), 5);
-    Move m = new Move(new BasicUnit(3), b.get(0).getName(), b.get(1).getName());
+    Move m = new Move(new BasicUnit(3), b.get(0).getName(), b.get(1).getName(), "Red");
     w.acceptAction(m);
     assertEquals(b.get(0).getUnits().get(0).getNum(), 2);
     assertEquals(b.get(1).getUnits().get(0).getNum(), 4);
+  }
+
+  @Test
+  public void test_ruleChecker() throws Exception {
+    ActionRuleChecker actionRuleChecker = new MovePathChecker(null);
+    World w = new World(2);
+    w.addClan();
+    w.addClan();
+    Move m1 = new Move(new BasicUnit(), "Shanghai", "Jiangsu", "Red");
+    Move m2 = new Move(new BasicUnit(), "Shandong", "Fujian", "Blue");
+    Move m3 = new Move(new BasicUnit(), "Anhui", "Jiangsu", "Blue");
+    assertNull(actionRuleChecker.checkAction(w, m1));
+    assertNotNull(actionRuleChecker.checkAction(w, m2));
+    assertNotNull(actionRuleChecker.checkAction(w, m3));
+
   }
 }

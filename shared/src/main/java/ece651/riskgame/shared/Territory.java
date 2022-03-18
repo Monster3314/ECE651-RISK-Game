@@ -3,6 +3,7 @@ package ece651.riskgame.shared;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public abstract class Territory implements Serializable{
   protected String name;
@@ -34,6 +35,7 @@ public abstract class Territory implements Serializable{
     for(Unit i: units) {
       if(i.getClass() == u.getClass()) {
         i.decSoldiers(u.getNum());
+        if(i.getNum() == 0) units.remove(i);
         return;
       }
     }
@@ -53,6 +55,26 @@ public abstract class Territory implements Serializable{
     return units;
   }
 
+  public boolean beAttacked(Unit attacker) {
+    for(Unit i: units) {
+      if(i.getClass() == attacker.getClass()) {
+        while(i.getNum() != 0 && attacker.getNum() != 0) {
+          Random rand = new Random();
+          int i_dice = rand.nextInt(20) + 1;
+          int attacker_dice = rand.nextInt(20) + 1;
+          if(i_dice >= attacker_dice) attacker.decSoldiers(1);
+          else i.decSoldiers(1);
+          System.out.println("attacker:" + attacker.getNum() + " ; this: " + i.getNum());
+        }
+        if(i.getNum() == 0) {
+          addUnit(attacker);
+          return true;
+        } else return false;
+      }
+    }
+    throw new IllegalArgumentException("there is no such type of unit");
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;
@@ -66,5 +88,15 @@ public abstract class Territory implements Serializable{
   @Override
   public int hashCode() {
     return name != null ? name.hashCode() : 0;
+  }
+
+  public boolean isEmpty() {
+    for (Unit u: units) {
+      if (u.getNum() > 0) {
+        return false;
+      }
+    }
+    return true;
+    
   }
 }

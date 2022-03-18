@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Clan implements Serializable {
     private boolean active;
-    private List<Territory> occupies;
+    private final List<Territory> occupies;
 
     public Clan() {
         this.occupies = new ArrayList<>();
@@ -32,6 +32,19 @@ public class Clan implements Serializable {
 
     public void hasDied() {
         active = false;
+    }
+
+    public boolean occupyTerritory(String name) {
+        for (Territory territory : occupies) {
+            if (territory.getName().equals(name)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public void removeTerritory(Territory t) {
+        occupies.remove(t);
     }
 
 }

@@ -64,4 +64,19 @@ public class BasicTerritoryTest {
     assertThrows(IllegalArgumentException.class, ()->b.decUnit(u));
   }
 
+  @Test
+  public void test_isEmpty() {
+    Territory t = new BasicTerritory("A");
+    assertEquals(true, t.isEmpty());
+    t.addUnit(new BasicUnit(10));
+    assertEquals(false, t.isEmpty());
+    
+  }
+
+  @Test
+  public void test_beAttacked() {
+    Territory t = new BasicTerritory("A");
+    t.addUnit(new BasicUnit(30));
+    t.beAttacked(new BasicUnit(15));
+  }
 }
