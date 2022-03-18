@@ -19,6 +19,11 @@ public class MigrationActionTest {
     public void apply(Actable world) {
 
     }
+
+    @Override
+    public void clientApply(Actable game) {
+
+    }
   }
   
   @Test
@@ -30,6 +35,7 @@ public class MigrationActionTest {
 
     // irrevalent test for coverage
     ma.apply(null);
+    ma.clientApply(null);
   }
 
 }
