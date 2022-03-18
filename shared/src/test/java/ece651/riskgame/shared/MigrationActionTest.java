@@ -27,6 +27,9 @@ public class MigrationActionTest {
     assertEquals(null, ma.getMoveUnit());
     assertEquals("from", ma.getFromTerritory());
     assertEquals("to", ma.getToTerritory());
+
+    // irrevalent test for coverage
+    ma.apply(null);
   }
 
 }
