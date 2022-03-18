@@ -33,7 +33,7 @@ public class RiskGameTest {
   }
   
   @Test
-  public void test_waitForPlayers1() throws IOException, InterruptedException, ClassNotFoundException {
+  public void test_waitForPlayers1() throws IOException, InterruptedException {
     riskGame = new RiskGame(1);
     Thread th = new Thread() {
         @Override()
@@ -153,7 +153,7 @@ public class RiskGameTest {
 
   
   @Test
-  public void test_sendGameInfo() throws IOException, InterruptedException, ClassNotFoundException, Exception {
+  public void test_sendGameInfo() throws Exception {
     riskGame = new RiskGame(1);
     GameInfo gi_expected = new GameInfo(new Board(), new HashMap<String, Clan>());
     Thread th_server = new Thread() {
@@ -185,7 +185,7 @@ public class RiskGameTest {
   }
 
   @Test
-  public void test_assignUnitsto1() throws IOException, InterruptedException, ClassNotFoundException, Exception {
+  public void test_assignUnitsto1() throws Exception {
     riskGame = new RiskGame(1);
     GameInfo gi_expected = new GameInfo(new Board(), new HashMap<String, Clan>());
     Thread th_server = new Thread() {
@@ -232,9 +232,56 @@ public class RiskGameTest {
   }
 
   @Test
-  public void test_action() {
-    Action a1 = new Move(new BasicUnit(1), "A", "B", "Red");
-    Action a2 = new Attack(new BasicUnit(1), "c", "D", "Blue");
-    System.out.println(a1.getClass() == Attack.class);
+  public void test_doaction() throws IOException, ClassNotFoundException, InterruptedException {
+    riskGame = new RiskGame(1);
+    GameInfo gi_expected = new GameInfo(new Board(), new HashMap<String, Clan>());
+    Thread th_server = new Thread() {
+      @Override()
+      public void run() {
+        try {
+          ServerSocket ss = new ServerSocket(1771);
+          Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
+          Whitebox.invokeMethod(riskGame, "initPlayers");
+          Whitebox.invokeMethod(riskGame, "assignUnits", 10);
+          Whitebox.invokeMethod(riskGame, "doAction");
+          Whitebox.invokeMethod(riskGame, "afterTurn");
+          // TODO check result
+        } catch (Exception e) {
+
+        }
+      }
+    };
+    th_server.start();
+    Thread.sleep(100); // this is abit of a hack
+    Socket s1 = new Socket("0.0.0.0", 1771);
+    assertTrue(s1.isConnected());
+    ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
+    ObjectOutputStream oos = new ObjectOutputStream(s1.getOutputStream());
+
+    ois.readObject(); // read color
+    List<Unit> needToAssign = (List<Unit>) ois.readObject();
+    assertEquals(10, needToAssign.get(0).getNum());
+
+    Map<Territory, List<Unit>> assignResults = new HashMap<>();
+    List<Unit> l1 = new ArrayList<>();
+    List<Unit> l2 = new ArrayList<>();
+    List<Unit> l3 = new ArrayList<>();
+    l1.add(new BasicUnit(2));
+    l2.add(new BasicUnit(3));
+    l3.add(new BasicUnit(5));
+    assignResults.put(new BasicTerritory("Shanghai"), l1);
+    assignResults.put(new BasicTerritory("Jiangsu"), l2);
+    assignResults.put(new BasicTerritory("Zhejiang"), l3);
+    oos.writeObject(assignResults);
+
+    List<Action> actions = new ArrayList<>();
+    actions.add(new Move(new BasicUnit(2), "Shanghai", "Jiangsu", "Red"));
+    actions.add(new Attack(new BasicUnit(3), "Jiangsu", "Zhejiang", "Red"));
+    oos.writeObject(actions);
+
+    s1.close();
+
+    th_server.interrupt();
+    th_server.join();
   }
 }
