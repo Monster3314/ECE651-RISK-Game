@@ -11,6 +11,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 import ece651.riskgame.shared.Action;
+import ece651.riskgame.shared.Attack;
 import ece651.riskgame.shared.BasicTerritory;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
@@ -65,7 +66,7 @@ public class TextPlayer {
   /**
    * Display the Game, including territory information(name, ownership, and neighbourhood) and  unit deployment
    */  
-  public void display() {
+  private void display() {
     out.print(view.displayGame());
   }
   
@@ -92,6 +93,7 @@ public class TextPlayer {
   }
 
   public Action readOneAction() throws IOException {
+    display();
     out.println("You are the " + color + " player, what would you like to do?");
     for (String actionType: actionChoices) {
       out.println(actionType);
@@ -123,19 +125,19 @@ public class TextPlayer {
     }
   }
 
-  /**
   public Attack readAttack() {
     while (true){
       try {
         Territory src = readTerritory("Which territory do you want to attack from?");
         Territory dst = readTerritory("Which territory do you want to attack?");
         Unit toAttack = readUnit(src, "How many units do you want to dispatch?");
-        return new Attack(toAttack, src.getName(), dst.getName(), color);
+        Attack toSend = new Attack(toAttack, src.getName(), dst.getName(), color);
+        toSend.onTheWay(theGame);
+        return toSend;
       } catch (IOException e) {
       }
     }
-  }
-  */  
+  }  
   
   /**
    * read Unit to move/attack from terminal
@@ -149,20 +151,21 @@ public class TextPlayer {
       throw new IllegalArgumentException("This Territory has no unit.");      
     }
     String s;
-    int moveNumber;
+    int readNumber;
     while (true) {
       //TODO:Support multiple units
       Unit u = units.get(0);
-      out.println("You have " + Integer.toString(u.getNum()) + " units. How many units do you want to move?");
+      out.println("You have " + Integer.toString(u.getNum()) + " units.");
+      out.println("How many units do you want to move?");
       s = inputReader.readLine();
       if (s == null) {
         throw new EOFException("EOF");
       }
-      moveNumber = Integer.parseInt(s);
-      try {
-        u.decSoldiers(moveNumber);
-        return new BasicUnit(moveNumber);
-      } catch (IllegalArgumentException e) {
+      readNumber = Integer.parseInt(s);
+      if (readNumber <= u.getNum()) {
+        return new BasicUnit(readNumber);
+      }
+      else {
         out.println("Not enough units in this territory.");
       }
     }
@@ -211,21 +214,24 @@ public class TextPlayer {
     theGame.getBoard().putEntry(unassigned, myClan.getOccupies());
     List<Move> placements = new ArrayList<Move>();
 
+    display();
     out.println("You are the "+color+" player.");
     while (!unassigned.isEmpty()) {
-      placements.add(readPlacement());
+      Move placement = readPlacement();
+      placement.apply(theGame);
+      placements.add(placement);
     }
     return placements;
   }
   protected void setupActionList() {
     actionChoices.add("(M)ove");
     actionChoices.add("(A)ttack");
-    actionChoices.add("(D)one)");
+    actionChoices.add("(D)one");
   }
 
   protected void setupActionReadingMap() {
     actionReadingFns.put("M", () -> readMove());
-    //actionReadingFns.put("A", () -> readAttack());
+    actionReadingFns.put("A", () -> readAttack());
     actionReadingFns.put("D", () -> {
       return null;
     });
