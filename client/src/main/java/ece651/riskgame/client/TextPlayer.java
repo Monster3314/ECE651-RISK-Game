@@ -161,12 +161,16 @@ public class TextPlayer {
       if (s == null) {
         throw new EOFException("EOF");
       }
-      readNumber = Integer.parseInt(s);
-      if (readNumber <= u.getNum()) {
-        return new BasicUnit(readNumber);
-      }
-      else {
-        out.println("Not enough units in this territory.");
+      try {
+        readNumber = Integer.parseInt(s);
+        if (readNumber <= u.getNum()) {
+          return new BasicUnit(readNumber);
+        }
+        else {
+          out.println("Not enough units in this territory.");
+        }
+      } catch (NumberFormatException e) {
+        out.println("You should type a valid positive integer.");
       }
     }
     
