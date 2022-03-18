@@ -52,14 +52,11 @@ public class App {
     System.out.println("Connection Estabilished");
     //recv allocated player color
     //recv GameInfo
-    //recv Initial Units
     String color = null;
     GameInfo game = null;
     try {
       color = (String) socketIn.readObject();
-      System.out.println("Color recved");
       game = (GameInfo) socketIn.readObject();
-      System.out.println("Game recved");
     } catch (ClassNotFoundException e) {
       System.err.println("Class Not Found when reading Object through socket");
       System.exit(1);
@@ -77,18 +74,25 @@ public class App {
     else {
       app.doPostDeathPhase();
     }
-    
-
-    
+       
     serverSocket.close();
     System.exit(0);
   }
-  
+  /**
+   * constructor of app
+   * @param player is the current player of the game on this client program
+   * @param socketIn is the objectInputStream of the socket
+   * @param socketOut is the objectOutputStream of the socket
+   */
   public App(TextPlayer player, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
     this.player = player;
     this.socketIn = socketIn;
     this.socketOut = socketOut;
   }
+  /**
+   * recvGame is used to recieve the game function from the socket to server
+   * @throws IOException when nothing fetched from objectstream input
+   */
   private GameInfo recvGame() throws IOException{
     GameInfo game;
     try {
@@ -100,6 +104,11 @@ public class App {
       return null;
     }
   }
+
+  /**
+   * doPlacementPhase is used to send the initial placements to the server
+   * @throws IOException when the initial units to allocate is not recieved
+   */
   @SuppressWarnings("unchecked")
   public void doPlacementPhase() throws IOException {
     List<Unit> toPlace = null;
@@ -111,7 +120,7 @@ public class App {
       System.exit(1);
     }
     List<Move> placements = player.readPlacementPhase(toPlace);
-    //adapting
+    //adapting from list of moves to map(territory string to list of placed units)
     Map<String, List<Unit>> serverPlacements = new HashMap<>();
     List<Territory> occupies = player.getOccupies();
     for (Territory occupy : occupies) {
@@ -124,7 +133,14 @@ public class App {
     socketOut.writeObject(serverPlacements);
     socketOut.flush();
     socketOut.reset();
+
+    printWaitingMsg();
   }
+
+  /**
+   * doActionPhase is used to read valid actions from client and send them to the server
+   * @throws IOException when latest game is not recieved
+   */
   public void doActionPhase() throws IOException {
     GameInfo game = recvGame();
     player.update(game);
@@ -133,27 +149,48 @@ public class App {
       socketOut.writeObject(actions);
       socketOut.flush();
       socketOut.reset();
+
+      printWaitingMsg();
       game = recvGame();
       player.update(game);
     }
   }
+
+  /**
+   * doGameOverPhase is used to declare the result and close I/O streams
+   * @throws IOException when I/O streams fail to close
+   */
   public void doGameOverPhase() throws IOException {
     player.doGameOverPhase();
     socketIn.close();
     socketOut.close();
   }
-  public void doSpeculationPhase() throws IOException{
+  /**
+   * doSpectationPhase is used when client choose to speculate the game after dead
+   * @return IOException when the latest game is not recieved
+   */
+  public void doSpectationPhase() throws IOException{
     GameInfo game;
     while(!player.isGameOver()) {
-      player.doOneSpeculation();
+      player.doOneSpectation();
+      
+      printWaitingMsg();
+
       game = recvGame();
       player.update(game);      
     }
   }
+  
+  /**
+   * doPostDeathPhase is to let user choose speculate or quit after dead
+   * client will spectate the rest of them if type "S"
+   * client will quit the game if type "Q"
+   * @throws IOException when nothing is typed
+   */
   public void doPostDeathPhase() throws IOException {
     String choice = player.getPostDeathChoice();
     if (choice.equals("S")) {
-      doSpeculationPhase();
+      doSpectationPhase();
       doGameOverPhase();
     }
     else if (choice.equals("Q")) {
@@ -161,5 +198,9 @@ public class App {
     }
     else {
     }
+  }
+  //TODO:Time elapse
+  private void printWaitingMsg() {
+    System.out.println("Waiting for other players...");
   }
 } 
