@@ -68,6 +68,8 @@ public class BasicTerritoryTest {
   public void test_isEmpty() {
     Territory t = new BasicTerritory("A");
     assertEquals(true, t.isEmpty());
+    t.addUnit(new BasicUnit(0));
+    assertEquals(true, t.isEmpty());
     t.addUnit(new BasicUnit(10));
     assertEquals(false, t.isEmpty());
     
