@@ -235,6 +235,6 @@ public class RiskGameTest {
   public void test_action() {
     Action a1 = new Move(new BasicUnit(1), "A", "B", "Red");
     Action a2 = new Attack(new BasicUnit(1), "c", "D", "Blue");
-    System.out.println(a1.getClass() == a2.getClass());
+    System.out.println(a1.getClass() == Attack.class);
   }
 }
