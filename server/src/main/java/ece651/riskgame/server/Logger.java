@@ -16,15 +16,11 @@ public class Logger {
             FileWriter fileWriter = new FileWriter(logFile);
             writer = new PrintWriter(fileWriter, true);
             buffer = new ArrayList<>();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
     }
 
     public static Logger getInstance() {
-        if (logger == null) {
-            logger = new Logger();
-        }
         return logger;
     }
 
