@@ -34,6 +34,6 @@ public class Attack extends MigrationAction implements Serializable {
     public void onTheWay(Actable world) {
         Board board = world.getBoard();
 
-        board.getTerritory(fromTerritory).decUnit(moveUnit);
+        board.getTerritory(fromTerritory).decUnit(Unit);
     }
 }

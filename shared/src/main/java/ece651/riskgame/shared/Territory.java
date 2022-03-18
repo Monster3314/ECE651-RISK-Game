@@ -3,6 +3,7 @@ package ece651.riskgame.shared;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public abstract class Territory implements Serializable{
   protected String name;
@@ -57,18 +58,21 @@ public abstract class Territory implements Serializable{
   public boolean beAttacked(Unit attacker) {
     for(Unit i: units) {
       if(i.getClass() == attacker.getClass()) {
-        if(i.getNum() > attacker.getNum()) {  //equal?
-          i.decSoldiers(attacker.getNum());
-          return false;
-        } else {
-          attacker.decSoldiers(i.getNum());
-          units.remove(i);
+        while(i.getNum() != 0 && attacker.getNum() != 0) {
+          Random rand = new Random();
+          int i_dice = rand.nextInt(20) + 1;
+          int attacker_dice = rand.nextInt(20) + 1;
+          if(i_dice >= attacker_dice) attacker.decSoldiers(1);
+          else i.decSoldiers(1);
+          System.out.println("attacker:" + attacker.getNum() + " ; this: " + i.getNum());
+        }
+        if(i.getNum() == 0) {
           addUnit(attacker);
           return true;
-        }
+        } else return false;
       }
     }
-    return false;
+    throw new IllegalArgumentException("there is no such type of unit");
   }
 
   @Override

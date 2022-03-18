@@ -13,14 +13,14 @@ public class Move extends MigrationAction implements Serializable {
     public void apply(Actable world) {
         Board board = world.getBoard();
 
-        board.getTerritory(fromTerritory).decUnit(moveUnit);
-        board.getTerritory(toTerritory).addUnit(moveUnit);
+        board.getTerritory(fromTerritory).decUnit(Unit);
+        board.getTerritory(toTerritory).addUnit(Unit);
     }
   public String getDst() {
     return toTerritory;
   }
   public Unit getUnit() {
-    return moveUnit;
+    return Unit;
   }
   
 }

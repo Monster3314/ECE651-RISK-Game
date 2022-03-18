@@ -120,8 +120,14 @@ public class RiskGame {
       List<Action> temp = (List<Action>) ois.readObject();
       attackActions.addAll(temp);
     }
-
-    for()
+    for(Action i : attackActions) {
+      Attack a = (Attack) i;
+      a.onTheWay(world);
+    }
+    for(Action i: attackActions) {
+      Attack a = (Attack) i;
+      world.acceptAction(a);
+    }
   }
 
   public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {
