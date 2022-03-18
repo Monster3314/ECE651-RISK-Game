@@ -1,4 +1,5 @@
 package ece651.riskgame.server;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -10,7 +11,7 @@ import ece651.riskgame.shared.*;
 
 public class RiskGame {
 
-  private Map<Socket, String> sockets;  //A map of sockets and their colors
+  private Map<Socket, String> sockets; // A map of sockets and their colors
   private Map<Socket, ObjectOutputStream> oosMap;
   private Map<Socket, ObjectInputStream> oisMap;
 
@@ -20,8 +21,9 @@ public class RiskGame {
   private World world;
   private int playerNumber;
   private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(null));
-  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
-  
+  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(
+      new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
+
   /**
    * Constructor with specifying player number
    */
@@ -37,19 +39,19 @@ public class RiskGame {
    * Initialize each connected player, send color to client
    */
   private void initPlayers() throws IOException, IllegalAccessException {
-    for (Socket socket: sockets.keySet()) {
+    for (Socket socket : sockets.keySet()) {
       String color = world.addClan();
       sockets.put(socket, color);
       ObjectOutputStream oos = oosMap.get(socket);
       oos.writeObject(color);
     }
   }
-  
+
   /**
    * Wait for players to connect
    */
-  private void waitForPlayers(ServerSocket ss, int playerNum) throws IOException{
-    for (int i = 0;i < playerNum; i++) { // what if player exits while waiting for other players
+  private void waitForPlayers(ServerSocket ss, int playerNum) throws IOException {
+    for (int i = 0; i < playerNum; i++) { // what if player exits while waiting for other players
       Socket socket = ss.accept();
       sockets.put(socket, null);
       ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
@@ -70,7 +72,7 @@ public class RiskGame {
    * send gameInfo to all players(not exited)
    */
   private void sendGameInfo(GameInfo gi) throws IOException {
-    for (Socket socket: sockets.keySet()) {      
+    for (Socket socket : sockets.keySet()) {
       ObjectOutputStream oos = oosMap.get(socket);
       oos.flush();
       oos.reset();
@@ -79,14 +81,14 @@ public class RiskGame {
   }
 
   @SuppressWarnings("unchecked")
-  private void assignUnits(int unitNumber) throws IOException, ClassNotFoundException{
-    for(Map.Entry<Socket, String> player : sockets.entrySet()) {
+  private void assignUnits(int unitNumber) throws IOException, ClassNotFoundException {
+    for (Map.Entry<Socket, String> player : sockets.entrySet()) {
       List<Unit> needToAssign = new ArrayList<>();
       needToAssign.add(new BasicUnit(unitNumber));
       ObjectOutputStream oos = oosMap.get(player.getKey());
       oos.writeObject(needToAssign); // send List of Unit to be allocated to client
     }
-    for(Map.Entry<Socket, String> player : sockets.entrySet()) {
+    for (Map.Entry<Socket, String> player : sockets.entrySet()) {
       Clan clan = world.getClans().get(player.getValue());
       ObjectInputStream ois = oisMap.get(player.getKey());
       Map<String, List<Unit>> assignResult = (Map<String, List<Unit>>) ois.readObject();
@@ -94,9 +96,9 @@ public class RiskGame {
       for (Territory t : clan.getOccupies()) {
         if (assignResult.containsKey(t.getName())) {
           t.addUnitList(assignResult.get(t.getName()));
-        }
-        else {
-          throw new IllegalArgumentException("player " + player.getValue() + " did not assign units to " + t.getName() +"!");
+        } else {
+          throw new IllegalArgumentException(
+              "player " + player.getValue() + " did not assign units to " + t.getName() + "!");
         }
       }
     }
@@ -105,7 +107,7 @@ public class RiskGame {
   @SuppressWarnings("unchecked")
   private List<Action> readActions() throws IOException, ClassNotFoundException {
     List<Action> Actions = new ArrayList<>();
-    for(Map.Entry<Socket, String> player : sockets.entrySet()) {
+    for (Map.Entry<Socket, String> player : sockets.entrySet()) {
       ObjectInputStream ois = oisMap.get(player.getKey());
       List<Action> temp = (List<Action>) ois.readObject();
       Actions.addAll(temp);
@@ -113,19 +115,18 @@ public class RiskGame {
     return Actions;
   }
 
-
   private void doAction() throws IOException, ClassNotFoundException {
     List<Action> Actions = readActions();
 
     List<Move> moves = new ArrayList<>();
     List<Attack> attacks = new ArrayList<>();
 
-    for(Action a : Actions) {
-      if(a.getClass() == Move.class) {
+    for (Action a : Actions) {
+      if (a.getClass() == Move.class) {
         moves.add((Move) a);
         continue;
       }
-      if(a.getClass() == Attack.class) {
+      if (a.getClass() == Attack.class) {
         attacks.add((Attack) a);
         continue;
       }
@@ -136,23 +137,31 @@ public class RiskGame {
   }
 
   private void doMoveAction(List<Move> moveActions) {
-    for(Move a: moveActions) {
-      if(MoveActionChecker.checkAction(world, a) != null) continue;
+    for (Move a : moveActions) {
+      if (MoveActionChecker.checkAction(world, a) != null)
+        continue;
       world.acceptAction(a);
     }
   }
 
-
   private void doAttackAction(List<Attack> attackActions) {
-    for(Attack i : attackActions) {
-      if(AttackActionChecker.checkAction(world, i) != null) continue;
-      i.onTheWay(world);
+    List<Attack> validAttacks = new ArrayList<Attack>();
+    
+    for (Attack attack : attackActions) {
+      String checkResult = AttackActionChecker.checkAction(world, attack);
+      if (checkResult != null) {
+        continue;
+      }
+      attack.onTheWay(world);
+      validAttacks.add(attack);
     }
-    for(Attack i: attackActions) world.acceptAction(i);
+    
+    for (Attack attack : validAttacks)
+      world.acceptAction(attack);
   }
 
   private void afterTurn() {
-    for(Territory t : world.getBoard().getTerritoriesList()) {
+    for (Territory t : world.getBoard().getTerritoriesList()) {
       t.addUnit(new BasicUnit(1));
     }
   }
@@ -161,15 +170,15 @@ public class RiskGame {
     ServerSocket ss = new ServerSocket(port);
     // only one player is allowed now
     waitForPlayers(ss, playerNumber);
-    initPlayers();  // assign color and territories for each player
-    sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
+    initPlayers(); // assign color and territories for each player
+    sendGameInfo(getCurrentGameInfo()); // send a initial board without unit number to client
     assignUnits(30);
     sendGameInfo(getCurrentGameInfo());
-    while(true) {
+    while (true) {
       doAction();
       afterTurn();
       sendGameInfo(getCurrentGameInfo());
     }
-    //ss.close();
-  }    
+    // ss.close();
+  }
 }
