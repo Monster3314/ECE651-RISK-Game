@@ -31,7 +31,7 @@ public class GameTextView implements GameView {
   public String displayWinner() {
     StringBuilder line = new StringBuilder();
     line.append(theGame.getWinner());
-    line.append(" player wins!\n");
+    line.append(" player wins!");
     return line.toString();
   }
   

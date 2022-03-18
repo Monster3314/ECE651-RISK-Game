@@ -107,7 +107,7 @@ public class TextPlayer {
           actions.add(currentAction);
         }
         else {
-          out.println(msg);
+          printErrorMsg(msg);
         }
       }
       //"(D)one" entered
@@ -124,22 +124,26 @@ public class TextPlayer {
    * @return a action specified by the user, validity unchecked  
    */  
   public Action readOneAction() throws IOException {
-    out.println(view.displayGame());
+    printInfo(view.displayGame());
+    StringBuilder prompt = new StringBuilder();
     while(true) {
-      out.println("You are the " + color + " player, what would you like to do?");
+      prompt.append("You are the " + color + " player, what would you like to do?");
       for (String actionType: actionChoices) {
-        out.println(actionType);
+        prompt.append("\n" + actionType);
       }
+      printPromptMsg(prompt.toString());
       String inputAction;
       inputAction = inputReader.readLine();
       try {
         return actionReadingFns.get(inputAction).get();
       } catch (NullPointerException e) {
-        out.print("Your action should be within");
+        StringBuilder line = new StringBuilder();
+        line.append("Your action should be within");
         for (String choice:actionChoices) {
-          out.print(" " + choice);
+          line.append(" " + choice);
         }
-        out.println(".");
+        line.append(".");
+        printErrorMsg(line.toString());
       }
     }
   }
@@ -205,8 +209,11 @@ public class TextPlayer {
     while (true) {
       //TODO:Support multiple units
       Unit u = units.get(0);
-      out.println("You have " + Integer.toString(u.getNum()) + " units.");
-      out.println(prompt);
+      StringBuilder promptMsg = new StringBuilder();
+      promptMsg.append("You have " + Integer.toString(u.getNum()) + " units.\n");
+      promptMsg.append(prompt + "\n");
+      printPromptMsg(prompt.toString());
+
       s = inputReader.readLine();
       if (s == null) {
         throw new EOFException("EOF");
@@ -217,12 +224,12 @@ public class TextPlayer {
           return new BasicUnit(readNumber);
         }
         else {
-          out.println("You don't have enough units.");
+          printErrorMsg("You don't have enough units.");
         }
       } catch (NumberFormatException e) {
-        out.println("You should type a valid positive number.");
+        printErrorMsg("You should type a valid positive number.");
       } catch (IllegalArgumentException e) {
-        out.println("You should not type a negative number.");
+        printErrorMsg("You should not type a negative number.");
       }
     }
     
@@ -237,7 +244,7 @@ public class TextPlayer {
     String s;
     Board b = theGame.getBoard();
     while (true) {
-      out.println(prompt);
+      printPromptMsg(prompt);
       s = inputReader.readLine();
       if (s == null) {
         throw new EOFException("EOF");
@@ -245,7 +252,7 @@ public class TextPlayer {
       try {
         return b.getTerritory(s);
       } catch (IllegalArgumentException e) {
-        out.println(s + " is not one of the existing territories");
+        printErrorMsg(s + " is not one of the existing territories");
       }
     }
   }
@@ -256,7 +263,7 @@ public class TextPlayer {
    */
   public Move readPlacement() throws IOException{
     Territory src = theGame.getBoard().getTerritory("unassigned");
-    out.println("You have " + view.displayUnits(src.getUnits()) + "to place.");
+    printInfo("You have " + view.displayUnits(src.getUnits()) + "to place.");
     Territory dst = readTerritory("Which territory do you want to place?");
     Unit placed = readUnit(src, "How many units do you place?");
     return new Move(placed, "unassigned", dst.getName(), this.color);
@@ -268,8 +275,7 @@ public class TextPlayer {
    * @throws IOException when nothing fetched from input
    */
   public List<Move> readPlacementPhase(List<Unit> toPlace) throws IOException {
-    out.println(view.displayGame());
-    out.println("You are the " + color + " player.");
+    printInfo(view.displayGame() + "You are the " + color + " player.");
     
     Territory unassigned = new BasicTerritory("unassigned");
     unassigned.addUnitList(toPlace);
@@ -287,7 +293,7 @@ public class TextPlayer {
         placements.add(placement);
       }
       else {
-        out.println(msg);
+        printErrorMsg(msg);
       }
     }
     return placements;
@@ -300,7 +306,7 @@ public class TextPlayer {
    */
   public void doGameOverPhase() throws IOException, IllegalStateException{
     if (isGameOver()) {
-      out.println(view.displayWinner());
+      printInfo(view.displayWinner());
       inputReader.close();
       out.close();
     }
@@ -313,7 +319,7 @@ public class TextPlayer {
    * player spectate for one round
    */
   public void doOneSpectation() {
-    out.println(view.displayGame());
+    printInfo(view.displayGame());
   }
 
   /**
@@ -324,15 +330,17 @@ public class TextPlayer {
   //TODO:multiple post death choices
   public String getPostDeathChoice() throws IOException{
     while (true) {
-      out.println("You are dead. What would you like to do?");
-      out.println("(S)peculate");
-      out.println("(Q)uit");
+      StringBuilder prompt = new StringBuilder();
+      prompt.append("You are dead. What would you like to do?\n");
+      prompt.append("(S)peculate\n");
+      prompt.append("(Q)uit");
+      printPromptMsg(prompt.toString());
       String choice = inputReader.readLine();
       if (choice.equals("S") || choice.equals("Q")) {
         return choice;
       }
       else {
-        out.println("Please choose from (S)peculate (Q)uit");
+        printErrorMsg("Please choose from (S)peculate (Q)uit");
       }
     }
   }
@@ -372,5 +380,31 @@ public class TextPlayer {
   protected void setupActionCheckers() {
     actionCheckers.put(Attack.class, new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null))));
     actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(null)));
+  }
+
+  /**
+   * print error message with two lines of symbol around  
+   */
+  public void printErrorMsg(String msg) {
+    out.println("****************************************************");
+    out.println(msg);
+    out.println("****************************************************");
+  }
+
+  /**
+   * print prompt message with two lines of symbol around 
+   */
+  public void printPromptMsg(String prompt) {
+    out.println("==========================");
+    out.println(prompt);
+    out.println("==========================");
+  }
+  /**
+   * print game state message with two lines of symbol around  
+   */
+  public void printInfo(String info) {
+    out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    out.println(info);
+    out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
   }
 }
