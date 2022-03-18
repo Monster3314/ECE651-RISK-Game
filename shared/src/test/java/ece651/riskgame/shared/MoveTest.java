@@ -15,7 +15,7 @@ class MoveTest {
   void test_constructor_getter_setter() {    
     Unit units = new BasicUnit(10);
     Move move = new Move(units, "SD", "JS", null);
-    assertEquals("JS", move.getDst());
+    assertEquals("JS", move.getToTerritory());
     assertEquals(units, move.getUnit());
   }
   

@@ -9,4 +9,6 @@ public interface GameView {
 
   public String displayUnits(List<Unit> units);
 
+  public String displayWinner();
+
 }

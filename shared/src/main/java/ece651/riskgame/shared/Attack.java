@@ -22,7 +22,7 @@ public class Attack extends MigrationAction implements Serializable {
             return;
         }
 
-        if(t.beAttacked(getMoveUnit())) {
+        if(t.beAttacked(getUnit())) {
             for(Clan i : clans.values()) {
                 if(i.occupyTerritory(toTerritory)) {
                     i.removeTerritory(t);
@@ -33,6 +33,9 @@ public class Attack extends MigrationAction implements Serializable {
         }
 
     }
+  public void clientApply(Actable game) {
+    onTheWay(game);
+  }
 
     public void onTheWay(Actable world) {
         Board board = world.getBoard();
