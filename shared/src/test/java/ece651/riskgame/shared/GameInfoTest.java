@@ -31,6 +31,8 @@ public class GameInfoTest {
     c2.addTerritory(new BasicTerritory("B"));
     m.put("nihao", c2);
     assertNull(gi.getWinner());
+    m.put("nih", new Clan());
+    assertNull(gi.getWinner());
 
     assertEquals(null, gi.getTerritoryOwnership("Shanghai"));
     assertEquals("gui", gi.getTerritoryOwnership("Beijing"));
