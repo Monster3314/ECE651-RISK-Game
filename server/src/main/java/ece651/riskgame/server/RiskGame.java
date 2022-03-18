@@ -153,8 +153,10 @@ public class RiskGame {
     sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
     assignUnits(30);
     sendGameInfo(getCurrentGameInfo());
-    doAction();
-    sendGameInfo(getCurrentGameInfo());
-    ss.close();
+    while(true) {
+      doAction();
+      sendGameInfo(getCurrentGameInfo());
+    }
+    //ss.close();
   }    
 }

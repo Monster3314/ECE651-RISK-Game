@@ -32,4 +32,13 @@ class ClanTest {
         assertEquals(l, c.getOccupies());
     }
 
+  @Test
+  void test_occupyTerritory() {
+    List<Territory> l = new ArrayList<>();
+    l.add(new BasicTerritory("A"));
+    Clan c = new Clan(l);
+    assertTrue(c.occupyTerritory("A"));
+    assertFalse(c.occupyTerritory("B"));
+  }
+
 }

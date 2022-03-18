@@ -24,6 +24,13 @@ import ece651.riskgame.shared.Territory;
 
 public class TextPlayerTest {
   @Test
+  public void test_readMove() {
+    ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+    String input;
+    //valid testcases
+    input = "Durham\nCary\n";
+  }
+  @Test
   public void test_readTerritory() throws IOException {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     String input = "Durham\nRaleigh\nCary\n";
@@ -59,6 +66,7 @@ public class TextPlayerTest {
     bytes.reset();
     //TODO: Test if EOFException is thrown when get full from inputRead
   }
+
   private GameInfo getDefaultGame() {
     Board b = new Board();
     Map<String, Clan> players = new HashMap<String, Clan>();
