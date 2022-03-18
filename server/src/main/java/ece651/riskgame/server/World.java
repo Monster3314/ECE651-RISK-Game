@@ -19,7 +19,10 @@ public class World implements Actable{
   private int colorUsed;
   private int playerNum;
 
-  public World(int playerNum) throws IOException, FileNotFoundException {
+  /**
+   * Create board and clans, but only initialize board.
+   */
+  public World(int playerNum) throws IOException {
     board = new Board();
     clans = new HashMap<>();
 
@@ -40,10 +43,10 @@ public class World implements Actable{
     return clans;
   }
 
-  public String addClan() throws IllegalAccessException {
-    if (colorUsed==playerNum) {
-      throw new IllegalAccessException("All clans are already initialized");
-    }
+  /**
+   * Initialize Clan with allocating its color
+   */
+  public String addClan() {
     String color = colors.get(colorUsed);
     initClan(colorUsed, color);
     colorUsed++;

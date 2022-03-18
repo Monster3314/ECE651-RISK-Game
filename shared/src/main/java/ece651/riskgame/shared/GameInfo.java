@@ -1,6 +1,7 @@
 package ece651.riskgame.shared;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Map;
 public class GameInfo implements Serializable, Actable{
   private Board board;
@@ -42,4 +43,13 @@ public class GameInfo implements Serializable, Actable{
     }
     return null;
   }
+
+ public String getWinner() {
+    ArrayList<String> alivePlayer = new ArrayList<>();
+    for(Map.Entry<String, Clan> clan : players.entrySet()) {
+      if(clan.getValue().isActive()) alivePlayer.add(clan.getKey());
+    }
+    if(alivePlayer.size() > 1) return null;
+    else return alivePlayer.get(0);
+ }
 }

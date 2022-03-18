@@ -2,6 +2,7 @@ package ece651.riskgame.server;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -13,11 +14,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import ece651.riskgame.shared.*;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.powermock.reflect.Whitebox;
+
+import ece651.riskgame.shared.Action;
+import ece651.riskgame.shared.Attack;
+import ece651.riskgame.shared.BasicUnit;
+import ece651.riskgame.shared.Board;
+import ece651.riskgame.shared.Clan;
+import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.Move;
+import ece651.riskgame.shared.Territory;
+import ece651.riskgame.shared.Unit;
 
 @ExtendWith(MockitoExtension.class)
 public class RiskGameTest {
@@ -161,7 +172,8 @@ public class RiskGameTest {
         public void run() {
           try {
             ServerSocket ss = new ServerSocket(1751);            
-            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);            
+            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
+            Whitebox.invokeMethod(riskGame, "initPlayers");
             Whitebox.invokeMethod(riskGame, "sendGameInfo", gi_expected);
           } catch (Exception e) {
             
@@ -175,6 +187,7 @@ public class RiskGameTest {
     assertTrue(s1.isConnected());
     ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
     ObjectOutputStream oos = new ObjectOutputStream(s1.getOutputStream());
+    ois.readObject();
     GameInfo gi = (GameInfo) ois.readObject();
     assertEquals(gi_expected.getBoard(), gi.getBoard());
     
@@ -232,7 +245,7 @@ public class RiskGameTest {
   }
 
   @Test
-  public void test_doaction() throws IOException, ClassNotFoundException, InterruptedException {
+  public void test_doAction() throws IOException, ClassNotFoundException, InterruptedException {
     riskGame = new RiskGame(1);
     GameInfo gi_expected = new GameInfo(new Board(), new HashMap<String, Clan>());
     Thread th_server = new Thread() {
@@ -283,5 +296,67 @@ public class RiskGameTest {
 
     th_server.interrupt();
     th_server.join();
+  }
+
+  @Test
+  public void test_doMoveAction() throws IOException, Exception {
+    RiskGame riskGame = new RiskGame(2);
+    // add units to add territories
+    World world = Whitebox.getInternalState(riskGame, "world");
+    Board board = world.getBoard();
+    for (Territory t: board.getTerritoriesList()) {
+      t.addUnit(new BasicUnit(5));
+    }
+    world.addClan();
+    world.addClan();
+
+    // do the move
+    List<Move> moves0 = new ArrayList<Move>();
+    moves0.add(new Move(new BasicUnit(2), "Shanghai", "Shandong", "Red"));
+
+    Whitebox.invokeMethod(riskGame, "doMoveAction", moves0);
+    assertEquals(5, board.getTerritory("Shanghai").getUnits().get(0).getNum());
+    assertEquals(5, board.getTerritory("Shandong").getUnits().get(0).getNum());
+    
+    List<Move> moves1 = new ArrayList<Move>();
+    moves1.add(new Move(new BasicUnit(2), "Shanghai", "Jiangsu", "Red"));
+
+    Whitebox.invokeMethod(riskGame, "doMoveAction", moves1);
+    assertEquals(3, board.getTerritory("Shanghai").getUnits().get(0).getNum());
+    assertEquals(7, board.getTerritory("Jiangsu").getUnits().get(0).getNum());        
+  }
+
+  
+  @Test
+  public void test_doAttackAction() throws IOException, Exception {
+    RiskGame riskGame = new RiskGame(2);
+    // add units to add territories
+    World world = Whitebox.getInternalState(riskGame, "world");
+    Board board = world.getBoard();
+    for (Territory t: board.getTerritoriesList()) {
+      Unit bu = Mockito.spy(new BasicUnit(5));
+      if (t.getName().equals("Jiangsu")) {
+        when(bu.getRandomAttack()).thenReturn(-1); // Shandong ppl can dominate anyone
+      }
+      t.addUnit(bu);
+    }
+    world.addClan();
+    world.addClan();
+
+    // do the move
+    List<Attack> attacks0 = new ArrayList<Attack>();
+    attacks0.add(new Attack(Mockito.spy(new BasicUnit(3)), "Shanghai", "Shandong", "Red"));
+    attacks0.add(new Attack(Mockito.spy(new BasicUnit(3)), "Shanghai", "Jiangsu", "Red"));
+
+    Whitebox.invokeMethod(riskGame, "doAttackAction", attacks0);
+    assertEquals(5, board.getTerritory("Shanghai").getUnits().get(0).getNum());
+    assertEquals(5, board.getTerritory("Shandong").getUnits().get(0).getNum());
+    
+    List<Attack> attacks1 = new ArrayList<Attack>();
+    attacks1.add(new Attack(Mockito.spy(new BasicUnit(2)), "Shandong", "Jiangsu", "Blue"));
+
+    Whitebox.invokeMethod(riskGame, "doAttackAction", attacks1);
+    assertEquals(3, board.getTerritory("Shandong").getUnits().get(0).getNum());
+    assertEquals(2, board.getTerritory("Jiangsu").getUnits().get(0).getNum());        
   }
 }
