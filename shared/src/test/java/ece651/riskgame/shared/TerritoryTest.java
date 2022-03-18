@@ -36,4 +36,12 @@ public class TerritoryTest {
     assertEquals(1, t.getUnits().get(0).getNum());
   }
 
+  @Test
+  public void test_beattacked() {
+    Territory t = new BasicTerritory("A");
+    t.addUnit(new BasicUnit(1));
+
+    assertThrows(IllegalArgumentException.class, ()->t.beAttacked(new DemoUnit(1)));
+  }
+
 }

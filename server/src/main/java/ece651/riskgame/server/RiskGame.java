@@ -131,7 +131,7 @@ public class RiskGame {
 
   private void doMoveAction(List<Move> moveActions) {
     for(Move a: moveActions) {
-      MoveActionChecker.checkAction(world, a);
+      if(MoveActionChecker.checkAction(world, a) != null) continue;
       world.acceptAction(a);
     }
   }
@@ -139,10 +139,16 @@ public class RiskGame {
 
   private void doAttackAction(List<Attack> attackActions) {
     for(Attack i : attackActions) {
-      AttackActionChecker.checkAction(world, i);
+      if(AttackActionChecker.checkAction(world, i) != null) continue;
       i.onTheWay(world);
     }
     for(Attack i: attackActions) world.acceptAction(i);
+  }
+
+  private void afterTurn() {
+    for(Territory t : world.getBoard().getTerritoriesList()) {
+      t.addUnit(new BasicUnit(1));
+    }
   }
 
   public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {

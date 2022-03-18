@@ -50,4 +50,12 @@ public class WorldTest {
     assertNotNull(actionRuleChecker.checkAction(w, m4));
     assertNotNull(actionRuleChecker.checkAction(w, m5));
   }
+
+  @Test
+  public void test_getTerritoryOwnerShip() throws IllegalAccessException, IOException {
+    World w = new World(2);
+    w.addClan();
+    w.addClan();
+    assertNull(w.getTerritoryOwnership("A"));
+  }
 }
