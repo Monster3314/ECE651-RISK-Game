@@ -147,15 +147,6 @@ public class TextPlayer {
    * @throws IOException when nothing fetched from input(Standard input or BufferedReader)
    * @return a valid move action specified by the user
    */
-  /**
-  String msg = tryAct(toSend, );
-        if (msg == null) {
-          return toSend;
-        }
-        else {
-          out.println(msg);
-        }
-  */  
   public Move readMove() {
     while (true){
       try {
@@ -304,6 +295,22 @@ public class TextPlayer {
   }
   public void doOneSpeculation() {
     out.println(view.displayGame());
+  }
+  
+  //TODO:multiple post death choices
+  public String getPostDeathChoice() throws IOException{
+    while (true) {
+      out.println("You are dead. What would you like to do?");
+      out.println("(S)peculate");
+      out.println("(Q)uit");
+      String choice = inputReader.readLine();
+      if (choice.equals("S") || choice.equals("Q")) {
+        return choice;
+      }
+      else {
+        out.println("Please choose from (S)peculate (Q)uit");
+      }
+    }
   }
   protected void setupActionList() {
     actionChoices.add("(M)ove");
