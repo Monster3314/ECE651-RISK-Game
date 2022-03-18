@@ -22,7 +22,9 @@ public class MovePathChecker extends ActionRuleChecker {
         if (src.equals(dest)) {
             return "The departure and destination territory are the same territory!";
         }
-
+        if (!move.color.equals(actable.getTerritoryOwnership(src))) {
+            return "The departure territory does not belong to Action maker";
+        }
         Queue<Territory> queue = new LinkedList<>();
         HashSet<String> visited = new HashSet<>();
         queue.add(b.getTerritory(src));
