@@ -1,2 +1,30 @@
-log1
-log2
+Begin to wait for 2players.
+Player 0 connected successfully!
+Begin to wait for 1players.
+Player 0 connected successfully!
+Begin to initialize players information.
+Red player added [2 Units] to Shanghai.
+Red player added [3 Units] to Jiangsu.
+Red player added [5 Units] to Zhejiang.
+Red player moves 2 Units from Shanghai to Jiangsu.
+Begin to wait for 1players.
+Player 0 connected successfully!
+Begin to initialize players information.
+Red player added [2 Units] to Shanghai.
+Red player added [3 Units] to Jiangsu.
+Begin to wait for 2players.
+Player 0 connected successfully!
+Player 1 connected successfully!
+Begin to initialize players information.
+Blue player attacks Jiangsu from Shandong by 2 Units.
+Red player moves 2 Units from Shanghai to Jiangsu.
+Begin to wait for 1players.
+Player 0 connected successfully!
+Begin to initialize players information.
+Begin to wait for 1players.
+Player 0 connected successfully!
+Begin to wait for 2players.
+Player 0 connected successfully!
+Begin to wait for 1players.
+Player 0 connected successfully!
+Begin to initialize players information.
