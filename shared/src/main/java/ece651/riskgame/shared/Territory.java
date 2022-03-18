@@ -62,14 +62,13 @@ public abstract class Territory implements Serializable {
     for (Unit i : units) {
       if (i.getClass() == attacker.getClass()) {
         while (i.getNum() != 0 && attacker.getNum() != 0) {
-          // Random rand = new Random();
           int i_dice = i.getRandomAttack();
           int attacker_dice = attacker.getRandomAttack();
           if (i_dice >= attacker_dice)
             attacker.decSoldiers(1);
           else
             i.decSoldiers(1);
-          System.out.println("attacker:" + attacker.getNum() + " ; this: " + i.getNum());
+          System.out.println("attacker:" + attacker.getNum() + " | this: " + i.getNum());
         }
         if (i.getNum() == 0) {
           addUnit(attacker);
