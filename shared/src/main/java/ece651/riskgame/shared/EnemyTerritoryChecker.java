@@ -19,7 +19,6 @@ public class EnemyTerritoryChecker extends ActionRuleChecker {
 
         String from = ma.getFromTerritory();
         String to = ma.getToTerritory();
-        System.out.println(from + " " + to);
         if (!ma.color.equals(actable.getTerritoryOwnership(from))) {
             return "The departure territory does not belong to " + ma.color + " player.";
         }
