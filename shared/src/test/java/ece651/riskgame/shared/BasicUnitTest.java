@@ -22,4 +22,9 @@ public class BasicUnitTest {
     assertEquals(15, bu.getNum());
     assertThrows(IllegalArgumentException.class, () -> bu.decSoldiers(16));
   }
+
+  @Test
+  public void test_throw() {
+    assertThrows(IllegalArgumentException.class, ()->new BasicUnit(-2));
+  }
 }
