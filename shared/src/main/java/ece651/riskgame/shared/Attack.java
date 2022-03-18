@@ -22,7 +22,7 @@ public class Attack extends MigrationAction implements Serializable {
             return;
         }
 
-        if(t.beAttacked(getMoveUnit())) {
+        if(t.beAttacked(getUnit())) {
             for(Clan i : clans.values()) {
                 if(i.occupyTerritory(toTerritory)) {
                     i.removeTerritory(t);

@@ -19,8 +19,8 @@ public class EnemyTerritoryChecker extends ActionRuleChecker {
 
         String from = ma.getFromTerritory();
         String to = ma.getToTerritory();
-        if (!ma.color.equals(actable.getTerritoryOwnership(from))) {
-            return "The departure territory does not belong to " + ma.color + " player.";
+        if (!ma.getColor().equals(actable.getTerritoryOwnership(from))) {
+            return "The departure territory does not belong to " + ma.getColor() + " player.";
         }
         if (actable.getTerritoryOwnership(from).equals(actable.getTerritoryOwnership(to))) {
             return "Territories belong to same clan.";
