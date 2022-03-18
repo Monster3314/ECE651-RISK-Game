@@ -101,7 +101,6 @@ public class App {
       System.err.println("Class Not Found when reading Object through socket");
       System.exit(1);
     }
-    player.display();
     List<Move> placements = player.readPlacementPhase(toPlace);
     //adapting
     Map<String, List<Unit>> serverPlacements = new HashMap<>();
@@ -122,9 +121,9 @@ public class App {
       GameInfo game = recvGame();
       //TODO:player lost
       player.update(game);
-      player.display();
       List<Action> actions = player.readActionsPhase();
       socketOut.writeObject(actions);
+      System.out.println("Actions sent.");
       socketOut.flush();
       socketOut.reset();
     }
