@@ -111,7 +111,7 @@ public class App {
       serverPlacements.put(occupy.getName(), new ArrayList<Unit>());
     }
     for (Move placement: placements) {
-      serverPlacements.get(placement.getDst()).add(placement.getUnit());
+      serverPlacements.get(placement.getToTerritory()).add(placement.getUnit());
     }
 
     socketOut.writeObject(serverPlacements);

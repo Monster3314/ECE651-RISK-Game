@@ -15,7 +15,7 @@ public abstract class MigrationAction implements Action, Serializable{
         this.color = color;
     }
 
-    public Unit getMoveUnit() {
+    public Unit getUnit() {
         return Unit;
     }
 

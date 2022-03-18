@@ -24,7 +24,7 @@ public class MigrationActionTest {
   @Test
   public void test_all() {
     MigrationAction ma = Mockito.spy(new DemoMigrationAction(null, "from", "to", "color"));
-    assertEquals(null, ma.getMoveUnit());
+    assertEquals(null, ma.getUnit());
     assertEquals("from", ma.getFromTerritory());
     assertEquals("to", ma.getToTerritory());
   }
