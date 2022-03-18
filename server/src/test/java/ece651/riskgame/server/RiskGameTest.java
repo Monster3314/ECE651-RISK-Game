@@ -213,16 +213,16 @@ public class RiskGameTest {
     List<Unit> needToAssign = (List<Unit>) ois.readObject();
     assertEquals(10, needToAssign.get(0).getNum());
 
-    Map<Territory, List<Unit>> assignResults = new HashMap<Territory, List<Unit>>();
+    Map<String, List<Unit>> assignResults = new HashMap<String, List<Unit>>();
     List<Unit> l1 = new ArrayList<Unit>();
     List<Unit> l2 = new ArrayList<Unit>();
     List<Unit> l3 = new ArrayList<Unit>();
     l1.add(new BasicUnit(2));
     l2.add(new BasicUnit(3));
     l3.add(new BasicUnit(4));
-    assignResults.put(new BasicTerritory("Shanghai"), l1);
-    assignResults.put(new BasicTerritory("Jiangsu"), l2);
-    assignResults.put(new BasicTerritory("Zhejiang"), l3);
+    assignResults.put("Shanghai", l1);
+    assignResults.put("Jiangsu", l2);
+    assignResults.put("Zhejiang", l3);
     oos.writeObject(assignResults);    
     
     s1.close();
@@ -262,16 +262,16 @@ public class RiskGameTest {
     List<Unit> needToAssign = (List<Unit>) ois.readObject();
     assertEquals(10, needToAssign.get(0).getNum());
 
-    Map<Territory, List<Unit>> assignResults = new HashMap<>();
+    Map<String, List<Unit>> assignResults = new HashMap<>();
     List<Unit> l1 = new ArrayList<>();
     List<Unit> l2 = new ArrayList<>();
     List<Unit> l3 = new ArrayList<>();
     l1.add(new BasicUnit(2));
     l2.add(new BasicUnit(3));
     l3.add(new BasicUnit(5));
-    assignResults.put(new BasicTerritory("Shanghai"), l1);
-    assignResults.put(new BasicTerritory("Jiangsu"), l2);
-    assignResults.put(new BasicTerritory("Zhejiang"), l3);
+    assignResults.put("Shanghai", l1);
+    assignResults.put("Jiangsu", l2);
+    assignResults.put("Zhejiang", l3);
     oos.writeObject(assignResults);
 
     List<Action> actions = new ArrayList<>();
