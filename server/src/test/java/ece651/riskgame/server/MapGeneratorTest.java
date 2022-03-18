@@ -9,7 +9,6 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
-import org.apache.commons.math3.exception.OutOfRangeException;
 import org.junit.jupiter.api.Test;
 
 import ece651.riskgame.shared.Board;

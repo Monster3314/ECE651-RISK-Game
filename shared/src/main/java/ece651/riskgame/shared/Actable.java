@@ -7,4 +7,6 @@ public interface Actable {
     Board getBoard();
 
     Map<String, Clan> getClans();
+
+    String getTerritoryOwnership(String name);
 }
