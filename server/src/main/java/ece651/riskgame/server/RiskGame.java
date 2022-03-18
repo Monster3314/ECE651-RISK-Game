@@ -20,7 +20,7 @@ public class RiskGame {
   private World world;
   private int playerNumber;
   private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(null));
-  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new AdjacentTerritoryChecker(new EnemyTerritoryChecker(null)));
+  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
   
   /**
    * Constructor with specifying player number
@@ -103,13 +103,19 @@ public class RiskGame {
   }
 
   @SuppressWarnings("unchecked")
-  private void doAction() throws IOException, ClassNotFoundException {
+  private List<Action> readActions() throws IOException, ClassNotFoundException {
     List<Action> Actions = new ArrayList<>();
     for(Map.Entry<Socket, String> player : sockets.entrySet()) {
       ObjectInputStream ois = oisMap.get(player.getKey());
       List<Action> temp = (List<Action>) ois.readObject();
       Actions.addAll(temp);
     }
+    return Actions;
+  }
+
+
+  private void doAction() throws IOException, ClassNotFoundException {
+    List<Action> Actions = readActions();
 
     List<Move> moves = new ArrayList<>();
     List<Attack> attacks = new ArrayList<>();
@@ -161,6 +167,7 @@ public class RiskGame {
     sendGameInfo(getCurrentGameInfo());
     while(true) {
       doAction();
+      afterTurn();
       sendGameInfo(getCurrentGameInfo());
     }
     //ss.close();
