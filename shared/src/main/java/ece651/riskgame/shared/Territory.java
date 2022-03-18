@@ -35,7 +35,6 @@ public abstract class Territory implements Serializable{
     for(Unit i: units) {
       if(i.getClass() == u.getClass()) {
         i.decSoldiers(u.getNum());
-        if(i.getNum() == 0) units.remove(i);
         return;
       }
     }

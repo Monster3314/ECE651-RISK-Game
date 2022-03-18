@@ -15,10 +15,13 @@ public class Attack extends MigrationAction implements Serializable {
         Map<String, Clan> clans = world.getClans();
 
         Clan c = clans.get(color);
-
-        if(c.occupyTerritory(toTerritory)) return; // player has already get this territory
-
         Territory t = board.getTerritory(toTerritory);
+
+        if(c.occupyTerritory(toTerritory)) {
+            t.addUnit(Unit);
+            return;
+        }
+
         if(t.beAttacked(getMoveUnit())) {
             for(Clan i : clans.values()) {
                 if(i.occupyTerritory(toTerritory)) {

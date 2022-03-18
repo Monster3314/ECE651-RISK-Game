@@ -101,33 +101,40 @@ public class RiskGame {
   }
 
   @SuppressWarnings("unchecked")
-  private void doMoveAction() throws IOException, ClassNotFoundException{
-    List<Action> moveActions = new ArrayList<>();
+  private void doAction() throws IOException, ClassNotFoundException {
+    List<Action> Actions = new ArrayList<>();
     for(Map.Entry<Socket, String> player : sockets.entrySet()) {
       ObjectInputStream ois = oisMap.get(player.getKey());
       List<Action> temp = (List<Action>) ois.readObject();
-      moveActions.addAll(temp);
+      Actions.addAll(temp);
     }
 
-    for(Action a: moveActions) world.acceptAction(a);
+    List<Move> moves = new ArrayList<>();
+    List<Attack> attacks = new ArrayList<>();
+
+    for(Action a : Actions) {
+      if(a.getClass() == Move.class) {
+        moves.add((Move) a);
+        continue;
+      }
+      if(a.getClass() == Attack.class) {
+        attacks.add((Attack) a);
+        continue;
+      }
+    }
+
+    doMoveAction(moves);
+    doAttackAction(attacks);
   }
 
-  @SuppressWarnings("unchecked")
-  private void doAttackAction() throws IOException, ClassNotFoundException {
-    List<Action> attackActions = new ArrayList<>();
-    for(Map.Entry<Socket, String> player : sockets.entrySet()) {
-      ObjectInputStream ois = oisMap.get(player.getKey());
-      List<Action> temp = (List<Action>) ois.readObject();
-      attackActions.addAll(temp);
-    }
-    for(Action i : attackActions) {
-      Attack a = (Attack) i;
-      a.onTheWay(world);
-    }
-    for(Action i: attackActions) {
-      Attack a = (Attack) i;
-      world.acceptAction(a);
-    }
+  private void doMoveAction(List<Move> moveActions) {
+    for(Move a: moveActions) world.acceptAction(a);
+  }
+
+
+  private void doAttackAction(List<Attack> attackActions) {
+    for(Attack i : attackActions) i.onTheWay(world);
+    for(Attack i: attackActions) world.acceptAction(i);
   }
 
   public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {
@@ -138,7 +145,7 @@ public class RiskGame {
     sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
     assignUnits(30);
     sendGameInfo(getCurrentGameInfo());
-    doMoveAction();
+    doAction();
     sendGameInfo(getCurrentGameInfo());
     ss.close();
   }    
