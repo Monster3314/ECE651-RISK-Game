@@ -55,7 +55,7 @@ public class MovePathCheckerTest {
     Clan clan2 = new Clan();
     clan2.addTerritory(t3);
     
-    Map<String, Clan> map = new HashMap<String, Clan>();
+    Map<String, Clan> map = new HashMap<>();
     map.put("Red", clan1);
     map.put("Blue", clan2);    
 
@@ -71,14 +71,16 @@ public class MovePathCheckerTest {
     Action act2 = new Move(unit, "t1", "t2", "Blue");
     Action act3 = new Move(unit, "t1", "t2", "Red");
     Action act4 = new Move(unit, "t1", "t4", "Red");
+    Action act5 = new Move(unit, "t1", "t3", "Red");
 
     ActionRuleChecker urc = new MovePathChecker(null);
 
     assertEquals("The departure and destination territory are the same territory!", urc.checkMyRule(actable, act1));
     assertNotNull(urc.checkMyRule(actable, act2));
-    assertEquals(null, urc.checkMyRule(actable, act3));
+    assertNull(urc.checkMyRule(actable, act3));
     String result =  urc.checkMyRule(actable, act4);
-    assertTrue(result.startsWith("Failed to find a path from"));  
+    assertTrue(result.startsWith("Failed to find a path from"));
+    assertEquals("The destination territory does not belong to Red player.", urc.checkMyRule(actable, act5));
   }
 
   
