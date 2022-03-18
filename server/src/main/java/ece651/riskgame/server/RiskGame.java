@@ -13,14 +13,15 @@ public class RiskGame {
   private Map<Socket, String> sockets;  //A map of sockets and their colors
   private Map<Socket, ObjectOutputStream> oosMap;
   private Map<Socket, ObjectInputStream> oisMap;
+  private Map<String, Boolean> online;
 
   /**
    * The board(map) of game, storing all territories and their adjacencies
    */
   private World world;
-  private int playerNumber;
-  private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(null));
-  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
+  private final int playerNumber;
+  private final ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(null));
+  private final ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
   
   /**
    * Constructor with specifying player number
@@ -31,15 +32,17 @@ public class RiskGame {
     sockets = new HashMap<>();
     oosMap = new HashMap<>();
     oisMap = new HashMap<>();
+    online = new HashMap<>();
   }
 
   /**
    * Initialize each connected player, send color to client
    */
-  private void initPlayers() throws IOException, IllegalAccessException {
+  private void initPlayers() throws IOException{
     for (Socket socket: sockets.keySet()) {
       String color = world.addClan();
       sockets.put(socket, color);
+      online.put(color, true);
       ObjectOutputStream oos = oosMap.get(socket);
       oos.writeObject(color);
     }
@@ -69,12 +72,18 @@ public class RiskGame {
   /**
    * send gameInfo to all players(not exited)
    */
-  private void sendGameInfo(GameInfo gi) throws IOException {
-    for (Socket socket: sockets.keySet()) {      
-      ObjectOutputStream oos = oosMap.get(socket);
-      oos.flush();
-      oos.reset();
-      oos.writeObject(gi);
+  private void sendGameInfo(GameInfo gi) {
+    for (Map.Entry<Socket, String> player: sockets.entrySet()) {
+      if(!isOnline(player.getValue())) continue;
+      ObjectOutputStream oos = oosMap.get(player.getKey());
+      try {
+        oos.flush();
+        oos.reset();
+        oos.writeObject(gi);
+      } catch (IOException e) {
+        online.put(player.getValue(), false);
+      }
+
     }
   }
 
@@ -103,19 +112,24 @@ public class RiskGame {
   }
 
   @SuppressWarnings("unchecked")
-  private List<Action> readActions() throws IOException, ClassNotFoundException {
+  private List<Action> readActions() {
     List<Action> Actions = new ArrayList<>();
     for(Map.Entry<Socket, String> player : sockets.entrySet()) {
+      if(!isAlive(player.getValue()) || !isOnline(player.getValue())) continue;
       ObjectInputStream ois = oisMap.get(player.getKey());
-      List<Action> temp = (List<Action>) ois.readObject();
-      Actions.addAll(temp);
+      try {
+        Actions.addAll((List<Action>) ois.readObject());
+      } catch (Exception ignored) {
+        online.put(player.getValue(), false);
+      }
     }
     return Actions;
   }
 
 
-  private void doAction() throws IOException, ClassNotFoundException {
+  private void doAction() {
     List<Action> Actions = readActions();
+    if(Actions.size() == 0) return;
 
     List<Move> moves = new ArrayList<>();
     List<Attack> attacks = new ArrayList<>();
@@ -157,6 +171,27 @@ public class RiskGame {
     }
   }
 
+  private boolean isAlive(String player) {
+    return world.getClans().get(player).isActive();
+  }
+
+  private boolean isOnline(String player) {
+    return online.get(player);
+  }
+
+  private boolean stillHaveAlivePlayers() {
+    boolean haveAlivePlayer = false;
+    for(Map.Entry<String, Clan> players: world.getClans().entrySet()) {
+      haveAlivePlayer |= (isAlive(players.getKey()) && isOnline(players.getKey()));
+    }
+
+    return haveAlivePlayer;
+  }
+
+  private void closeSockets() throws IOException {
+    for(Socket s: sockets.keySet()) s.close();
+  }
+
   public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {
     ServerSocket ss = new ServerSocket(port);
     // only one player is allowed now
@@ -165,11 +200,14 @@ public class RiskGame {
     sendGameInfo(getCurrentGameInfo());    // send a initial board without unit number to client
     assignUnits(30);
     sendGameInfo(getCurrentGameInfo());
-    while(true) {
+    GameInfo gi = getCurrentGameInfo();
+    while(stillHaveAlivePlayers() && (gi.getWinner() == null)) {
       doAction();
       afterTurn();
-      sendGameInfo(getCurrentGameInfo());
+      gi = getCurrentGameInfo();
+      sendGameInfo(gi);
     }
-    //ss.close();
+    ss.close();
+    closeSockets();
   }    
 }
