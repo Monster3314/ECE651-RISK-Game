@@ -42,8 +42,9 @@ public class MapGenerator {
     try (BufferedReader br = new BufferedReader(new FileReader(sourceFile))) {
       String line;
       int row = 0;
-      while ((line = br.readLine()) != null) {
-        /*if (row == 15) {
+      for (int i = 0; i < MaxTerritoryNum; i++) {
+        line = br.readLine();
+        /*if (line == null) {
           throw new IllegalArgumentException("adjacency matrix initialization file format is illegal");
         }*/
         String[] values = line.split(",");
