@@ -69,13 +69,13 @@ public class App {
 
     app.doPlacementPhase();
     app.doActionPhase();
-
+    //game over
     if (player.isGameOver()) {
       app.doGameOverPhase();
     }
+    //player lost
     else {
-      //app.doLostPhase();
-      app.doGameOverPhase();
+      app.doPostDeathPhase();
     }
     
 
@@ -146,14 +146,20 @@ public class App {
     GameInfo game;
     while(!player.isGameOver()) {
       player.doOneSpeculation();
-      List<Action> noAction = new ArrayList<Action>();
-      socketOut.writeObject(noAction);
-      socketOut.flush();
-      socketOut.reset();
       game = recvGame();
-      player.update(game);
-      
-      
+      player.update(game);      
+    }
+  }
+  public void doPostDeathPhase() throws IOException {
+    String choice = player.getPostDeathChoice();
+    if (choice.equals("S")) {
+      doSpeculationPhase();
+      doGameOverPhase();
+    }
+    else if (choice.equals("Q")) {
+      doGameOverPhase();
+    }
+    else {
     }
   }
 } 
