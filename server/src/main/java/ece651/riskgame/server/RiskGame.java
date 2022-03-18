@@ -57,7 +57,7 @@ public class RiskGame {
    * Wait for players to connect
    */
   private void waitForPlayers(ServerSocket ss, int playerNum) throws IOException {
-    logger.writeLog("Begin to wait for " + playerNum + "players.");
+    logger.writeLog("Begin to wait for " + playerNum + " players.");
     for (int i = 0; i < playerNum; i++) { // what if player exits while waiting for other players
       Socket socket = ss.accept();
       logger.writeLog("Player " + i + " connected successfully!");
