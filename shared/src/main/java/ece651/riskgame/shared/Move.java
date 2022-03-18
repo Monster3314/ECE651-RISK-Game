@@ -16,6 +16,10 @@ public class Move extends MigrationAction implements Serializable {
         board.getTerritory(fromTerritory).decUnit(Unit);
         board.getTerritory(toTerritory).addUnit(Unit);
     }
+    @Override
+    public void clientApply(Actable game) {
+      apply(game);
+    }
   public String getDst() {
     return toTerritory;
   }
