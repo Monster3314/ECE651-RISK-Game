@@ -19,6 +19,8 @@ public class RiskGame {
    */
   private World world;
   private int playerNumber;
+  private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(null));
+  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new AdjacentTerritoryChecker(new EnemyTerritoryChecker(null)));
   
   /**
    * Constructor with specifying player number
@@ -128,12 +130,18 @@ public class RiskGame {
   }
 
   private void doMoveAction(List<Move> moveActions) {
-    for(Move a: moveActions) world.acceptAction(a);
+    for(Move a: moveActions) {
+      MoveActionChecker.checkAction(world, a);
+      world.acceptAction(a);
+    }
   }
 
 
   private void doAttackAction(List<Attack> attackActions) {
-    for(Attack i : attackActions) i.onTheWay(world);
+    for(Attack i : attackActions) {
+      AttackActionChecker.checkAction(world, i);
+      i.onTheWay(world);
+    }
     for(Attack i: attackActions) world.acceptAction(i);
   }
 
