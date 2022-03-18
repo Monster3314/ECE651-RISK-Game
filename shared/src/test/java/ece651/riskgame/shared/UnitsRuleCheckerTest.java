@@ -18,6 +18,12 @@ public class UnitsRuleCheckerTest {
     public DemoUnit(int number) {
       super(2, 2, number);
     }
+
+    @Override
+    public int getRandomAttack() {
+      // TODO Auto-generated method stub
+      return 0;
+    }
   }
 
   
@@ -51,6 +57,9 @@ public class UnitsRuleCheckerTest {
     Unit unit2 = new DemoUnit(5);
     Action act2 = new Move(unit2, "from", "to", "color");
     assertEquals("No specified Unit found", urc.checkMyRule(actable, act2));
+
+    // irrelevent test for coverage
+    assertEquals(0, unit2.getRandomAttack());
   }
 
 }

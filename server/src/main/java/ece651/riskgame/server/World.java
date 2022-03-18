@@ -19,6 +19,9 @@ public class World implements Actable{
   private int colorUsed;
   private int playerNum;
 
+  /**
+   * Create board and clans, but only initialize board.
+   */
   public World(int playerNum) throws IOException {
     board = new Board();
     clans = new HashMap<>();
@@ -40,6 +43,9 @@ public class World implements Actable{
     return clans;
   }
 
+  /**
+   * Initialize Clan with allocating its color
+   */
   public String addClan() {
     String color = colors.get(colorUsed);
     initClan(colorUsed, color);
