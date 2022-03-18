@@ -5,16 +5,16 @@ public abstract class ActionRuleChecker {
     public ActionRuleChecker(ActionRuleChecker next) {
         this.next = next;
     }
-    public String checkAction (GameInfo gameInfo, Action action) {
-        String msg = checkMyRule(gameInfo, action);
+    public String checkAction (Actable actable, Action action) {
+        String msg = checkMyRule(actable, action);
         if (msg != null) {
             return msg;
         }
         if (next != null) {
-            return next.checkAction(gameInfo, action);
+            return next.checkAction(actable, action);
         }
         return null;
     }
 
-    protected abstract String checkMyRule(GameInfo gameInfo, Action action);
+    protected abstract String checkMyRule(Actable actable, Action action);
 }

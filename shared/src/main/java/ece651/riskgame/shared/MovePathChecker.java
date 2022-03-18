@@ -12,12 +12,12 @@ public class MovePathChecker extends ActionRuleChecker {
     }
 
     @Override
-    protected String checkMyRule(GameInfo gameInfo, Action action) {
+    protected String checkMyRule(Actable actable, Action action) {
         // TODO: throw exception if action is not Move.class
         Move move = (Move) action;
         String src = move.getFromTerritory();
         String dest = move.getToTerritory();
-        Board b = gameInfo.getBoard();
+        Board b = actable.getBoard();
 
         if (src.equals(dest)) {
             return "The departure and destination territory are the same territory!";
@@ -32,7 +32,7 @@ public class MovePathChecker extends ActionRuleChecker {
             List<Territory> neighbors = b.getNeighbors(territory);
             for (Territory t : neighbors) {
                 String name = t.getName();
-                if (!visited.contains(name) && gameInfo.getTerritoryOwnership(name).equals(move.color)) {
+                if (!visited.contains(name) && actable.getTerritoryOwnership(name).equals(move.color)) {
                     if (name.equals(dest)) {
                         return null;
                     }

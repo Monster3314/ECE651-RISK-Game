@@ -68,4 +68,13 @@ public class World implements Actable{
   public void acceptAction(Action action) {
     action.apply(this);
   }
+
+  public String getTerritoryOwnership(String name) {
+    for (Map.Entry<String, Clan> clan : clans.entrySet()) {
+      if (clan.getValue().occupyTerritory(name)) {
+        return clan.getKey();
+      }
+    }
+    return null;
+  }
 }

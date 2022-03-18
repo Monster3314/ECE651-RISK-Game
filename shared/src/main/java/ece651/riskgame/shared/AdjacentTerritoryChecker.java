@@ -8,10 +8,10 @@ public class AdjacentTerritoryChecker extends ActionRuleChecker {
     }
 
     @Override
-    protected String checkMyRule(GameInfo gameInfo, Action action) {
+    protected String checkMyRule(Actable actable, Action action) {
         // TODO : test broken data (territory not exist)
         MigrationAction ma = (MigrationAction) action;
-        Board b = gameInfo.getBoard();
+        Board b = actable.getBoard();
         String toTerritory = ma.getToTerritory();
         List<Territory> adjacent = b.getNeighbors(b.getTerritory(ma.getFromTerritory()));
         for (Territory territory : adjacent) {
