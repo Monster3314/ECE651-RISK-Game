@@ -25,6 +25,7 @@ dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
     testImplementation group:'org.mockito', name:'mockito-junit-jupiter', version: '3.9.0'
     testImplementation group:'org.powermock', name:'powermock-core', version: '2.0.9'
+    testImplementation project(':server')
 
 
     // This dependency is used by the application.
