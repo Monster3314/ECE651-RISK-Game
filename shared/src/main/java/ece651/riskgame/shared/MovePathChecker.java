@@ -23,7 +23,10 @@ public class MovePathChecker extends ActionRuleChecker {
             return "The departure and destination territory are the same territory!";
         }
         if (!move.color.equals(actable.getTerritoryOwnership(src))) {
-            return "The departure territory does not belong to Action maker";
+            return "The departure territory does not belong to " + move.color + " player.";
+        }
+        if (!move.color.equals(actable.getTerritoryOwnership(dest))) {
+            return "The destination territory does not belong to " + move.color + " player.";
         }
         Queue<Territory> queue = new LinkedList<>();
         HashSet<String> visited = new HashSet<>();
@@ -43,6 +46,6 @@ public class MovePathChecker extends ActionRuleChecker {
                 }
             }
         }
-        return "Failed to find a path from " + move.getFromTerritory() + " to " + move.getToTerritory();
+        return "Failed to find a path from " + move.getFromTerritory() + " to " + move.getToTerritory() + ".";
     }
 }

@@ -1,7 +1,6 @@
 package ece651.riskgame.shared;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -76,7 +75,7 @@ public class MovePathCheckerTest {
     ActionRuleChecker urc = new MovePathChecker(null);
 
     assertEquals("The departure and destination territory are the same territory!", urc.checkMyRule(actable, act1));
-    assertEquals("The departure territory does not belong to Action maker", urc.checkMyRule(actable, act2));
+    assertNotNull(urc.checkMyRule(actable, act2));
     assertEquals(null, urc.checkMyRule(actable, act3));
     String result =  urc.checkMyRule(actable, act4);
     assertTrue(result.startsWith("Failed to find a path from"));  
