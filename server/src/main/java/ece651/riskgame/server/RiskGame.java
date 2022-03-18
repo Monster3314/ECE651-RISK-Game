@@ -158,6 +158,7 @@ public class RiskGame {
     for(Attack i : attackActions) {
       if(AttackActionChecker.checkAction(world, i) != null) continue;
       i.onTheWay(world);
+      logger.writeLog(i.getColor() + " player attacks " + i.getToTerritory() + " from " + i.getFromTerritory() + " by " + i.getUnit() + ".");
     }
     for(Attack i: attackActions) world.acceptAction(i);
   }
