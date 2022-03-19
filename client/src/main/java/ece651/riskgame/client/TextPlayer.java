@@ -25,7 +25,9 @@ import ece651.riskgame.shared.MovePathChecker;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 import ece651.riskgame.shared.UnitsRuleChecker;
-
+/**
+ * Textplayer is a class on client side which is responsible for reading initial placements, reading actions, applying actions locally, and spectating.
+ */
 public class TextPlayer {
   final String color;
   private GameInfo theGame;
@@ -66,25 +68,18 @@ public class TextPlayer {
     setupActionReadingMap();
     setupActionCheckers();
   }
-  public List<Territory> getOccupies() {
-    return theGame.getPlayers().get(color).getOccupies();
-  }
-
-  /**
-   * Display the Game, including territory information(name, ownership, and neighbourhood) and  unit deployment
-   */  
-  private void display() {
-    out.print(view.displayGame());
-  }
 
   /**
    * Check if the player is lost
-   * @return a boolean, if true player is lost 
+   * @return true if player is lost, false if game is not over or player wins 
    */  
   public boolean isLost() {
     return !theGame.getPlayers().get(color).isActive();
   }
-
+  /**
+   * Check if the game is over
+   * @return true if game is over
+   */
   public boolean isGameOver() {
     return !(theGame.getWinner() == null); 
   }
@@ -96,6 +91,12 @@ public class TextPlayer {
     theGame = latestGame;
     view = new GameTextView(theGame);
   }
+
+  /**
+   * choose the action type and read it from input, then apply locally
+   * new action candidate should be added to actionCheckers, actionChoices, actionReadingFns
+   * @return a list of valid actions
+   */
   public List<Action> readActionsPhase() throws IOException {
     List<Action> actions = new ArrayList<Action>();
     while (true) {
@@ -106,9 +107,10 @@ public class TextPlayer {
           actions.add(currentAction);
         }
         else {
-          out.println(msg);
+          printErrorMsg(msg);
         }
       }
+      //"(D)one" entered
       else {
         break;
       }
@@ -117,50 +119,59 @@ public class TextPlayer {
   }
 
   /**
-   * select and read a action from terminal
+   * select and read a unchecked action from input
    * @throws IOException when nothing fetched from input(Standard input or BufferedReader)
-   * @return an valid action specified by the user  
+   * @return a action specified by the user, validity unchecked  
    */  
   public Action readOneAction() throws IOException {
-    display();
+    printInfo(view.displayGame());
+    StringBuilder prompt = new StringBuilder();
     while(true) {
-      out.println("You are the " + color + " player, what would you like to do?");
+      prompt.append("You are the " + color + " player, what would you like to do?");
       for (String actionType: actionChoices) {
-        out.println(actionType);
+        prompt.append("\n" + actionType);
       }
+      printPromptMsg(prompt.toString());
       String inputAction;
       inputAction = inputReader.readLine();
       try {
         return actionReadingFns.get(inputAction).get();
       } catch (NullPointerException e) {
-        out.print("Your action should be within");
+        StringBuilder line = new StringBuilder();
+        line.append("Your action should be within");
         for (String choice:actionChoices) {
-          out.print(" " + choice);
+          line.append(" " + choice);
         }
-        out.println(".");
+        line.append(".");
+        printErrorMsg(line.toString());
       }
     }
   }
     
   /**
    * read a Move action from terminal, validity unchecked
-   * @throws IOException when nothing fetched from input(Standard input or BufferedReader)
+   * @throws IOException is caught because lambda doesn't support
    * @return a valid move action specified by the user
    */
   public Move readMove() {
-    while (true){
+    while (true)  {
       try {
         Territory src = readTerritory("Which territory do you want to move unit from?");
         Unit toMove = readUnit(src, "How many units do you want to move?");
         Territory dst = readTerritory("Which territory do you want to move unit to?");
         return new Move(toMove, src.getName(), dst.getName(), this.color);
-        
+
       } catch (IOException e) {
         //out.println();
       }
     }
   }
-  
+  /**
+   * try to apply a action on client side
+   * @param toAct is the action you want to apply
+   * @param checker is the rulechecker used to check the rule of specified action
+   * @return error message if action is invalid, otherwise null
+   */
   public String tryAct(Action toAct, ActionRuleChecker checker) {
     String msg = checker.checkAction(theGame, toAct);
     if (msg == null) {
@@ -171,7 +182,7 @@ public class TextPlayer {
   
   /**
    * read a valid Attack action from terminal validity unchecked
-   * @throws IOException when nothing fetched from input(Standard input or BufferedReader)
+   * @throws IOException caught because lambda doesn't support
    * @return a valid attack action specified by the user
    */
   public Attack readAttack() {
@@ -190,20 +201,19 @@ public class TextPlayer {
    * read Unit to move/attack from terminal
    * @param src is the source territory to move unit from
    * @throws IOException when nothing fetched from input (STD input or BufferedReader)
-   * @throws IllegalArgumentException when entered number is less than the unit inside the territory    
   */
-  public Unit readUnit(Territory src, String prompt) throws IOException, IllegalArgumentException{
+  public Unit readUnit(Territory src, String prompt) throws IOException{
     List<Unit> units = src.getUnits();
-    if (units.size() == 0) {
-      throw new IllegalArgumentException("This Territory has no unit.");      
-    }
     String s;
     int readNumber;
     while (true) {
       //TODO:Support multiple units
       Unit u = units.get(0);
-      out.println("You have " + Integer.toString(u.getNum()) + " units.");
-      out.println(prompt);
+      StringBuilder promptMsg = new StringBuilder();
+      promptMsg.append("You have " + Integer.toString(u.getNum()) + " units.\n");
+      promptMsg.append(prompt + "\n");
+      printPromptMsg(prompt.toString());
+
       s = inputReader.readLine();
       if (s == null) {
         throw new EOFException("EOF");
@@ -214,19 +224,19 @@ public class TextPlayer {
           return new BasicUnit(readNumber);
         }
         else {
-          out.println("Not enough units in this territory.");
+          printErrorMsg("You don't have enough units.");
         }
       } catch (NumberFormatException e) {
-        out.println("You should type a valid positive number.");
+        printErrorMsg("You should type a valid positive number.");
       } catch (IllegalArgumentException e) {
-        out.println("You should not type a negative number.");
+        printErrorMsg("You should not type a negative number.");
       }
     }
     
   }
 
   /**
-   * read Territory from the terminal
+   * read Territory from the input
    * @param prompt is the prompt message when reading territory  
    * @throws IOException when nothing fetched from terminal  
    */
@@ -234,7 +244,7 @@ public class TextPlayer {
     String s;
     Board b = theGame.getBoard();
     while (true) {
-      out.println(prompt);
+      printPromptMsg(prompt);
       s = inputReader.readLine();
       if (s == null) {
         throw new EOFException("EOF");
@@ -242,38 +252,49 @@ public class TextPlayer {
       try {
         return b.getTerritory(s);
       } catch (IllegalArgumentException e) {
-        out.println(s + " is not one of the existing territories");
-      }
-    }
-  }
-  public Move readPlacement() {
-    Territory src = theGame.getBoard().getTerritory("unassigned");
-    out.println("You have " + view.displayUnits(src.getUnits()) + "to place.");
-    while (true) {
-      try {
-        Territory dst = readTerritory("Which territory do you want to place?");
-        Unit placed = readUnit(src, "How many units do you place?");
-        return new Move(placed, "unassigned", dst.getName(), this.color);
-      } catch (Exception e) {
-        //out.println("You don't have enough units to place.");
+        printErrorMsg(s + " is not one of the existing territories");
       }
     }
   }
 
+  /**
+   * read a initial placement from the input, validity unchecked
+   * @return a move action which move units from "unassigned" to target territory 
+   */
+  public Move readPlacement() throws IOException{
+    Territory src = theGame.getBoard().getTerritory("unassigned");
+    printInfo("You have " + view.displayUnits(src.getUnits()) + "to place.");
+    Territory dst = readTerritory("Which territory do you want to place?");
+    Unit placed = readUnit(src, "How many units do you place?");
+    return new Move(placed, "unassigned", dst.getName(), this.color);
+  }
+
+  /**
+   * read mulitple placement in placement phase
+   * @return a list of valid move
+   * @throws IOException when nothing fetched from input
+   */
   public List<Move> readPlacementPhase(List<Unit> toPlace) throws IOException {
+    printInfo(view.displayGame() + "You are the " + color + " player.");
+    
     Territory unassigned = new BasicTerritory("unassigned");
     unassigned.addUnitList(toPlace);
     Clan myClan = theGame.getPlayers().get(color);
     theGame.getBoard().addTerritory(unassigned);
     theGame.getBoard().putEntry(unassigned, myClan.getOccupies());
-    List<Move> placements = new ArrayList<Move>();
-
-    display();
-    out.println("You are the " + color + " player.");
+    myClan.addTerritory(unassigned);
+    
+    List<Move> placements = new ArrayList<Move>();    
+    
     while (!unassigned.isEmpty()) {
       Move placement = readPlacement();
-      placement.apply(theGame);
-      placements.add(placement);
+      String msg = tryAct(placement, actionCheckers.get(placement.getClass()));
+      if (msg == null) {
+        placements.add(placement);
+      }
+      else {
+        printErrorMsg(msg);
+      }
     }
     return placements;
   }
@@ -285,7 +306,7 @@ public class TextPlayer {
    */
   public void doGameOverPhase() throws IOException, IllegalStateException{
     if (isGameOver()) {
-      out.println(view.displayWinner());
+      printInfo(view.displayWinner());
       inputReader.close();
       out.close();
     }
@@ -293,31 +314,57 @@ public class TextPlayer {
       throw new IllegalStateException("Game is not over yet.");
     }
   }
-  public void doOneSpeculation() {
-    out.println(view.displayGame());
+
+  /**
+   * player spectate for one round
+   */
+  public void doOneSpectation() {
+    printInfo(view.displayGame());
   }
-  
+
+  /**
+   * fetch post peath choice from input 
+   * @return Q or S based, which represents Quit or Spectate
+   * @throws IOException when nothing fetched from input
+   */
   //TODO:multiple post death choices
   public String getPostDeathChoice() throws IOException{
     while (true) {
-      out.println("You are dead. What would you like to do?");
-      out.println("(S)peculate");
-      out.println("(Q)uit");
+      StringBuilder prompt = new StringBuilder();
+      prompt.append("You are dead. What would you like to do?\n");
+      prompt.append("(S)peculate\n");
+      prompt.append("(Q)uit");
+      printPromptMsg(prompt.toString());
       String choice = inputReader.readLine();
       if (choice.equals("S") || choice.equals("Q")) {
         return choice;
       }
       else {
-        out.println("Please choose from (S)peculate (Q)uit");
+        printErrorMsg("Please choose from (S)peculate (Q)uit");
       }
     }
   }
+
+  /**
+   * helper function used to get the player's occupies outside this class
+   * this function is used to adapt a list of placements(move) to the map which maps territory name to a list of units  
+   * @return a list of territory which is this player's occupies  
+   */  
+  public List<Territory> getOccupies() {
+    return theGame.getClans().get(color).getOccupies();
+  }
+  /**
+   * setup the list of action candidates when doing action phase
+   */
   protected void setupActionList() {
     actionChoices.add("(M)ove");
     actionChoices.add("(A)ttack");
     actionChoices.add("(D)one");
   }
-
+  /**
+   * setup the map which maps the action selected to the action reading function
+   */
+  //TODO:Lambda can't throw any Exception, so we catch all possible exceptions
   protected void setupActionReadingMap() {
     actionReadingFns.put("M", () -> readMove());
     actionReadingFns.put("A", () -> readAttack());
@@ -325,8 +372,39 @@ public class TextPlayer {
       return null;
     });
   }
+  
+  /**
+   * setup the map which maps the action class to the rulechecker
+   */
+  //TODO:add tryapply to action interface
   protected void setupActionCheckers() {
     actionCheckers.put(Attack.class, new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null))));
     actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(null)));
+  }
+
+  /**
+   * print error message with two lines of symbol around  
+   */
+  public void printErrorMsg(String msg) {
+    out.println("****************************************************");
+    out.println(msg);
+    out.println("****************************************************");
+  }
+
+  /**
+   * print prompt message with two lines of symbol around 
+   */
+  public void printPromptMsg(String prompt) {
+    out.println("==========================");
+    out.println(prompt);
+    out.println("==========================");
+  }
+  /**
+   * print game state message with two lines of symbol around  
+   */
+  public void printInfo(String info) {
+    out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+    out.println(info);
+    out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
   }
 }
