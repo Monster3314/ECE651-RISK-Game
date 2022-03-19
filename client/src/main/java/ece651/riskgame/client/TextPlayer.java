@@ -332,7 +332,7 @@ public class TextPlayer {
     while (true) {
       StringBuilder prompt = new StringBuilder();
       prompt.append("You are dead. What would you like to do?\n");
-      prompt.append("(S)peculate\n");
+      prompt.append("(S)pectate\n");
       prompt.append("(Q)uit");
       printPromptMsg(prompt.toString());
       String choice = inputReader.readLine();
