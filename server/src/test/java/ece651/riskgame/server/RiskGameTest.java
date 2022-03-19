@@ -1,6 +1,7 @@
 package ece651.riskgame.server;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.when;
 
@@ -11,10 +12,13 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -22,6 +26,7 @@ import org.powermock.reflect.Whitebox;
 
 import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.Attack;
+import ece651.riskgame.shared.BasicTerritory;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
@@ -163,20 +168,20 @@ public class RiskGameTest {
   }
 
   @Test
-  public void test_sendGameInfo() throws Exception {
+  public void test_SendGameInfo() throws Exception {
     riskGame = new RiskGame(1);
     GameInfo gi_expected = new GameInfo(new Board(), new HashMap<String, Clan>());
     Thread th_server = new Thread() {
-        @Override()
-        public void run() {
-          try {
-            ServerSocket ss = new ServerSocket(1751);            
-            Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
-            Whitebox.invokeMethod(riskGame, "initPlayers");
-            Whitebox.invokeMethod(riskGame, "sendGameInfo", gi_expected);
-          } catch (Exception e) {
-            
-          }
+      @Override()
+      public void run() {
+        try {
+          ServerSocket ss = new ServerSocket(1751);
+          Whitebox.invokeMethod(riskGame, "waitForPlayers", ss, 1);
+          Whitebox.invokeMethod(riskGame, "initPlayers");
+          Whitebox.invokeMethod(riskGame, "sendGameInfo", gi_expected);
+        } catch (Exception e) {
+
+        }
       }
     };
     th_server.start();
@@ -196,6 +201,7 @@ public class RiskGameTest {
     th_server.join();
   }
 
+  
   @Test
   public void test_assignUnitsto1() throws Exception {
     riskGame = new RiskGame(1);
@@ -358,9 +364,33 @@ public class RiskGameTest {
     assertEquals(2, board.getTerritory("Jiangsu").getUnits().get(0).getNum());
   }
 
-  //@Test
+  @Test
+  public void test_stillHaveAlivePlayers() throws Exception {
+    RiskGame riskGame = new RiskGame(2);
+    Map<String, Boolean> online = new HashMap<String, Boolean>();
+    online.put("Blue", true);
+    Whitebox.setInternalState(riskGame, "online", online);
+
+    World world = new World(2);
+    Map<String, Clan> clans = new HashMap<String, Clan>();
+    Clan clan1 = new Clan();
+    clan1.addTerritory(new BasicTerritory("Dog Wood"));
+    clans.put("Blue", clan1);
+    Whitebox.setInternalState(world, "clans", clans);
+    Whitebox.setInternalState(riskGame, "world", world);
+
+    assertTrue((Boolean) Whitebox.invokeMethod(riskGame, "stillHaveAlivePlayers"));
+
+    online.put("Blue", false);
+    assertFalse((Boolean) Whitebox.invokeMethod(riskGame, "stillHaveAlivePlayers"));
+
+  }
+
+  @Test
   public void test_run() throws IOException, InterruptedException, ClassNotFoundException {
     riskGame = new RiskGame(2);
+    // make the order determined
+    Whitebox.setInternalState(riskGame, "sockets", new LinkedHashMap<Socket, String>());
     World world = Whitebox.getInternalState(riskGame, "world");
     Board board = Whitebox.getInternalState(world, "board");
     Map<String, Clan> clans = Whitebox.getInternalState(world, "clans");
@@ -376,17 +406,65 @@ public class RiskGameTest {
     };
     th_server.start();
     Thread.sleep(100); // this is abit of a hack
-    Socket s1 = new Socket("0.0.0.0", 2100);
-    assertTrue(s1.isConnected());
-    ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
-    ObjectOutputStream oos = new ObjectOutputStream(s1.getOutputStream());
 
-    ois.readObject(); // read color
-    ois.readObject(); // read initial empty board
+    Socket s1 = new Socket("0.0.0.0", 2100);    
+    ObjectInputStream ois1 = new ObjectInputStream(s1.getInputStream());
+    ObjectOutputStream oos1 = new ObjectOutputStream(s1.getOutputStream());
+    //    Thread.sleep(5000);
+    Socket s2 = new Socket("0.0.0.0", 2100);
+    ObjectInputStream ois2 = new ObjectInputStream(s2.getInputStream());
+    ObjectOutputStream oos2 = new ObjectOutputStream(s2.getOutputStream());
 
-    List<Unit> needToAssign = (List<Unit>) ois.readObject();
-    assertEquals(30, needToAssign.get(0).getNum());
+    String color1 = (String)ois1.readObject(); // read color
+    ois1.readObject(); // read initial empty board
+    String color2 = (String)ois2.readObject(); // read color
+    ois2.readObject(); // read initial empty board
+    
+    ois1.readObject();
+    ois2.readObject(); // read Initialization unit
+    System.out.println("in init");
+    // user allocate units
 
+    Map<String, List<Unit>> assignResults1 = assignPlayer1();
+    Map<String, List<Unit>> assignResults2 = assignPlayer2();
+    oos1.writeObject(assignResults1);
+    oos2.writeObject(assignResults2);
+
+    System.out.println(board.getTerritoriesSet().size());
+    
+    // get first board
+    ois1.readObject();    
+    ois2.readObject();
+    assertEquals(5, board.getTerritory("Shanghai").getUnits().get(0).getNum());
+    assertEquals(10, board.getTerritory("Jiangsu").getUnits().get(0).getNum());
+    assertEquals(15, board.getTerritory("Zhejiang").getUnits().get(0).getNum());
+
+    assertEquals(5, board.getTerritory("Anhui").getUnits().get(0).getNum());
+    assertEquals(10, board.getTerritory("Shandong").getUnits().get(0).getNum());
+    assertEquals(15, board.getTerritory("Fujian").getUnits().get(0).getNum());
+    System.out.println("game start");
+    // send actions, round 1
+    List<Action> actions1 = new ArrayList<Action>();
+    actions1.add(new Move(new BasicUnit(5), "Jiangsu", "Shanghai", "Red"));
+    oos1.writeObject(actions1);
+    List<Action> actions2 = new ArrayList<Action>();
+    oos2.writeObject(actions2);
+
+    // get results, round 1
+    ois1.readObject();
+    assertEquals(11, board.getTerritory("Shanghai").getUnits().get(0).getNum());
+    assertEquals(6, board.getTerritory("Jiangsu").getUnits().get(0).getNum());
+    ois2.readObject();
+    assertEquals(11, board.getTerritory("Shandong").getUnits().get(0).getNum());
+
+    s1.close();
+    s2.close();
+
+    th_server.interrupt();
+    th_server.join();
+  }
+
+  private Map<String, List<Unit>> assignPlayer1() {
     Map<String, List<Unit>> assignResults = new HashMap<String, List<Unit>>();
     List<Unit> l1 = new ArrayList<Unit>();
     List<Unit> l2 = new ArrayList<Unit>();
@@ -397,25 +475,20 @@ public class RiskGameTest {
     assignResults.put("Shanghai", l1);
     assignResults.put("Jiangsu", l2);
     assignResults.put("Zhejiang", l3);
-    oos.writeObject(assignResults);
+    return assignResults;
+  }
 
-    ois.readObject();
-    assertEquals(5, board.getTerritory("Shanghai").getUnits().get(0).getNum());
-    assertEquals(10, board.getTerritory("Jiangsu").getUnits().get(0).getNum());
-    assertEquals(15, board.getTerritory("Zhejiang").getUnits().get(0).getNum());
-
-    // send actions, round 1
-    List<Action> actions1 = new ArrayList<Action>();
-    actions1.add(new Move(new BasicUnit(5), "Jiangsu", "Shanghai", "Red"));
-    oos.writeObject(actions1);
-
-    ois.readObject();
-    assertEquals(11, board.getTerritory("Shanghai").getUnits().get(0).getNum());
-    assertEquals(6, board.getTerritory("Jiangsu").getUnits().get(0).getNum());
-    
-    s1.close();
-
-    th_server.interrupt();
-    th_server.join();
+  private Map<String, List<Unit>> assignPlayer2() {
+    Map<String, List<Unit>> assignResults = new HashMap<String, List<Unit>>();
+    List<Unit> l1 = new ArrayList<Unit>();
+    List<Unit> l2 = new ArrayList<Unit>();
+    List<Unit> l3 = new ArrayList<Unit>();
+    l1.add(new BasicUnit(5));
+    l2.add(new BasicUnit(10));
+    l3.add(new BasicUnit(15));
+    assignResults.put("Anhui", l1);
+    assignResults.put("Shandong", l2);
+    assignResults.put("Fujian", l3);
+    return assignResults;
   }
 }

@@ -107,7 +107,7 @@ public class RiskGame {
       Clan clan = world.getClans().get(player.getValue());
       ObjectInputStream ois = oisMap.get(player.getKey());
       Map<String, List<Unit>> assignResult = (Map<String, List<Unit>>) ois.readObject();
-
+      
       for (Territory t : clan.getOccupies()) {
         if (assignResult.containsKey(t.getName())) {
           List<Unit> units = assignResult.get(t.getName());

@@ -21,11 +21,7 @@ public class App {
     try {
       App app = new App(playerNum);
       app.riskGame.run(1651);
-    } catch (IOException e) {
-      System.out.println("IOException ouucred, server shut down");
-    } catch (ClassNotFoundException e) {
-      System.out.println("cannot parse input objects");
-    } catch (IllegalAccessException e) {
+    } catch (Exception e) {
       System.out.println(e.getMessage());
     }
   }
