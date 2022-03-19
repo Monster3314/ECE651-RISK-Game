@@ -68,10 +68,17 @@ public class World implements Actable{
     clans.put(color, new Clan(occupies));
   }
 
+  /**
+   * @param action to take effect
+   */
   public void acceptAction(Action action) {
     action.apply(this);
   }
 
+  /**
+   * @param name of territory
+   * @return Color of owner(Clan)
+   */
   public String getTerritoryOwnership(String name) {
     for (Map.Entry<String, Clan> clan : clans.entrySet()) {
       if (clan.getValue().occupyTerritory(name)) {

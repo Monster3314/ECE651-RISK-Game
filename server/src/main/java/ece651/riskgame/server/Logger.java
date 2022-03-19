@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+/**
+ * Singleton Pattern: make constructor private
+ */
 public class Logger {
     private static Logger logger = new Logger();
     private PrintWriter writer;
@@ -34,10 +37,16 @@ public class Logger {
         buffer.add(sdf.format(date) + "  |  " + log);
     }
 
+    /**
+     * @return String logs in buffer
+     */
     public Iterable<String> getBuffer() {
         return buffer;
     }
 
+    /**
+     * Clear the buffer and write logs in buffer into log file
+     */
     public void flushBuffer() {
         for (String s : buffer) {
             writer.println(s);
