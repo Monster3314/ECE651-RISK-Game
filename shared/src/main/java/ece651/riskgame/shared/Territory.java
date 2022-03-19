@@ -3,7 +3,6 @@ package ece651.riskgame.shared;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public abstract class Territory implements Serializable {
   protected String name;
