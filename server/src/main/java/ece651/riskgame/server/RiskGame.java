@@ -90,11 +90,19 @@ public class RiskGame {
         oos.writeObject(gi);
       } catch (IOException e) {
         online.put(player.getValue(), false);
+        logger.writeLog("Player " + player.getValue() + " disconnect");
       }
 
     }
   }
 
+
+  /**
+   * ask players to assign their units to each territory
+   * @param unitNumber the unit number that player can assign
+   * @throws IOException
+   * @throws ClassNotFoundException
+   */
   @SuppressWarnings("unchecked")
   private void assignUnits(int unitNumber) throws IOException, ClassNotFoundException {
     for (Map.Entry<Socket, String> player : sockets.entrySet()) {
@@ -119,6 +127,10 @@ public class RiskGame {
     logger.flushBuffer();
   }
 
+  /**
+   * read the list of Actions from each player
+   * @return the list of Actions
+   */
   @SuppressWarnings("unchecked")
   private List<Action> readActions() {
     List<Action> Actions = new ArrayList<>();
@@ -129,12 +141,16 @@ public class RiskGame {
         Actions.addAll((List<Action>) ois.readObject());
       } catch (Exception ignored) {
         online.put(player.getValue(), false);
+        logger.writeLog("Player " + player.getValue() + " disconnect");
       }
     }
     return Actions;
   }
 
 
+  /**
+   * perform action including move and attack action
+   */
   private void doAction() {
     List<Action> Actions = readActions();
     if(Actions.size() == 0) return;
@@ -160,21 +176,35 @@ public class RiskGame {
     logger.flushBuffer();
   }
 
+  /**
+   * do move action
+   * @param moveActions the list of Move actions
+   */
   private void doMoveAction(List<Move> moveActions) {
     for (Move a : moveActions) {
-      if (MoveActionChecker.checkAction(world, a) != null)
+      String checkResult = MoveActionChecker.checkAction(world, a);
+      if (checkResult != null) {
+        logger.writeLog("Discard " + a.getColor() + "'s move" + "(" + a.getFromTerritory() + ", " + a.getToTerritory()
+                + ", " + a.getUnit() + ") for reason: " + checkResult);
         continue;
+      }
       world.acceptAction(a);
       logger.writeLog(a.getColor() + " player moves " + a.getUnit() + " from " + a.getFromTerritory() + " to " + a.getToTerritory() + ".");
     }
   }
 
+  /**
+   * do attack actions
+   * @param attackActions the list of attack actions
+   */
   private void doAttackAction(List<Attack> attackActions) {
     List<Attack> validAttacks = new ArrayList<Attack>();
 
     for (Attack attack : attackActions) {
       String checkResult = AttackActionChecker.checkAction(world, attack);
       if (checkResult != null) {
+        logger.writeLog("Discard " + attack.getColor() + "'s attack" + "(" + attack.getFromTerritory() + ", " + attack.getToTerritory()
+                        + ", " + attack.getUnit() + ") for reason: " + checkResult);
         continue;
       }
       attack.onTheWay(world);
@@ -186,20 +216,37 @@ public class RiskGame {
       world.acceptAction(attack);
   }
 
+  /**
+   * after each turn, each territory will get one unit
+   */
   private void afterTurn() {
     for (Territory t : world.getBoard().getTerritoriesList()) {
       t.addUnit(new BasicUnit(1));
     }
   }
 
+  /**
+   * to test whether player is still alive, which means he has some territories
+   * @param player the player that we want to test
+   * @return the status of player
+   */
   private boolean isAlive(String player) {
     return world.getClans().get(player).isActive();
   }
 
+  /**
+   * to test whether player is still online
+   * @param player the player that we want to test
+   * @return the online status of player
+   */
   private boolean isOnline(String player) {
     return online.get(player);
   }
 
+  /**
+   * to test whether there is player in the game.
+   * @return false if there is no player in the game, including not alive or not online
+   */
   private boolean stillHaveAlivePlayers() {
     boolean haveAlivePlayer = false;
     for(Map.Entry<String, Clan> players: world.getClans().entrySet()) {
@@ -209,6 +256,10 @@ public class RiskGame {
     return haveAlivePlayer;
   }
 
+  /**
+   * close the sockets that used to connect to each player
+   * @throws IOException
+   */
   private void closeSockets() throws IOException {
     for(Socket s: sockets.keySet()) s.close();
   }
