@@ -38,6 +38,10 @@ public class MapGenerator {
     }
   }
 
+  /**
+   * @param sourceFile recording the topology relationship between territories
+   * @throws IOException when failed to read source file
+   */
   private void initAdjacencyMatrix(String sourceFile) throws IOException {
     try (BufferedReader br = new BufferedReader(new FileReader(sourceFile))) {
       String line;
