@@ -245,9 +245,14 @@ public class TextPlayerTest {
     TextPlayer player = createTextPlayer(input, bytes);
     String prompt = "Please enter a territory:";
     Territory[] expectedList = new Territory[3];
+    expectedList[0] = new BasicTerritory("Durham");
+    expectedList[1] = new BasicTerritory("Raleigh");
+    expectedList[2] = new BasicTerritory("Cary");
 
     for (int i = 0; i < expectedList.length; i++) {
       Territory t = player.readTerritory(prompt);
+      assertEquals(t, expectedList[i]);
+
       bytes.reset();
     }
     //invalid testcases
@@ -255,7 +260,18 @@ public class TextPlayerTest {
     player = createTextPlayer(input, bytes);
     Territory expected = new BasicTerritory("Durham");
     assertEquals(player.readTerritory(prompt), expected);
-    
+
+
+    String expectedMsg[] = new String[2];
+    expectedMsg[0] = "Greensboro is not one of the existing territories";
+    expectedMsg[1] =  "Apex is not one of the existing territories";
+    String expectedOutput = new String();
+    for (int i = 0; i < expectedMsg.length; i++) {
+      expectedOutput = expectedOutput + prompt + "\n";
+      expectedOutput = expectedOutput + expectedMsg[i] + "\n";
+    }
+    expectedOutput = expectedOutput + prompt + "\n";
+
     bytes.reset();
 
     input = "";

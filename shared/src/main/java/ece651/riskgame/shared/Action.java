@@ -3,7 +3,13 @@ package ece651.riskgame.shared;
 import java.util.Map;
 
 public interface Action {
-    public void apply(Actable world);
+    /**
+     * @param world the Action applying on
+     */
+    void apply(Actable world);
 
-    public void clientApply(Actable game);
+    /**
+     * @param game apply method used by Client
+     */
+    void clientApply(Actable game);
 }

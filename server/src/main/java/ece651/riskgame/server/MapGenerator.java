@@ -38,12 +38,17 @@ public class MapGenerator {
     }
   }
 
+  /**
+   * @param sourceFile recording the topology relationship between territories
+   * @throws IOException when failed to read source file
+   */
   private void initAdjacencyMatrix(String sourceFile) throws IOException {
     try (BufferedReader br = new BufferedReader(new FileReader(sourceFile))) {
       String line;
       int row = 0;
-      while ((line = br.readLine()) != null) {
-        /*if (row == 15) {
+      for (int i = 0; i < MaxTerritoryNum; i++) {
+        line = br.readLine();
+        /*if (line == null) {
           throw new IllegalArgumentException("adjacency matrix initialization file format is illegal");
         }*/
         String[] values = line.split(",");

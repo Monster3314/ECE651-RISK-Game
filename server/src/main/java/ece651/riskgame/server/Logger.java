@@ -4,11 +4,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
+/**
+ * Singleton Pattern: make constructor private
+ */
 public class Logger {
     private static Logger logger = new Logger();
     private PrintWriter writer;
     private ArrayList<String> buffer;
+    private SimpleDateFormat sdf;
 
     private Logger() {
         try {
@@ -16,26 +22,31 @@ public class Logger {
             FileWriter fileWriter = new FileWriter(logFile);
             writer = new PrintWriter(fileWriter, true);
             buffer = new ArrayList<>();
-        } catch (IOException e) {
-            e.printStackTrace();
+            sdf = new SimpleDateFormat();
+            sdf.applyPattern("MM-dd HH:mm:ss");
+        } catch (IOException ignored) {
         }
     }
 
     public static Logger getInstance() {
-        if (logger == null) {
-            logger = new Logger();
-        }
         return logger;
     }
 
     public void writeLog(String log) {
-        buffer.add(log);
+        Date date = new Date();
+        buffer.add(sdf.format(date) + "  |  " + log);
     }
 
+    /**
+     * @return String logs in buffer
+     */
     public Iterable<String> getBuffer() {
         return buffer;
     }
 
+    /**
+     * Clear the buffer and write logs in buffer into log file
+     */
     public void flushBuffer() {
         for (String s : buffer) {
             writer.println(s);

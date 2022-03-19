@@ -20,11 +20,5 @@ public class Move extends MigrationAction implements Serializable {
     public void clientApply(Actable game) {
       apply(game);
     }
-  public String getDst() {
-    return toTerritory;
-  }
-  public Unit getUnit() {
-    return Unit;
-  }
   
 }

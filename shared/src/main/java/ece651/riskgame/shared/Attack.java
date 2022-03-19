@@ -9,6 +9,10 @@ public class Attack extends MigrationAction implements Serializable {
         super(attackUnit, fromTerritory, toTerritory, color);
     }
 
+    /**
+     * apply the action
+     * @param world
+     */
     @Override
     public void apply(Actable world) {
         Board board = world.getBoard();
@@ -33,10 +37,19 @@ public class Attack extends MigrationAction implements Serializable {
         }
 
     }
-  public void clientApply(Actable game) {
-    onTheWay(game);
-  }
 
+    /**
+     * use for client end
+     * @param game
+     */
+    public void clientApply(Actable game) {
+        onTheWay(game);
+    }
+
+    /**
+     * send the unit to the target territory
+     * @param world
+     */
     public void onTheWay(Actable world) {
         Board board = world.getBoard();
 

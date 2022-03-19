@@ -12,22 +12,16 @@ public class App {
     riskGame = new RiskGame(n);
   }
 
-  public static void main(String[] args) {    
-    if ((args.length != 1) || (args[0].length() != 1) || args[0].charAt(0) < '1' || args[0].charAt(0) > '5') {
+  public static void main(String[] args) {
+    if ((args.length != 1) || (args[0].length() != 1) || args[0].charAt(0) < '2' || args[0].charAt(0) > '5') {
       System.out.println("Player number 2-5");
       return;
-    }  
+    }
     int playerNum = Integer.parseInt(args[0]);
-    try{
+    try {
       App app = new App(playerNum);
       app.riskGame.run(1651);
-    }
-    catch (IOException e) {
-      System.out.println("IOException ouucred, server shut down");
-    } catch (ClassNotFoundException e) {
-      System.out.println("cannot parse input objects");
-    }
-    catch (IllegalAccessException e) {
+    } catch (Exception e) {
       System.out.println(e.getMessage());
     }
   }
