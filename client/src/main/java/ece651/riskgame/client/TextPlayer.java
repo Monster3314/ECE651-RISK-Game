@@ -340,7 +340,7 @@ public class TextPlayer {
         return choice;
       }
       else {
-        printErrorMsg("Please choose from (S)peculate (Q)uit");
+        printErrorMsg("Please choose from (S)pectate (Q)uit");
       }
     }
   }
