@@ -67,7 +67,7 @@ public abstract class Territory implements Serializable {
             attacker.decSoldiers(1);
           else
             i.decSoldiers(1);
-          System.out.println("attacker:" + attacker.getNum() + " | this: " + i.getNum());
+          //System.out.println("attacker:" + attacker.getNum() + " | this: " + i.getNum());
         }
         if (i.getNum() == 0) {
           addUnit(attacker);
