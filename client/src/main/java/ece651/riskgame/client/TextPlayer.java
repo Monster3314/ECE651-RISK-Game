@@ -29,7 +29,7 @@ import ece651.riskgame.shared.UnitsRuleChecker;
  * Textplayer is a class on client side which is responsible for reading initial placements, reading actions, applying actions locally, and spectating.
  */
 public class TextPlayer {
-  final String color;
+  private final String color;
   private GameInfo theGame;
   private GameView view;
   final BufferedReader inputReader;
