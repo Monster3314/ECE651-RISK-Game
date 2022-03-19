@@ -97,7 +97,7 @@ public class App {
    * recvGame is used to recieve the game function from the socket to server
    * @throws IOException when nothing fetched from objectstream input
    */
-  private GameInfo recvGame() throws IOException{
+  protected GameInfo recvGame() throws IOException{
     GameInfo game;
     try {
       game = (GameInfo) socketIn.readObject();

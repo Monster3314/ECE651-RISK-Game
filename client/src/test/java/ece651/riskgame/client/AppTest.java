@@ -9,10 +9,15 @@ import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.powermock.reflect.Whitebox;
+import static org.mockito.Mockito.*;
 
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 
 public class AppTest {
   @Test
@@ -56,7 +61,7 @@ public class AppTest {
       }
     };
     th_server.start();
-    th_client.start();    
+    th_client.start();
   }
 
   @Test
@@ -104,6 +109,24 @@ public class AppTest {
     th_server.join();
   }
 
-  
+
+
+  @Test
+  public void test_dopostdeath() throws IOException, ClassNotFoundException {
+    TextPlayer t = mock(TextPlayer.class);
+
+    ObjectInputStream oi = mock(ObjectInputStream.class);
+    ObjectOutputStream os = mock(ObjectOutputStream.class);
+    App a = spy(new App(t, oi, os));
+
+    when(t.getPostDeathChoice()).thenReturn("Q");
+    when(t.isGameOver()).thenReturn(false);
+    doNothing().when(t).update(any(GameInfo.class));
+    doNothing().when(t).doGameOverPhase();
+    doNothing().when(oi).close();
+    doNothing().when(os).close();
+
+    a.doPostDeathPhase();
+  }
 
 }
