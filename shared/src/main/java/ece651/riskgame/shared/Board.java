@@ -17,6 +17,9 @@ public class Board implements Serializable {
     territories = new ArrayList<>();
   }
 
+  /**
+   * @param neighbors List of territories neighboring the @param territory
+   */
   public void putEntry(Territory territory, List<Territory> neighbors) {
     adjacency.put(territory, neighbors);
   }

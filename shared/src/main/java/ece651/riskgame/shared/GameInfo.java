@@ -3,6 +3,12 @@ package ece651.riskgame.shared;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Map;
+
+/**
+ * Describe Game State
+ * board: topology relationship between territories
+ * players: map from color to Clan
+ */
 public class GameInfo implements Serializable, Actable{
   private Board board;
   private Map<String, Clan> players;// clan
@@ -31,9 +37,9 @@ public class GameInfo implements Serializable, Actable{
     this.players = players;
   }
 
-  /*
-    Input: territory name
-    Return: Clan's color
+  /**
+   * @param name of territory
+   * @return Clan's color
    */
   public String getTerritoryOwnership(String name) {
     for (Map.Entry<String, Clan> clan : players.entrySet()) {
@@ -44,6 +50,9 @@ public class GameInfo implements Serializable, Actable{
     return null;
   }
 
+  /**
+   * @return color of winner. return null if game is not end.
+   */
  public String getWinner() {
     ArrayList<String> alivePlayer = new ArrayList<>();
     for(Map.Entry<String, Clan> clan : players.entrySet()) {

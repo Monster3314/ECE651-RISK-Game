@@ -2,6 +2,9 @@ package ece651.riskgame.shared;
 
 import java.io.Serializable;
 
+/**
+ * abstract Action class extended by Action involving two territories (Move and Attack)
+ */
 public abstract class MigrationAction implements Action, Serializable{
     protected Unit Unit;
     protected String fromTerritory;
@@ -19,14 +22,23 @@ public abstract class MigrationAction implements Action, Serializable{
         return Unit;
     }
 
+    /**
+     * @return departure territory name
+     */
     public String getFromTerritory() {
         return fromTerritory;
     }
 
+    /**
+     * @return destination territory name
+     */
     public String getToTerritory() {
         return toTerritory;
     }
 
+    /**
+     * @return Action taker's color
+     */
     public String getColor() {
         return color;
     }

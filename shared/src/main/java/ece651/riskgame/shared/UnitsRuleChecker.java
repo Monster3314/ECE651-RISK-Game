@@ -1,7 +1,8 @@
 package ece651.riskgame.shared;
 
-import java.util.List;
-
+/**
+ * check if departure territories have enough units
+ */
 public class UnitsRuleChecker extends ActionRuleChecker {
     public UnitsRuleChecker(ActionRuleChecker next) {
         super(next);
@@ -18,10 +19,10 @@ public class UnitsRuleChecker extends ActionRuleChecker {
                 return null;
               }
               else {
-                return "No enough number of Unit remaining";
+                return "No enough number of Unit remaining.";
               }
             }
         }
-        return "No specified Unit found";
+        return "No specified Unit found.";
     }
 }
