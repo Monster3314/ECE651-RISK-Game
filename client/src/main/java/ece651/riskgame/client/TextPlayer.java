@@ -125,8 +125,9 @@ public class TextPlayer {
    */  
   public Action readOneAction() throws IOException {
     printInfo(view.displayGame());
-    StringBuilder prompt = new StringBuilder();
+    
     while(true) {
+      StringBuilder prompt = new StringBuilder();
       prompt.append("You are the " + color + " player, what would you like to do?");
       for (String actionType: actionChoices) {
         prompt.append("\n" + actionType);
@@ -212,7 +213,7 @@ public class TextPlayer {
       StringBuilder promptMsg = new StringBuilder();
       promptMsg.append("You have " + Integer.toString(u.getNum()) + " units.\n");
       promptMsg.append(prompt + "\n");
-      printPromptMsg(prompt.toString());
+      printPromptMsg(promptMsg.toString());
 
       s = inputReader.readLine();
       if (s == null) {
