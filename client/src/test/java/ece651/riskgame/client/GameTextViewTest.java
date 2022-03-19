@@ -59,4 +59,18 @@ public class GameTextViewTest {
     assertEquals(expected, view.displayGame());
   }
 
+  @Test
+  public void test_displayWinner() {
+    Board b = new Board();
+    Map<String, Clan> players = new HashMap<>();
+    Territory t1 = new BasicTerritory("A");
+    Clan c = new Clan();
+    c.addTerritory(t1);
+    players.put("B", c);
+    b.addTerritory(t1);
+    GameInfo gi = new GameInfo(b, players);
+    GameTextView view = new GameTextView(gi);
+    assertEquals("B player wins!", view.displayWinner());
+  }
+
 }
