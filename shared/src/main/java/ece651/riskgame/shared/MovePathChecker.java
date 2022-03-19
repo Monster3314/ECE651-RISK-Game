@@ -3,9 +3,11 @@ package ece651.riskgame.shared;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.List;
 import java.util.Queue;
 
+/**
+ * check if there is a path consisting of Clan's own territories from departure to destination.
+ */
 public class MovePathChecker extends ActionRuleChecker {
     public MovePathChecker(ActionRuleChecker next) {
         super(next);
@@ -28,6 +30,7 @@ public class MovePathChecker extends ActionRuleChecker {
         if (!move.getColor().equals(actable.getTerritoryOwnership(dest))) {
             return "The destination territory does not belong to " + move.getColor() + " player.";
         }
+        // apply a BFS to look for destination
         Queue<Territory> queue = new LinkedList<>();
         HashSet<String> visited = new HashSet<>();
         queue.add(b.getTerritory(src));

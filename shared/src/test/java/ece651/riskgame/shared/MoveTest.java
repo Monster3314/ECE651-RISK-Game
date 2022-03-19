@@ -37,7 +37,7 @@ class MoveTest {
     
     Unit units = new BasicUnit(10);
     Move move = new Move(units, "HK", "Taiwan", null);
-    assertEquals("Taiwan", move.getDst());
+    assertEquals("Taiwan", move.getToTerritory());
     move.clientApply(fakeWorld);
 
    assertEquals(5, fakeWorld.getBoard().getTerritory("HK").getUnits().get(0).getNum());

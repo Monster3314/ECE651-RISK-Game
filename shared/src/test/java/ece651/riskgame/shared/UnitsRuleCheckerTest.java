@@ -45,18 +45,18 @@ public class UnitsRuleCheckerTest {
 
     ActionRuleChecker urc = new UnitsRuleChecker(null);
 
-    assertEquals("No specified Unit found", urc.checkMyRule(actable, act));
+    assertEquals("No specified Unit found.", urc.checkMyRule(actable, act));
 
     b.getTerritory("from").addUnit(new BasicUnit(5));
     assertEquals(null, urc.checkMyRule(actable, act));
 
     b.getTerritory("from").decUnit(new BasicUnit(1));
     when(actable.getBoard()).thenReturn(b);
-    assertEquals("No enough number of Unit remaining", urc.checkMyRule(actable, act));
+    assertEquals("No enough number of Unit remaining.", urc.checkMyRule(actable, act));
 
     Unit unit2 = new DemoUnit(5);
     Action act2 = new Move(unit2, "from", "to", "color");
-    assertEquals("No specified Unit found", urc.checkMyRule(actable, act2));
+    assertEquals("No specified Unit found.", urc.checkMyRule(actable, act2));
 
     // irrelevent test for coverage
     assertEquals(0, unit2.getRandomAttack());

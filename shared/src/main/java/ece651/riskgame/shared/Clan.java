@@ -4,6 +4,10 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Represent a player.
+ * Keep a list of territory occupied by this Clan
+ */
 public class Clan implements Serializable {
     private final List<Territory> occupies;
 
@@ -27,7 +31,10 @@ public class Clan implements Serializable {
         return occupies;
     }
 
-
+    /**
+     * @param name of territory
+     * @return true if succeed
+     */
     public boolean occupyTerritory(String name) {
         for (Territory territory : occupies) {
             if (territory.getName().equals(name)) {
