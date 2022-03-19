@@ -49,7 +49,7 @@
   :type 'color)
 
 
-(defcustom dcoverage-run-clover-function (lambda() (gradle-run "clean cloverGenerateReport"))
+(defcustom dcoverage-run-clover-function (lambda() (gradle-run "clean cloverAggregateReport"))
   "The elisp function to execute in order to run clover to generate test coverage results."
   :tag "dcoverage clover execution function"
   :group 'dcoverage
@@ -80,7 +80,7 @@
 
 (defun dcoverage-default-find-cov-file ()
   "Default way to find coverage file: find project root, then go to 'build/reports/clover/clover.xml'."
-  (concat (file-name-as-directory (dcoverage-find-project-root)) "app/build/reports/clover/clover.xml"))
+  (concat (file-name-as-directory (dcoverage-find-project-root)) "build/reports/clover/clover.xml"))
 
 (defvar dcoverage-find-cov-file-fn (symbol-function 'dcoverage-default-find-cov-file))
 "Specifies how to find the coverage file.  Set if you have a different setup."

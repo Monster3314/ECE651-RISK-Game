@@ -3,12 +3,26 @@
  */
 package ece651.riskgame.server;
 
-public class App {
-    public String getGreeting() {
-        return "Hello World!";
-    }
+import java.io.IOException;
 
-    public static void main(String[] args) {
-        System.out.println(new App().getGreeting());
+public class App {
+  public RiskGame riskGame;
+
+  public App(int n) throws IOException {
+    riskGame = new RiskGame(n);
+  }
+
+  public static void main(String[] args) {
+    if ((args.length != 1) || (args[0].length() != 1) || args[0].charAt(0) < '2' || args[0].charAt(0) > '5') {
+      System.out.println("Player number 2-5");
+      return;
     }
+    int playerNum = Integer.parseInt(args[0]);
+    try {
+      App app = new App(playerNum);
+      app.riskGame.run(1651);
+    } catch (Exception e) {
+      System.out.println(e.getMessage());
+    }
+  }
 }

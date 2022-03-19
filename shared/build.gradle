@@ -20,7 +20,10 @@ dependencies {
     testImplementation 'org.junit.platform:junit-platform-launcher:1.6.2'
     // Use JUnit Jupiter for testing.
     testImplementation 'org.junit.jupiter:junit-jupiter:5.7.2'
+    testImplementation group:'org.mockito', name:'mockito-junit-jupiter', version: '3.9.0'
+    testImplementation group:'org.powermock', name:'powermock-core', version: '2.0.9'
 
+    
     // This dependency is exported to consumers, that is to say found on their compile classpath.
     api 'org.apache.commons:commons-math3:3.6.1'
 
@@ -37,5 +40,15 @@ test {
     testLogging {
         showStandardStreams = true
         exceptionFormat = 'full'
+    }
+}
+
+clover{
+    compiler {
+        additionalArgs = "-g:lines,source,vars"
+    }
+    report {
+        xml=true
+        html = true
     }
 }
