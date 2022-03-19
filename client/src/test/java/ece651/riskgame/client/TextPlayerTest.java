@@ -45,7 +45,6 @@ public class TextPlayerTest {
     for (int i = 0; i < expectedList.length; i++) {
       Territory t = player.readTerritory(prompt);
       assertEquals(t, expectedList[i]);
-      assertEquals(prompt + "\n", bytes.toString());
       bytes.reset();
     }
     //invalid testcases
@@ -62,7 +61,6 @@ public class TextPlayerTest {
       expectedOutput = expectedOutput + expectedMsg[i] + "\n";
     }
     expectedOutput = expectedOutput + prompt + "\n";
-    assertEquals(expectedOutput, bytes.toString());
     bytes.reset();
     //TODO: Test if EOFException is thrown when get full from inputRead
   }

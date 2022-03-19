@@ -4,11 +4,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class Logger {
     private static Logger logger = new Logger();
     private PrintWriter writer;
     private ArrayList<String> buffer;
+    private SimpleDateFormat sdf;
 
     private Logger() {
         try {
@@ -16,6 +19,8 @@ public class Logger {
             FileWriter fileWriter = new FileWriter(logFile);
             writer = new PrintWriter(fileWriter, true);
             buffer = new ArrayList<>();
+            sdf = new SimpleDateFormat();
+            sdf.applyPattern("MM-dd HH:mm:ss");
         } catch (IOException ignored) {
         }
     }
@@ -25,7 +30,8 @@ public class Logger {
     }
 
     public void writeLog(String log) {
-        buffer.add(log);
+        Date date = new Date();
+        buffer.add(sdf.format(date) + "  |  " + log);
     }
 
     public Iterable<String> getBuffer() {
