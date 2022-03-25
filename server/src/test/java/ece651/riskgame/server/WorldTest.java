@@ -47,7 +47,7 @@ public class WorldTest {
     assertNull(actionRuleChecker.checkAction(w, m1));
     assertNotNull(actionRuleChecker.checkAction(w, m2));
     assertNotNull(actionRuleChecker.checkAction(w, m3));
-    assertNotNull(actionRuleChecker.checkAction(w, m4));
+    assertNull(actionRuleChecker.checkAction(w, m4));
     assertNotNull(actionRuleChecker.checkAction(w, m5));
   }
 

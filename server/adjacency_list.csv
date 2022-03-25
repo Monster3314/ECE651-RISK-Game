@@ -1,0 +1,15 @@
+Shanghai,Jiangsu,Zhejiang
+Jiangsu,Shanghai,Zhejiang,Anhui,Shandong
+Anhui,Jiangsu,Zhejiang,Shandong,Henan,Hubei,Jiangxi
+Hebei,Shandong,Henan
+Shandong,Jiangsu,Anhui,Henan,Hebei
+Henan,Anhui,Shandong,Hubei,Hebei
+Hubei,Anhui,Henan,Hunan,Jiangxi
+Hunan,Guangdong,Hubei,Jiangxi
+Jiangxi,Zhejiang,Anhui,Fujian,Guangdong,Hubei,Hunan
+Fujian,Zhejiang,Taiwan,Guangdong,Jiangxi
+Taiwan,Fujian
+Zhejiang,Shanghai,Jiangsu,Anhui,Fujian,Jiangxi
+Macau,Guangdong
+Hongkong,Guangdong
+Guangdong,Fujian,Hunan,Jiangxi,Hongkong,Macau
