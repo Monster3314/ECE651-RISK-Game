@@ -24,8 +24,18 @@
                 GridPane.rowIndex="0"
                 GridPane.columnIndex="0"
                 GridPane.columnSpan="2"/>
-    <ListView fx:id="rpnstack" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
-    <Label fx:id="numlabel" text="Current number: " GridPane.rowIndex="1" GridPane.columnIndex="1"/>
-    <TextField fx:id="currentNumber" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+    <fx:include source= "action-panel.xml"
+                GridPane.rowIndex="1"
+                GridPane.columnIndex="0"/>
+    <fx:include source= "game-map.xml"
+                GridPane.rowIndex="1"
+                GridPane.columnIndex="1"/>
+    <fx:include source= "territory-info-panel.xml"
+                GridPane.rowIndex="1"
+                GridPane.columnIndex="2"/>
+    <fx:include source= "bottom-bar.xml"
+                GridPane.rowIndex="2"
+                GridPane.columnIndex="0"
+                GridPane.columnSpan="2"/>       
   </children>
 </GridPane>
