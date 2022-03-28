@@ -75,3 +75,6 @@ clover{
     }
 }
 
+sourceSets {
+  main.output.resourcesDir = main.java.outputDir
+}
