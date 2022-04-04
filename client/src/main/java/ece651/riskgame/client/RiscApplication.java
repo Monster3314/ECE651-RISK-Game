@@ -5,21 +5,30 @@ package ece651.riskgame.client;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 
+import ece651.riskgame.client.controllers.GameController;
+import ece651.riskgame.client.controllers.MapButtonController;
 import ece651.riskgame.client.models.TerritoryList;
 import javafx.application.Application;
+import javafx.beans.property.StringProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Labeled;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import jdk.internal.loader.Loader;
 
 public class RiscApplication extends Application {
 
   private AppIO appIO;
   // Models
   private TerritoryList territoryList;
+  private StringProperty username;
+  private StringProperty territoryInfo;
   // GUIPlayer
   
   /**
@@ -34,35 +43,49 @@ public class RiscApplication extends Application {
     appIO = new AppIO(new String[] {"0.0.0.0", "1651"});
     
     URL xmlResource = getClass().getResource("/ui/main-page.xml");
-    System.out.println(xmlResource);
 
     FXMLLoader loader = new FXMLLoader(xmlResource);
+    //loadControllers(loader);
+    
     GridPane gp = loader.load();
 
     Scene scene = new Scene(gp, 800, 600);
     //URL cssResource = getClass().getResource("/ui/css/game-map.css");
     //scene.getStylesheets().add(cssResource.toString());
 
+    setUsername(scene, appIO.getColor());
     
-    setUserName(scene, appIO.getColor());
+    territoryInfo = ((Labeled) scene.lookup("#territoryInformation")).textProperty();    
     territoryList = new TerritoryList(appIO.getGameInfo().getBoard().getTerritoryNames());
     
     @SuppressWarnings("unchecked")
     ListView<String> territories = (ListView<String>) scene.lookup("#territoryList");
     territories.setItems(territoryList.getList());
+
+    // I failed to put this function into controller, so I leave it here for now
+    territories.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            territoryInfo.set("clicked on " + territories.getSelectionModel().getSelectedItem());
+        }
+    });
     
     stage.setScene(scene);
-    stage.show();
-    
+    stage.show();        
+  }
 
-    
+  private void setUsername(Scene scene, String name) {
+    username = ((Labeled) scene.lookup("#username")).textProperty();
+    username.set(appIO.getColor());
   }
   
-  /**
-   * Method to set username in UI
-   */
-  private void setUserName(Scene scene, String value) {
-    Text usernameText = (Text) scene.lookup("#topBar").lookup("#username");
-    usernameText.setText(value);    
+  private void loadControllers(FXMLLoader loader) {
+    HashMap<Class<?>, Object> controllers = new HashMap<>();    
+    controllers.put(MapButtonController.class, new MapButtonController(territoryInfo));
+    controllers.put(GameController.class, new GameController());
+    loader.setControllerFactory((c) -> {
+      return controllers.get(c);
+    });
+    
   }
 }
