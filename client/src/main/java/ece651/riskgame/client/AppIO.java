@@ -35,7 +35,9 @@ public class AppIO {
     return color;
   }
 
-  
+  public GameInfo getGameInfo() {
+    return gameInfo;
+  }
   
   public AppIO (String[] args) throws IOException {
     String ip = args[0];

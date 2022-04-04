@@ -6,9 +6,11 @@ package ece651.riskgame.client;
 import java.io.IOException;
 import java.net.URL;
 
+import ece651.riskgame.client.models.TerritoryList;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -17,6 +19,7 @@ public class RiscApplication extends Application {
 
   private AppIO appIO;
   // Models
+  private TerritoryList territoryList;
   // GUIPlayer
   
   /**
@@ -37,11 +40,16 @@ public class RiscApplication extends Application {
     GridPane gp = loader.load();
 
     Scene scene = new Scene(gp, 800, 600);
-    URL cssResource = getClass().getResource("/ui/css/game-map.css");
-    scene.getStylesheets().add(cssResource.toString());
+    //URL cssResource = getClass().getResource("/ui/css/game-map.css");
+    //scene.getStylesheets().add(cssResource.toString());
 
     
     setUserName(scene, appIO.getColor());
+    territoryList = new TerritoryList(appIO.getGameInfo().getBoard().getTerritoryNames());
+    
+    @SuppressWarnings("unchecked")
+    ListView<String> territories = (ListView<String>) scene.lookup("#territoryList");
+    territories.setItems(territoryList.getList());
     
     stage.setScene(scene);
     stage.show();

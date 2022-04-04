@@ -7,10 +7,11 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.text.*?>
 <?import java.net.URL?>
+<?import javafx.scene.control.ListView?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml">
   <children>
     <!-- representation of territories to be changed  -->
-    <Pane fx:id="map"/>
+    <ListView fx:id="territoryList" />
   </children>
 </GridPane>

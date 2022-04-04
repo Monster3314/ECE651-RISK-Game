@@ -2,6 +2,7 @@ package ece651.riskgame.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -43,6 +44,10 @@ public class Board implements Serializable {
     return new ArrayList<Territory>(territories.values());
   }
 
+  public Collection<String> getTerritoryNames() {
+    return territories.keySet();
+  }
+  
   public boolean containsTerritory(String name) {
     return territories.containsKey(name);
   }
