@@ -9,18 +9,16 @@ import java.util.HashMap;
 
 import ece651.riskgame.client.controllers.GameController;
 import ece651.riskgame.client.controllers.MapButtonController;
+import ece651.riskgame.client.models.TerritoryInfo;
 import ece651.riskgame.client.models.TerritoryList;
 import javafx.application.Application;
 import javafx.beans.property.StringProperty;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-import jdk.internal.loader.Loader;
 
 public class RiscApplication extends Application {
 
@@ -28,7 +26,7 @@ public class RiscApplication extends Application {
   // Models
   private TerritoryList territoryList;
   private StringProperty username;
-  private StringProperty territoryInfo;
+  private TerritoryInfo territoryInfo = new TerritoryInfo();
   // GUIPlayer
   
   /**
@@ -45,7 +43,7 @@ public class RiscApplication extends Application {
     URL xmlResource = getClass().getResource("/ui/main-page.xml");
 
     FXMLLoader loader = new FXMLLoader(xmlResource);
-    //loadControllers(loader);
+    loadControllers(loader);
     
     GridPane gp = loader.load();
 
@@ -55,21 +53,23 @@ public class RiscApplication extends Application {
 
     setUsername(scene, appIO.getColor());
     
-    territoryInfo = ((Labeled) scene.lookup("#territoryInformation")).textProperty();    
+    territoryInfo.setInfo(((Labeled) scene.lookup("#territoryInformation")).textProperty());    
     territoryList = new TerritoryList(appIO.getGameInfo().getBoard().getTerritoryNames());
+
+    System.out.println(territoryInfo);
     
     @SuppressWarnings("unchecked")
     ListView<String> territories = (ListView<String>) scene.lookup("#territoryList");
     territories.setItems(territoryList.getList());
 
     // I failed to put this function into controller, so I leave it here for now
-    territories.setOnMouseClicked(new EventHandler<MouseEvent>() {
+    /*territories.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
         public void handle(MouseEvent event) {
             territoryInfo.set("clicked on " + territories.getSelectionModel().getSelectedItem());
         }
     });
-    
+    */
     stage.setScene(scene);
     stage.show();        
   }
