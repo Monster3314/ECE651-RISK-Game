@@ -7,15 +7,12 @@
 <?import javafx.scene.text.*?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml">
-  <columnConstraints>
-    <ColumnConstraints percentWidth="25" />
-    <ColumnConstraints percentWidth="25" />
-    <ColumnConstraints percentWidth="25" />
-    <ColumnConstraints percentWidth="25" />
-  </columnConstraints>
+  <rowConstraints>
+    <RowConstraints percentHeight="20" />
+    <RowConstraints percentHeight="80" />        
+  </rowConstraints>
   <children>
-    <Text fx:id="username"
-          GridPane.columnIndex="0"
-          GridPane.rowIndex="0"/>
+    <Text text="Logo/figure placeholder" GridPane.rowIndex="0" />
+    <Text text="territory\ninformation" GridPane.rowIndex="1" />
   </children>
 </GridPane>

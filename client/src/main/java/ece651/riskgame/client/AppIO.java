@@ -22,28 +22,22 @@ import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
-public class App {
+public class AppIO {
 
   private DemoGUIPlayer player;
   private ObjectInputStream socketIn;
   private ObjectOutputStream socketOut;
+
+  String color;
+  GameInfo gameInfo;
+
+  public String getColor() {
+    return color;
+  }
+
   
   
-  /*
-  @Override
-  public void start(Stage stage) throws IOException {
-    URL xmlResource = getClass().getResource("/ui/main-page.xml");
-    System.out.println(xmlResource);
-
-    FXMLLoader loader = new FXMLLoader(xmlResource);
-    GridPane gp = loader.load();
-
-    Scene scene = new Scene(gp, 800, 600);
-    stage.setScene(scene);
-    stage.show();
-    }*/
-
-  public static void main(String[] args) throws IOException {
+  public AppIO (String[] args) throws IOException {
     String ip = args[0];
     int port = -1;
     try {
@@ -71,19 +65,20 @@ public class App {
 
     //recv allocated player color
     //recv GameInfo
-    String color = null;
-    GameInfo game = null;
+    //String color = null;
+    //GameInfo game = null;
     try {
       color = (String) socketIn.readObject();
-      game = (GameInfo) socketIn.readObject();
+      gameInfo = (GameInfo) socketIn.readObject();
     } catch (ClassNotFoundException e) {
       System.err.println("Class Not Found when reading Object through socket");
       System.exit(1);
     }
-    DemoGUIPlayer player = new DemoGUIPlayer(color, game);
-    App app = new App(player, socketIn, socketOut);
-    player.startGame();
+    DemoGUIPlayer player = new DemoGUIPlayer(color, gameInfo);
+    //this(player, socketIn, socketOut);
+  }
 
+  public void startGame() {
     /*
     app.doPlacementPhase();
     app.doActionPhase();
@@ -107,7 +102,7 @@ public class App {
    * @param socketIn is the objectInputStream of the socket
    * @param socketOut is the objectOutputStream of the socket
    */
-  public App(DemoGUIPlayer player, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
+  public AppIO(DemoGUIPlayer player, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
     this.player = player;
     this.socketIn = socketIn;
     this.socketOut = socketOut;
@@ -133,6 +128,7 @@ public class App {
    * doPlacementPhase is used to send the initial placements to the server
    * @throws IOException when the initial units to allocate is not recieved
    */
+  
   @SuppressWarnings("unchecked")
   public void doPlacementPhase() throws IOException {
     List<Unit> toPlace = null;
