@@ -20,22 +20,27 @@
     <RowConstraints percentHeight="15" />
   </rowConstraints> 
   <children>    
-    <fx:include source= "top-bar.xml"
+    <fx:include fx:id="topBar"
+                source= "top-bar.xml"
                 GridPane.rowIndex="0"
                 GridPane.columnIndex="0"
                 GridPane.columnSpan="2"/>
-    <fx:include source= "action-panel.xml"
+    <fx:include fx:id="actionPanel"
+                source= "action-panel.xml"
                 GridPane.rowIndex="1"
                 GridPane.columnIndex="0"/>
-    <fx:include source= "game-map.xml"
+    <fx:include fx:id="gamemap"
+                source= "game-map.xml"
                 GridPane.rowIndex="1"
                 GridPane.columnIndex="1"/>
-    <fx:include source= "territory-info-panel.xml"
+    <fx:include fx:id="territoryPanel"
+                source= "territory-panel.xml"
                 GridPane.rowIndex="1"
                 GridPane.columnIndex="2"/>
-    <fx:include source= "bottom-bar.xml"
+    <fx:include fx:id="bottomBar"
+                source= "bottom-bar.xml"
                 GridPane.rowIndex="2"
                 GridPane.columnIndex="0"
-                GridPane.columnSpan="2"/>       
+                GridPane.columnSpan="2"/>
   </children>
 </GridPane>

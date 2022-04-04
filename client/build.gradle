@@ -47,7 +47,8 @@ dependencies {
 
 application {
     // Define the main class for the application.
-    mainClass = 'ece651.riskgame.client.App'
+//    mainClass = 'ece651.riskgame.client.App'
+    mainClass = 'ece651.riskgame.client.RiscApplication'
 }
 
 tasks.named('test') {
