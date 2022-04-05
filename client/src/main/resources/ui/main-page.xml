@@ -29,7 +29,12 @@
     <fx:include fx:id="actionPanel"
                 source= "action-panel.xml"
                 GridPane.rowIndex="1"
-                GridPane.columnIndex="0"/>
+                GridPane.columnIndex="0"
+                visible="false"/>
+    <fx:include fx:id="placementPanel"
+                source= "placement-panel.xml"
+                GridPane.rowIndex="1"
+                GridPane.columnIndex="0"/>    
     <fx:include fx:id="gamemap"
                 source= "game-map.xml"
                 GridPane.rowIndex="1"

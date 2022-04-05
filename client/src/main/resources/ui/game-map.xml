@@ -11,9 +11,9 @@
 <?import java.lang.*?>
 
 <GridPane xmlns:fx="http://javafx.com/fxml"
-          fx:controller="ece651.riskgame.client.controllers.MapButtonController">
+          fx:controller="ece651.riskgame.client.controllers.GameMapController">
   <children>
     <!-- representation of territories to be changed  -->
-    <ListView fx:id="territoryList" onMouseClicked="#handle"/>
+    <ListView fx:id="territoryList" onMouseClicked="#showTerritoryInfo"/>
   </children>
 </GridPane>
