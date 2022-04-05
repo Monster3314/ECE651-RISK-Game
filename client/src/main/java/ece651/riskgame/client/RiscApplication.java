@@ -13,10 +13,13 @@ import ece651.riskgame.client.models.TerritoryInfo;
 import ece651.riskgame.client.models.TerritoryList;
 import javafx.application.Application;
 import javafx.beans.property.StringProperty;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
@@ -48,6 +51,8 @@ public class RiscApplication extends Application {
     GridPane gp = loader.load();
 
     Scene scene = new Scene(gp, 800, 600);
+    
+    
     //URL cssResource = getClass().getResource("/ui/css/game-map.css");
     //scene.getStylesheets().add(cssResource.toString());
 
@@ -62,6 +67,14 @@ public class RiscApplication extends Application {
     ListView<String> territories = (ListView<String>) scene.lookup("#territoryList");
     territories.setItems(territoryList.getList());
 
+    Button confirmBtn = (Button) scene.lookup("#placeBtn");
+    confirmBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
+        @Override
+        public void handle(MouseEvent event) {
+            scene.lookup("#placementPanel").setVisible(false);
+            scene.lookup("#actionPanel").setVisible(true);
+        }
+      });
     // I failed to put this function into controller, so I leave it here for now
     /*territories.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override

@@ -19,8 +19,6 @@
     <ColumnConstraints percentWidth="34" />
   </columnConstraints>
   <children>
-    <Button fx:id="moveBtn" text="Move" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-    <Button fx:id="attackBtn" text="Attack" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
-    <Button fx:id="upgradeBtn" text="Upgrade" GridPane.rowIndex="0" GridPane.columnIndex="2"/>      
-  </children>
+    <Button fx:id="placeBtn" text="Confirm" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+   </children>
 </GridPane>
