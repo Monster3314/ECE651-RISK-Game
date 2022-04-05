@@ -8,7 +8,8 @@
 <?import javafx.scene.text.*?>
 
 
-<GridPane xmlns:fx="http://javafx.com/fxml">
+<GridPane xmlns:fx="http://javafx.com/fxml"
+          fx:controller="ece651.riskgame.client.controllers.GameController">
   <columnConstraints>
     <ColumnConstraints percentWidth="25" />
     <ColumnConstraints percentWidth="50" />

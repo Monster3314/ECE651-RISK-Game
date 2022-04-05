@@ -14,7 +14,7 @@
     <ColumnConstraints percentWidth="25" />
   </columnConstraints>
   <children>
-    <Text fx:id="username"
+    <Label fx:id="username"
           GridPane.columnIndex="0"
           GridPane.rowIndex="0"/>
   </children>

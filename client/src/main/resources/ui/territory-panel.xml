@@ -13,6 +13,7 @@
   </rowConstraints>
   <children>
     <Text text="Logo/figure placeholder" GridPane.rowIndex="0" />
-    <Text text="territory\ninformation" GridPane.rowIndex="1" />
+    <Label fx:id="territoryInformation"
+        GridPane.rowIndex="1" />
   </children>
 </GridPane>
