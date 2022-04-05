@@ -8,7 +8,8 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<GridPane xmlns:fx="http://javafx.com/fxml">
+<GridPane xmlns:fx="http://javafx.com/fxml"
+          fx:controller="ece651.riskgame.client.controllers.PlacementPanelController">
   <rowConstraints>
     <RowConstraints percentHeight="15" />
     <RowConstraints percentHeight="85" />        
@@ -19,6 +20,10 @@
     <ColumnConstraints percentWidth="34" />
   </columnConstraints>
   <children>
-    <Button fx:id="placeBtn" text="Confirm" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <Button fx:id="placeBtn"
+            text="Confirm"
+            GridPane.rowIndex="0"
+            GridPane.columnIndex="0"
+            onMouseClicked="#confirmPlacement"/>
    </children>
 </GridPane>

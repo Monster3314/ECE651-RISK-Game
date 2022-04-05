@@ -8,23 +8,22 @@ import java.net.URL;
 import java.util.HashMap;
 
 import ece651.riskgame.client.controllers.GameController;
-import ece651.riskgame.client.controllers.MapButtonController;
+import ece651.riskgame.client.controllers.GameMapController;
+import ece651.riskgame.client.controllers.PlacementPanelController;
 import ece651.riskgame.client.models.TerritoryInfo;
 import ece651.riskgame.client.models.TerritoryList;
 import javafx.application.Application;
 import javafx.beans.property.StringProperty;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
 
 public class RiscApplication extends Application {
 
+  // SocketIO
   private AppIO appIO;
   // Models
   private TerritoryList territoryList;
@@ -67,6 +66,7 @@ public class RiscApplication extends Application {
     ListView<String> territories = (ListView<String>) scene.lookup("#territoryList");
     territories.setItems(territoryList.getList());
 
+    /*
     Button confirmBtn = (Button) scene.lookup("#placeBtn");
     confirmBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
         @Override
@@ -75,13 +75,6 @@ public class RiscApplication extends Application {
             scene.lookup("#actionPanel").setVisible(true);
         }
       });
-    // I failed to put this function into controller, so I leave it here for now
-    /*territories.setOnMouseClicked(new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            territoryInfo.set("clicked on " + territories.getSelectionModel().getSelectedItem());
-        }
-    });
     */
     stage.setScene(scene);
     stage.show();        
@@ -94,7 +87,8 @@ public class RiscApplication extends Application {
   
   private void loadControllers(FXMLLoader loader) {
     HashMap<Class<?>, Object> controllers = new HashMap<>();    
-    controllers.put(MapButtonController.class, new MapButtonController(territoryInfo));
+    controllers.put(GameMapController.class, new GameMapController(territoryInfo));
+    controllers.put(PlacementPanelController.class, new PlacementPanelController());
     controllers.put(GameController.class, new GameController());
     loader.setControllerFactory((c) -> {
       return controllers.get(c);
