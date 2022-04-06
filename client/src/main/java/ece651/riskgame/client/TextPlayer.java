@@ -417,15 +417,4 @@ public class TextPlayer {
     out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
   }
 
-  // DEMO METHODS
-  public void startGame() {
-    //Thread guiThread = new Thread(riscApplication);
-    //guiThread.start();
-    
-    //out.println(riscApplication);
-    //riscApplication.run();
-
-    //riscApplication.setUsername(color);
-    //out.println("running");
-  }
 }
