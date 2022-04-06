@@ -8,28 +8,19 @@ import java.net.URL;
 import java.util.HashMap;
 
 import ece651.riskgame.client.controllers.GameController;
-import ece651.riskgame.client.controllers.GameMapController;
-import ece651.riskgame.client.controllers.PlacementPanelController;
-import ece651.riskgame.client.models.TerritoryInfo;
-import ece651.riskgame.client.models.TerritoryList;
 import javafx.application.Application;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Labeled;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class RiscApplication extends Application {
 
   // SocketIO
   private AppIO appIO;
-  // Models
-  private TerritoryList territoryList;
-  private StringProperty username;
-  private TerritoryInfo territoryInfo = new TerritoryInfo();
   // GUIPlayer
+  GUIPlayer guiPlayer;
   
   /**
    * Method called to launch the frontend application
@@ -42,21 +33,21 @@ public class RiscApplication extends Application {
   public void start(Stage stage) throws IOException {
     appIO = new AppIO(new String[] {"0.0.0.0", "1651"});
     
-    URL xmlResource = getClass().getResource("/ui/main-page.xml");
+    URL xmlResource = getClass().getResource("/ui/main.fxml");
 
     FXMLLoader loader = new FXMLLoader(xmlResource);
     loadControllers(loader);
     
-    GridPane gp = loader.load();
+    Pane gp = loader.load();
 
-    Scene scene = new Scene(gp, 800, 600);
-    
+    Scene scene = new Scene(gp, 1138, 823);
     
     //URL cssResource = getClass().getResource("/ui/css/game-map.css");
     //scene.getStylesheets().add(cssResource.toString());
 
     setUsername(scene, appIO.getColor());
-    
+
+    /*
     territoryInfo.setInfo(((Labeled) scene.lookup("#territoryInformation")).textProperty());    
     territoryList = new TerritoryList(appIO.getGameInfo().getBoard().getTerritoryNames());
 
@@ -65,7 +56,7 @@ public class RiscApplication extends Application {
     @SuppressWarnings("unchecked")
     ListView<String> territories = (ListView<String>) scene.lookup("#territoryList");
     territories.setItems(territoryList.getList());
-
+    */
     /*
     Button confirmBtn = (Button) scene.lookup("#placeBtn");
     confirmBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -81,14 +72,11 @@ public class RiscApplication extends Application {
   }
 
   private void setUsername(Scene scene, String name) {
-    username = ((Labeled) scene.lookup("#username")).textProperty();
-    username.set(appIO.getColor());
+    ((Labeled) scene.lookup("#playerName")).textProperty().setValue(appIO.getColor());
   }
   
   private void loadControllers(FXMLLoader loader) {
     HashMap<Class<?>, Object> controllers = new HashMap<>();    
-    controllers.put(GameMapController.class, new GameMapController(territoryInfo));
-    controllers.put(PlacementPanelController.class, new PlacementPanelController());
     controllers.put(GameController.class, new GameController());
     loader.setControllerFactory((c) -> {
       return controllers.get(c);

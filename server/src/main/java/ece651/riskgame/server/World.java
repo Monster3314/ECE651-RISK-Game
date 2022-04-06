@@ -22,15 +22,23 @@ public class World implements Actable{
   /**
    * Create board and clans, but only initialize board.
    */
-  public World(int playerNum) throws IOException {
+  public World(int playerNum, String territoryList, String adjacencyList) throws IOException {
     board = new Board();
     clans = new HashMap<>();
 
-    mapGenerator = new MapGenerator("territories.csv", "adjacency_list.csv");
+    mapGenerator = new MapGenerator(territoryList, adjacencyList);
     mapGenerator.apply(getBoard(), playerNum);
 
     colorUsed = 0;
     this.playerNum = playerNum;
+  }
+  
+  /**
+   * Create board and clans, but only initialize board.
+   */
+  @Deprecated
+  public World(int playerNum) throws IOException {
+    this(playerNum, "territories.csv", "adjacency_list.csv");
   }
 
   @Override

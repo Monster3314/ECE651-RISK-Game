@@ -9,7 +9,7 @@ public class App {
   public RiskGame riskGame;
 
   public App(int n) throws IOException {
-    riskGame = new RiskGame(n);
+    riskGame = new RiskGame(n, "new_territories.csv", "new_adj_list.csv");
   }
 
   public static void main(String[] args) {
