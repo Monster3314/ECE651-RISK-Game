@@ -26,7 +26,7 @@ public class World implements Actable{
     board = new Board();
     clans = new HashMap<>();
 
-    mapGenerator = new MapGenerator("TerritoryNames.txt", "AMinit.csv");
+    mapGenerator = new MapGenerator("territories.csv", "adjacency_list.csv");
     mapGenerator.apply(getBoard(), playerNum);
 
     colorUsed = 0;

@@ -30,6 +30,9 @@ class BoardTest {
         List<Territory> expect_list = new ArrayList<>(expect);
         assertEquals(expect, b.getTerritoriesSet());
         assertEquals(expect_list, b.getTerritoriesList());
+        // test contains territories
+        assertTrue(b.containsTerritory("A"));
+        assertFalse(b.containsTerritory("F"));
     }
 
     @Test
