@@ -29,6 +29,10 @@ public class Clan implements Serializable {
         this.resource = resource;
     }
 
+    public Resource getResource() {
+        return this.resource;
+    }
+
     public void addTerritory(Territory t) {
         occupies.add(t);
     }
@@ -61,4 +65,10 @@ public class Clan implements Serializable {
 //    boolean tryUpgradeLevel() {
 //
 //    }
+
+    public void getTerritoryProduction() {
+        for (Territory t : occupies) {
+            resource.addResource(t.getProduction());
+        }
+    }
 }

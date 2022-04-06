@@ -19,6 +19,10 @@ public class Resource {
         }
     }
 
+    public Resource() {
+        this(new int[]{0, 0});
+    }
+
     public void addResource(Resource resource) {
         this.resources.replaceAll((key, value) -> value + resource.getResourceNum(key));
     }
@@ -29,5 +33,20 @@ public class Resource {
 
     public int getResourceNum(String resourceName) {
         return this.resources.get(resourceName);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o != null && o.getClass().equals(getClass())) {
+            Resource otherResource = (Resource) o;
+            for (String resource : Resource.resourceList) {
+                if (resources.get(resource) != otherResource.getResourceNum(resource)) {
+                    return false;
+                }
+            }
+            return true;
+        } else {
+            return false;
+        }
     }
 }

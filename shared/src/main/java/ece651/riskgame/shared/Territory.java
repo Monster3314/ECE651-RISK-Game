@@ -25,6 +25,14 @@ public abstract class Territory implements Serializable {
     return name;
   }
 
+  public Resource getProduction() {
+    return production;
+  }
+
+  public int getSize() {
+    return this.size;
+  }
+
   /**
    * Add a single unit to the territory
    */
