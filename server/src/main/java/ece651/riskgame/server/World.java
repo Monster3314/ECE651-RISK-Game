@@ -15,7 +15,7 @@ public class World implements Actable{
   private Map<String, Clan> clans;  //the map for color of player and his clan
 
   private MapGenerator mapGenerator;
-  private List<String> colors = new ArrayList<>(Arrays.asList("Red", "Blue", "Green", "Yellow", "Pink"));
+  private List<String> colors = new ArrayList<>(Arrays.asList("red", "blue", "green", "mediumvioletred", "black"));
   private int colorUsed;
   private int playerNum;
 
