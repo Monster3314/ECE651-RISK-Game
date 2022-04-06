@@ -16,23 +16,46 @@ import ece651.riskgame.shared.PlaceAction;
 import ece651.riskgame.shared.Unit;
 
 public class GUIPlayer {
-  private final String color;
+  private String color;
   private GameInfo theGame;
   private ObjectInputStream input;
   private ObjectOutputStream output;
 
+  public String getColor() {
+    return color;
+  }
+  public GameInfo getGame() {
+    return theGame;
+  }
   /**
    * GUIPlayer Constructor
    * @param server is the socket of the server
    * @param color is the color of the player
    * @param game is the initialized game
    */
-  public GUIPlayer(Socket server, String color, GameInfo game) throws IOException {
-    this.color = color;
+  public GUIPlayer(Socket server) throws IOException {
     this.input = new ObjectInputStream(server.getInputStream());
     this.output = new ObjectOutputStream(server.getOutputStream());
-    this.theGame = game;
+    this.color = null;
+    this.theGame = null;
   }
+  public void initializeGame() throws ClassNotFoundException, IOException{
+    this.color = (String) input.readObject();
+    this.theGame = (GameInfo) input.readObject();
+  }
+
+  /**
+   * getUnitsToPlace get the number of basic units to place
+   * @throws ClassNotFoundException when failed to cast
+   * @throws IOException when nothing fetched  
+   */  
+  @SuppressWarnings("unchecked")
+  //TODO:return list of units instead of integer
+  public Integer getUnitsToPlace() throws ClassNotFoundException, IOException{
+    List<Unit> toPlace = (List<Unit>) input.readObject();
+    return toPlace.get(0).getNum();
+  }
+  
   public String tryPlace(Map<String, Integer> placements) {
     //TODO:get a list of placeActions instead of map
     //Adapter pattern
@@ -54,7 +77,7 @@ public class GUIPlayer {
       List<Unit> toPlace = new ArrayList<>(Arrays.asList(new BasicUnit(placement.getValue())));
       adaptedPlacements.put(placement.getKey(), toPlace);
     }
-
+  
     output.writeObject(adaptedPlacements);
     output.flush();
     output.reset();
