@@ -10,9 +10,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ece651.riskgame.shared.Action;
+import ece651.riskgame.shared.ActionRuleChecker;
 import ece651.riskgame.shared.BasicUnit;
+import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.PlaceAction;
+import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
 public class GUIPlayer {
@@ -20,6 +24,8 @@ public class GUIPlayer {
   private GameInfo theGame;
   private ObjectInputStream input;
   private ObjectOutputStream output;
+  //private List<Action> actionsToSend;
+  //final HashMap<Class, ActionRuleChecker> actionCheckers;
 
   public String getColor() {
     return color;
@@ -90,5 +96,17 @@ public class GUIPlayer {
   public void updateGame() throws IOException, ClassNotFoundException {
     theGame = (GameInfo) input.readObject();    
   }
+  /*
+  public String tryApplyAction(Action toApply) {
+    
+  }
+  */
+  public List<Territory> getMyTerritories() {
+    Clan myClan = theGame.getClans().get(color);
+    return myClan.getOccupies();
+  }
+
+  
+  
 
 }
