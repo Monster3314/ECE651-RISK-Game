@@ -7,7 +7,10 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
@@ -116,20 +119,49 @@
       <Button fx:id="attackAction" layoutX="90.0" layoutY="134.0" mnemonicParsing="false" text="Attack" />
       <Button fx:id="upgradeAction" layoutX="154.0" layoutY="134.0" mnemonicParsing="false" text="Upgrade" />
       <Button fx:id="submitAction" layoutX="42.0" layoutY="445.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="Submit" />
-      <MenuButton layoutX="37.0" layoutY="184.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" text="From">
+      <MenuButton layoutX="39.0" layoutY="185.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" text="From">
         <items>
           <MenuItem mnemonicParsing="false" text="Action 1" />
           <MenuItem mnemonicParsing="false" text="Action 2" />
         </items>
       </MenuButton>
-      <MenuButton layoutX="37.0" layoutY="215.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" text="To">
+      <MenuButton layoutX="39.0" layoutY="215.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" text="To">
         <items>
           <MenuItem mnemonicParsing="false" text="Action 1" />
           <MenuItem mnemonicParsing="false" text="Action 2" />
         </items>
       </MenuButton>
       <VBox fx:id="infoView" layoutX="945.0" layoutY="228.0" prefHeight="405.0" prefWidth="183.0" />
-      <Label layoutX="54.0" layoutY="264.0" text="Label" />
-      <TextField layoutX="114.0" layoutY="259.0" prefHeight="13.0" prefWidth="69.0" />
+      <GridPane layoutX="41.0" layoutY="245.0" prefHeight="198.0" prefWidth="160.0">
+        <columnConstraints>
+            <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="10.0" prefWidth="77.02554321289062" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="98.83821868896484" minWidth="10.0" prefWidth="82.97445678710938" />
+        </columnConstraints>
+        <rowConstraints>
+            <RowConstraints maxHeight="45.991485595703125" minHeight="10.0" prefHeight="31.991485595703125" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="45.991485595703125" minHeight="10.0" prefHeight="27.431884765625" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="45.991485595703125" minHeight="10.0" prefHeight="30.457427978515625" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="45.991485595703125" minHeight="10.0" prefHeight="26.957427978515625" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="45.991485595703125" minHeight="10.0" prefHeight="30.9659423828125" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="47.41485595703125" minHeight="10.0" prefHeight="26.0340576171875" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="32.940399169921875" minHeight="10.0" prefHeight="32.940399169921875" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <Label text="Label" />
+            <Label text="Label" GridPane.rowIndex="1" />
+            <Label text="Label" GridPane.rowIndex="2" />
+            <Label text="Label" GridPane.rowIndex="3" />
+            <Label text="Label" GridPane.rowIndex="4" />
+            <Label text="Label" GridPane.rowIndex="5" />
+            <Label text="Label" GridPane.rowIndex="6" />
+            <TextField GridPane.columnIndex="1" />
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="5" />
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="6" />
+         </children>
+      </GridPane>
    </children>
 </Pane>
