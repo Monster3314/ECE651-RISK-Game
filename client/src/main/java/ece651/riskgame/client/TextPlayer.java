@@ -28,8 +28,8 @@ import ece651.riskgame.shared.UnitsRuleChecker;
 /**
  * Textplayer is a class on client side which is responsible for reading initial placements, reading actions, applying actions locally, and spectating.
  */
-public class DemoGUIPlayer {
-  private final String color;
+public class TextPlayer extends Player{
+  private String color;
   private GameInfo theGame;
   private GameView view;
   final BufferedReader inputReader;
@@ -39,21 +39,16 @@ public class DemoGUIPlayer {
   final HashMap<String, Supplier<Action>> actionReadingFns;
   final HashMap<Class, ActionRuleChecker> actionCheckers;
 
-  // DEMO CODE
-  private RiscApplication riscApplication;
-  // END DEMO CODE
 
   /**
    * Construct the TextPlayer using Standard I/O
    * @param color is the color of the player, "Red", "Blue", etc
    * @param g is the GameInfo achieved from server  
    */
-  public DemoGUIPlayer(String color, GameInfo g) {
+  public TextPlayer(String color, GameInfo g) {
     this(color, g, new BufferedReader(new InputStreamReader(System.in)), System.out);
 
-    //DEMO CODE
-    riscApplication = new RiscApplication();
-    // END
+
   }
   
   /**
@@ -63,7 +58,7 @@ public class DemoGUIPlayer {
    * @param input is hte reader which is used to fetch instructions from player
    * @param out is to print view and prompt to  
    */
-  public DemoGUIPlayer(String color, GameInfo g, BufferedReader input, PrintStream out) {
+  public TextPlayer(String color, GameInfo g, BufferedReader input, PrintStream out) {
     this.color = color;
     this.theGame = g;
     this.view = new GameTextView(theGame);
@@ -111,7 +106,7 @@ public class DemoGUIPlayer {
     while (true) {
       Action currentAction = readOneAction();
       if (currentAction != null) {
-        String msg = tryAct(currentAction, actionCheckers.get(currentAction.getClass()));
+        String msg = tryApplyAction(currentAction, actionCheckers.get(currentAction.getClass()));
         if (msg == null) {
           actions.add(currentAction);
         }
@@ -174,19 +169,6 @@ public class DemoGUIPlayer {
         //out.println();
       }
     }
-  }
-  /**
-   * try to apply a action on client side
-   * @param toAct is the action you want to apply
-   * @param checker is the rulechecker used to check the rule of specified action
-   * @return error message if action is invalid, otherwise null
-   */
-  public String tryAct(Action toAct, ActionRuleChecker checker) {
-    String msg = checker.checkAction(theGame, toAct);
-    if (msg == null) {
-      toAct.clientApply(theGame);
-    }
-    return msg;
   }
   
   /**
@@ -297,7 +279,7 @@ public class DemoGUIPlayer {
     
     while (!unassigned.isEmpty()) {
       Move placement = readPlacement();
-      String msg = tryAct(placement, actionCheckers.get(placement.getClass()));
+      String msg = tryApplyAction(placement, actionCheckers.get(placement.getClass()));
       if (msg == null) {
         placements.add(placement);
       }
@@ -417,15 +399,4 @@ public class DemoGUIPlayer {
     out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
   }
 
-  // DEMO METHODS
-  public void startGame() {
-    //Thread guiThread = new Thread(riscApplication);
-    //guiThread.start();
-    
-    //out.println(riscApplication);
-    //riscApplication.run();
-
-    //riscApplication.setUsername(color);
-    //out.println("running");
-  }
 }
