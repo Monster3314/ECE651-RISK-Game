@@ -28,7 +28,7 @@ import ece651.riskgame.shared.UnitsRuleChecker;
 /**
  * Textplayer is a class on client side which is responsible for reading initial placements, reading actions, applying actions locally, and spectating.
  */
-public class DemoGUIPlayer {
+public class TextPlayer {
   private final String color;
   private GameInfo theGame;
   private GameView view;
@@ -48,7 +48,7 @@ public class DemoGUIPlayer {
    * @param color is the color of the player, "Red", "Blue", etc
    * @param g is the GameInfo achieved from server  
    */
-  public DemoGUIPlayer(String color, GameInfo g) {
+  public TextPlayer(String color, GameInfo g) {
     this(color, g, new BufferedReader(new InputStreamReader(System.in)), System.out);
 
     //DEMO CODE
@@ -63,7 +63,7 @@ public class DemoGUIPlayer {
    * @param input is hte reader which is used to fetch instructions from player
    * @param out is to print view and prompt to  
    */
-  public DemoGUIPlayer(String color, GameInfo g, BufferedReader input, PrintStream out) {
+  public TextPlayer(String color, GameInfo g, BufferedReader input, PrintStream out) {
     this.color = color;
     this.theGame = g;
     this.view = new GameTextView(theGame);
