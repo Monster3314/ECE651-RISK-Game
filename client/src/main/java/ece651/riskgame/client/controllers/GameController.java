@@ -67,12 +67,10 @@ public class GameController {
   public void updateTerritoryColors() {
     for (String color: guiPlayer.getGame().getClans().keySet()) {
       for (Territory t: guiPlayer.getGame().getClans().get(color).getOccupies()) {
-        //System.out.println(t.getName());
-        ((Button)scene.lookup("#"+t.getName())).setStyle("-fx-background-color: red;");
+        System.out.println(guiPlayer.getColor());
+        ((Button)scene.lookup("#"+t.getName()+"Territory")).setStyle("-fx-background-color:"+guiPlayer.getColor());
       }
     }
-    // TODO
-    
   }
   
 }

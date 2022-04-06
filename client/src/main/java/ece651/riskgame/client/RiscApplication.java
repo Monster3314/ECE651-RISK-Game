@@ -95,9 +95,12 @@ public class RiscApplication extends Application {
 
   private void chooseAvailableTerritories(Scene scene, Set<String> names) {
     Set<Node> nodes = scene.getRoot().lookupAll("Button");
-    nodes.stream().filter(node -> !names.contains(((Button)node).getText())).forEach(node -> {
+    
+    nodes.stream().filter(node -> (node.getId() != null))
+      .filter(node -> ((Button) node).getId().toString().endsWith("Territory"))
+      .filter(node -> !names.contains(((Button)node).getText())).forEach(node -> {
+        //        System.out.println(node);
         node.setVisible(false);
-        System.out.println(node);
-      });;
+        });
   }
 }
