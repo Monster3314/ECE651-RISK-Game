@@ -1,27 +1,26 @@
 package ece651.riskgame.client.controllers;
 
 import ece651.riskgame.client.models.TerritoryInfo;
-import javafx.beans.property.StringProperty;
 import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.ListView;
 
-public class MapButtonController implements EventHandler {
+public class GameMapController {
 
+  // source where we click
   @FXML
   ListView<String> territoryList;
 
+  // target where data is changed
   TerritoryInfo demoInfo;
 
   // TerritoryInformation might be needed, use string for now
 
-  public MapButtonController(TerritoryInfo sp) {
+  public GameMapController(TerritoryInfo sp) {
     this.demoInfo = sp;
   }  
 
-  @Override
-  public void handle(Event event) {
+  public void showTerritoryInfo(Event event) {
     demoInfo.getInfo().set("clicked on " + territoryList.getSelectionModel().getSelectedItem());
   }  
 }
