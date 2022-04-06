@@ -11,7 +11,7 @@ public class PlaceAction implements Action {
   @Override
   public void apply(Actable world) {
     Board board = world.getBoard();
-    board.getTerritory(placeTerritory).addUnit(Unit);
+    board.getTerritory(placeTerritory).addUnit(toPlace);
   }
   @Override
   public void clientApply(Actable game) {
