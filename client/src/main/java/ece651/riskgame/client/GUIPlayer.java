@@ -7,12 +7,15 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.ActionRuleChecker;
 import ece651.riskgame.shared.BasicUnit;
+import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.PlaceAction;
@@ -104,6 +107,15 @@ public class GUIPlayer {
   public List<Territory> getMyTerritories() {
     Clan myClan = theGame.getClans().get(color);
     return myClan.getOccupies();
+  }
+  public Set<String> getTerritoryNames() {
+    Board theBoard = theGame.getBoard();
+    Set<Territory> territories = theBoard.getTerritoriesSet();
+    Set<String> territoryNames = new HashSet<>();
+    for (Territory t: territories) {
+      territoryNames.add(t.getName());
+    }
+    return territoryNames;
   }
 
   
