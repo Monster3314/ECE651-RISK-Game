@@ -42,7 +42,7 @@
          <font>
             <Font size="10.0" />
          </font></Button>
-      <Button layoutX="347.0" layoutY="217.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="74.0" rotate="-41.2" text="North" textFill="TRANSPARENT">
+      <Button layoutX="347.0" layoutY="217.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="74.0" rotate="-41.2" text="North" textFill="TRANSPARENT" id="North">
          <font>
             <Font size="18.0" />
          </font></Button>
@@ -53,68 +53,72 @@
       </Button>
       <Label fx:id="playerGold" layoutX="218.0" layoutY="4.0" prefHeight="31.0" prefWidth="72.0" text="Gold: 100" />
       <Label fx:id="playerLevel" layoutX="312.0" layoutY="4.0" prefHeight="31.0" prefWidth="72.0" text="Level: 10" />
-      <Button layoutX="486.0" layoutY="198.0" mnemonicParsing="false" opacity="0.15" text="Dorne" textFill="TRANSPARENT">
+      <Button layoutX="486.0" layoutY="198.0" mnemonicParsing="false" opacity="0.15" text="Dorne" textFill="TRANSPARENT"
+              onMouseClicked="#showTerritoryInfo"
+              id="Dorne">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button layoutX="660.0" layoutY="220.0" mnemonicParsing="false" opacity="0.15" text="Reach" textFill="TRANSPARENT">
+      <Button layoutX="660.0" layoutY="220.0" mnemonicParsing="false" opacity="0.15" text="Reach" textFill="TRANSPARENT"
+              onMouseClicked="#showTerritoryInfo"
+              id="Reach">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="701.0" layoutY="297.0" mnemonicParsing="false" opacity="0.15" prefHeight="29.0" prefWidth="70.0" rotate="-29.7" text="Asshai" textFill="TRANSPARENT">
+      <Button layoutX="701.0" layoutY="297.0" mnemonicParsing="false" opacity="0.15" prefHeight="29.0" prefWidth="70.0" rotate="-29.7" text="Asshai" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Asshai">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="330.0" layoutY="336.0" mnemonicParsing="false" opacity="0.15" rotate="-7.1" text="Vale" textFill="TRANSPARENT">
+      <Button layoutX="330.0" layoutY="336.0" mnemonicParsing="false" opacity="0.15" rotate="-7.1" text="Vale" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Vale">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="385.0" layoutY="350.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="-51.3" text="Stormlands" textFill="TRANSPARENT" />
-      <Button layoutX="508.0" layoutY="318.0" mnemonicParsing="false" opacity="0.15" rotate="-6.0" text="Riverlands" textFill="TRANSPARENT">
+      <Button layoutX="385.0" layoutY="350.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="-51.3" text="Stormlands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Stormlands"/>
+      <Button layoutX="508.0" layoutY="318.0" mnemonicParsing="false" opacity="0.15" rotate="-6.0" text="Riverlands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Riverlands">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="263.0" layoutY="490.0" mnemonicParsing="false" opacity="0.15" prefHeight="35.0" prefWidth="117.0" rotate="63.4" text="Westerlands" textFill="TRANSPARENT">
+      <Button layoutX="263.0" layoutY="490.0" mnemonicParsing="false" opacity="0.15" prefHeight="35.0" prefWidth="117.0" rotate="63.4" text="Westerlands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Westerlands">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="460.0" layoutY="512.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="26.6" text="Crowlands" textFill="TRANSPARENT">
+      <Button layoutX="460.0" layoutY="512.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="26.6" text="Crowlands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Crowlands">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="357.0" layoutY="588.0" mnemonicParsing="false" opacity="0.15" prefHeight="30.0" prefWidth="117.0" rotate="-24.0" text="Dothraki Sea" textFill="TRANSPARENT">
+      <Button layoutX="357.0" layoutY="588.0" mnemonicParsing="false" opacity="0.15" prefHeight="30.0" prefWidth="117.0" rotate="-24.0" text="Dothraki Sea" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Dothraki Sea">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="565.0" layoutY="456.0" mnemonicParsing="false" opacity="0.15" rotate="-26.6" text="Slaver's bay" textFill="TRANSPARENT">
+      <Button layoutX="565.0" layoutY="456.0" mnemonicParsing="false" opacity="0.15" rotate="-26.6" text="Slaver's bay" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Slaver's bay">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="718.0" layoutY="391.0" mnemonicParsing="false" opacity="0.15" text="Qarth" textFill="TRANSPARENT">
+      <Button layoutX="718.0" layoutY="391.0" mnemonicParsing="false" opacity="0.15" text="Qarth" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Qarth">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="771.0" layoutY="478.0" mnemonicParsing="false" opacity="0.15" rotate="-66.8" text="Free cities" textFill="TRANSPARENT">
+      <Button layoutX="771.0" layoutY="478.0" mnemonicParsing="false" opacity="0.15" rotate="-66.8" text="Free cities" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Free cities">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="638.0" layoutY="574.0" mnemonicParsing="false" opacity="0.15" text="Beyond the wall" textFill="TRANSPARENT">
+      <Button layoutX="638.0" layoutY="574.0" mnemonicParsing="false" opacity="0.15" text="Beyond the wall" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Beyond the wall">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="521.0" layoutY="618.0" mnemonicParsing="false" opacity="0.15" prefHeight="31.0" prefWidth="110.0" rotate="-10.0" text="Iron islands" textFill="TRANSPARENT" />
+      <Button layoutX="521.0" layoutY="618.0" mnemonicParsing="false" opacity="0.15" prefHeight="31.0" prefWidth="110.0" rotate="-10.0" text="Iron islands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Iron islands"/>
       <Button fx:id="moveAction" layoutX="26.0" layoutY="134.0" mnemonicParsing="false" text="Move" />
       <Button fx:id="attackAction" layoutX="90.0" layoutY="134.0" mnemonicParsing="false" text="Attack" />
       <Button fx:id="upgradeAction" layoutX="154.0" layoutY="134.0" mnemonicParsing="false" text="Upgrade" />

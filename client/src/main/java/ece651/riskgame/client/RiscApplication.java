@@ -4,23 +4,28 @@
 package ece651.riskgame.client;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
+import java.util.Set;
 
 import ece651.riskgame.client.controllers.GameController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Labeled;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class RiscApplication extends Application {
-
-  // SocketIO
-  private AppIO appIO;
   // GUIPlayer
   GUIPlayer guiPlayer;
+
+  GameController gameController;
   
   /**
    * Method called to launch the frontend application
@@ -30,9 +35,27 @@ public class RiscApplication extends Application {
   }
 
   @Override
-  public void start(Stage stage) throws IOException {
-    appIO = new AppIO(new String[] {"0.0.0.0", "1651"});
-    
+  public void start(Stage stage) throws IOException, ClassNotFoundException {
+    String ip = "0.0.0.0";
+    int port = 1651;
+    // connect to server
+    Socket serverSocket = null;
+    try {
+      serverSocket = new Socket(ip, port);
+    } catch (UnknownHostException e) {
+      System.err.println("Don't know about host: " + ip);
+      System.exit(1);
+    } catch (ConnectException e) {
+      System.err.println("Can not connect to server. Please contact 984-377-9836.");
+      System.exit(1);
+    }
+    System.out.println("Connection Estabilished");
+
+    guiPlayer = new GUIPlayer(serverSocket);
+    guiPlayer.initializeGame();
+
+    gameController = new GameController(guiPlayer);
+
     URL xmlResource = getClass().getResource("/ui/main.fxml");
 
     FXMLLoader loader = new FXMLLoader(xmlResource);
@@ -41,46 +64,40 @@ public class RiscApplication extends Application {
     Pane gp = loader.load();
 
     Scene scene = new Scene(gp, 1138, 823);
+    gameController.setScene(scene);
     
-    //URL cssResource = getClass().getResource("/ui/css/game-map.css");
-    //scene.getStylesheets().add(cssResource.toString());
+    URL cssResource = getClass().getResource("/ui/css/main.css");
+    scene.getStylesheets().add(cssResource.toString());
 
-    setUsername(scene, appIO.getColor());
-
-    /*
-    territoryInfo.setInfo(((Labeled) scene.lookup("#territoryInformation")).textProperty());    
-    territoryList = new TerritoryList(appIO.getGameInfo().getBoard().getTerritoryNames());
-
-    System.out.println(territoryInfo);
+    initialize(scene);
     
-    @SuppressWarnings("unchecked")
-    ListView<String> territories = (ListView<String>) scene.lookup("#territoryList");
-    territories.setItems(territoryList.getList());
-    */
-    /*
-    Button confirmBtn = (Button) scene.lookup("#placeBtn");
-    confirmBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            scene.lookup("#placementPanel").setVisible(false);
-            scene.lookup("#actionPanel").setVisible(true);
-        }
-      });
-    */
     stage.setScene(scene);
     stage.show();        
   }
 
+  private void initialize(Scene scene) {
+    setUsername(scene, guiPlayer.getColor());
+    chooseAvailableTerritories(scene, guiPlayer.getTerritoryNames()); 
+    gameController.updateTerritoryColors();
+  }
+  
   private void setUsername(Scene scene, String name) {
-    ((Labeled) scene.lookup("#playerName")).textProperty().setValue(appIO.getColor());
+    ((Labeled) scene.lookup("#playerName")).textProperty().setValue(name);
   }
   
   private void loadControllers(FXMLLoader loader) {
     HashMap<Class<?>, Object> controllers = new HashMap<>();    
-    controllers.put(GameController.class, new GameController());
+    controllers.put(GameController.class, gameController);
     loader.setControllerFactory((c) -> {
       return controllers.get(c);
-    });
-    
+    });    
+  }
+
+  private void chooseAvailableTerritories(Scene scene, Set<String> names) {
+    Set<Node> nodes = scene.getRoot().lookupAll("Button");
+    nodes.stream().filter(node -> !names.contains(((Button)node).getText())).forEach(node -> {
+        node.setVisible(false);
+        System.out.println(node);
+      });;
   }
 }
