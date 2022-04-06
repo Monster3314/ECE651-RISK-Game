@@ -7,10 +7,18 @@ import java.util.List;
 public abstract class Territory implements Serializable {
   protected String name;
   protected List<Unit> units;
+  protected Resource production;
+  protected int size;
 
   public Territory(String name) {
+    this(name, 0, new Resource(new int[]{0, 0}));
+  }
+
+  public Territory(String name, int size, Resource production) {
     this.name = name;
     units = new ArrayList<Unit>();
+    this.production = production;
+    this.size = size;
   }
 
   public String getName() {
@@ -18,7 +26,7 @@ public abstract class Territory implements Serializable {
   }
 
   /**
-   * Add a single unit to the terrority
+   * Add a single unit to the territory
    */
   public void addUnit(Unit u) {
     for (Unit i : units) {

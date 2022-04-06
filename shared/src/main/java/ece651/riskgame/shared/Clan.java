@@ -10,13 +10,23 @@ import java.util.List;
  */
 public class Clan implements Serializable {
     private final List<Territory> occupies;
+    private int maxTechLevel;
+    private Resource resource;
 
     public Clan() {
         this.occupies = new ArrayList<>();
+        this.maxTechLevel = 0;
+        this.resource = new Resource(new int[] {0, 0});
     }
 
     public Clan(List<Territory> occupies) {
         this.occupies = occupies;
+    }
+
+    public Clan(int maxTechLevel, Resource resource) {
+        this.occupies = new ArrayList<>();
+        this.maxTechLevel = maxTechLevel;
+        this.resource = resource;
     }
 
     public void addTerritory(Territory t) {
@@ -48,4 +58,7 @@ public class Clan implements Serializable {
         occupies.remove(t);
     }
 
+//    boolean tryUpgradeLevel() {
+//
+//    }
 }
