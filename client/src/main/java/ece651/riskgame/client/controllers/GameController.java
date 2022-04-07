@@ -64,10 +64,19 @@ public class GameController {
     infoView.getChildren().addAll(label, hbox);
   }
 
+  @FXML
+  public void submitPlacement(MouseEvent me) {
+    scene.lookup("#placementPane").setVisible(false);
+    scene.lookup("#actionPane").setVisible(true);
+  }
+
+  public void setPlacementPaneLabels() {
+    
+  }
+
   public void updateTerritoryColors() {
     for (String color: guiPlayer.getGame().getClans().keySet()) {
       for (Territory t: guiPlayer.getGame().getClans().get(color).getOccupies()) {
-        System.out.println(guiPlayer.getColor());
         ((Button)scene.lookup("#"+t.getName()+"Territory")).setStyle("-fx-background-color:"+guiPlayer.getColor());
       }
     }
