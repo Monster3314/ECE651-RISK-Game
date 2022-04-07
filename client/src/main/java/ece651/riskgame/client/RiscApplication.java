@@ -99,7 +99,6 @@ public class RiscApplication extends Application {
     nodes.stream().filter(node -> (node.getId() != null))
       .filter(node -> ((Button) node).getId().toString().endsWith("Territory"))
       .filter(node -> !names.contains(((Button)node).getText())).forEach(node -> {
-        //        System.out.println(node);
         node.setVisible(false);
         });
   }

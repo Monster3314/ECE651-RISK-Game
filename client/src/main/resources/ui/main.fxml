@@ -137,64 +137,9 @@
             <Glow />
          </effect></Button>
       <VBox fx:id="infoView" layoutX="945.0" layoutY="228.0" prefHeight="405.0" prefWidth="183.0" />
-      <Pane fx:id="moveAndAttack" layoutX="37.0" layoutY="184.0" prefHeight="298.0" prefWidth="160.0">
-         <children>
-            <MenuButton layoutX="1.0" layoutY="1.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" style="-fx-background-color: #b9c5c3#b9c5c3;" text="From">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-                <MenuItem mnemonicParsing="false" text="Action 2" />
-              </items>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </MenuButton>
-            <MenuButton layoutX="1.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" style="-fx-background-color: #b9c5c3#b9c5c3;" text="To">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-                <MenuItem mnemonicParsing="false" text="Action 2" />
-              </items>
-               <effect>
-                  <DropShadow />
-               </effect>
-            </MenuButton>
-            <GridPane layoutX="3.0" layoutY="59.0" prefHeight="198.0" prefWidth="154.0">
-              <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="89.77861022949219" minWidth="10.0" prefWidth="64.0" />
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="98.86376190185547" minWidth="10.0" prefWidth="90.0" />
-              </columnConstraints>
-              <rowConstraints>
-                  <RowConstraints maxHeight="45.991485595703125" minHeight="10.0" prefHeight="31.991485595703125" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="45.991485595703125" minHeight="10.0" prefHeight="27.431884765625" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="45.991485595703125" minHeight="10.0" prefHeight="30.457427978515625" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="45.991485595703125" minHeight="10.0" prefHeight="26.957427978515625" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="45.991485595703125" minHeight="10.0" prefHeight="30.9659423828125" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="47.41485595703125" minHeight="10.0" prefHeight="26.0340576171875" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="32.940399169921875" minHeight="10.0" prefHeight="32.940399169921875" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <Label text="Label" textFill="WHITE" />
-                  <Label text="Label" textFill="WHITE" GridPane.rowIndex="1" />
-                  <Label text="Label" textFill="WHITE" GridPane.rowIndex="2" />
-                  <Label text="Label" textFill="WHITE" GridPane.rowIndex="3" />
-                  <Label text="Label" textFill="WHITE" GridPane.rowIndex="4" />
-                  <Label text="Label" textFill="WHITE" GridPane.rowIndex="5" />
-                  <Label text="Label" textFill="WHITE" GridPane.rowIndex="6" />
-                  <TextField prefHeight="22.0" prefWidth="82.0" GridPane.columnIndex="1" />
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                  <TextField GridPane.columnIndex="1" GridPane.rowIndex="6" />
-               </children>
-            </GridPane>
-            <Button fx:id="submitAction" layoutX="4.0" layoutY="265.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="Submit">
-               <effect>
-                  <DropShadow />
-               </effect>
-            </Button>
-         </children>
-      </Pane>
+      <fx:include source="doPlacementPane.fxml" layoutX="37.0" layoutY="184.0" fx:id="placementPane" />
+      <fx:include source="ActionPane.fxml" layoutX="37.0" layoutY="184.0" fx:id="actionPane" visible="false"/>
+      <fx:include source="upgradePane.fxml" layoutX="37.0" layoutY="184.0" fx:id="upgradePane" visible="false"/>
       <Button layoutX="331.0" layoutY="4.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" style="-fx-background-color: #9ea1a2;" text="Level UP!">
          <effect>
             <DropShadow />
