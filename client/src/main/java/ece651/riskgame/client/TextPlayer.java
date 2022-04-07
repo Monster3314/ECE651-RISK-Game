@@ -5,88 +5,62 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Supplier;
 
 import ece651.riskgame.shared.Action;
-import ece651.riskgame.shared.ActionRuleChecker;
-import ece651.riskgame.shared.AdjacentTerritoryChecker;
 import ece651.riskgame.shared.Attack;
 import ece651.riskgame.shared.BasicTerritory;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
-import ece651.riskgame.shared.EnemyTerritoryChecker;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.Move;
-import ece651.riskgame.shared.MovePathChecker;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
-import ece651.riskgame.shared.UnitsRuleChecker;
 /**
  * Textplayer is a class on client side which is responsible for reading initial placements, reading actions, applying actions locally, and spectating.
  */
 public class TextPlayer extends Player{
-  private String color;
-  private GameInfo theGame;
   private GameView view;
   final BufferedReader inputReader;
   final PrintStream out;
 
   final ArrayList<String> actionChoices;
   final HashMap<String, Supplier<Action>> actionReadingFns;
-  final HashMap<Class, ActionRuleChecker> actionCheckers;
 
 
   /**
    * Construct the TextPlayer using Standard I/O
-   * @param color is the color of the player, "Red", "Blue", etc
-   * @param g is the GameInfo achieved from server  
+   * @param server is the socket connection with game server
    */
-  public TextPlayer(String color, GameInfo g) {
-    this(color, g, new BufferedReader(new InputStreamReader(System.in)), System.out);
+  public TextPlayer(Socket server) throws IOException{
+    this(server, new BufferedReader(new InputStreamReader(System.in)), System.out);
 
 
   }
   
   /**
    * Construct the TextPlayer using specified I/O
-   * @param color is the color of the player, "Red", "Blue", etc
-   * @param g is the GameInfo achieved from server
-   * @param input is hte reader which is used to fetch instructions from player
+   * @param server is the socket connection with server
+   * @param input is the reader which is used to fetch instructions from player
    * @param out is to print view and prompt to  
    */
-  public TextPlayer(String color, GameInfo g, BufferedReader input, PrintStream out) {
-    this.color = color;
-    this.theGame = g;
-    this.view = new GameTextView(theGame);
+  public TextPlayer(Socket server, BufferedReader input, PrintStream out) throws IOException{
+    super(server);
+    this.view = null;
     this.inputReader = input;
     this.out = out;
 
     this.actionChoices = new ArrayList<String>();
     this.actionReadingFns = new HashMap<String, Supplier<Action>>();
-    this.actionCheckers = new HashMap<Class, ActionRuleChecker>();
     setupActionList();
     setupActionReadingMap();
-    setupActionCheckers();
   }
 
-  /**
-   * Check if the player is lost
-   * @return true if player is lost, false if game is not over or player wins 
-   */  
-  public boolean isLost() {
-    return !theGame.getPlayers().get(color).isActive();
-  }
-  /**
-   * Check if the game is over
-   * @return true if game is over
-   */
-  public boolean isGameOver() {
-    return !(theGame.getWinner() == null); 
-  }
   /**
    * Update current Game according to the GameInfo recieved
    * @param latestGame is the latest GameInfo recieved from server
@@ -106,7 +80,7 @@ public class TextPlayer extends Player{
     while (true) {
       Action currentAction = readOneAction();
       if (currentAction != null) {
-        String msg = tryApplyAction(currentAction, actionCheckers.get(currentAction.getClass()));
+        String msg = tryApplyAction(currentAction);
         if (msg == null) {
           actions.add(currentAction);
         }
@@ -279,7 +253,9 @@ public class TextPlayer extends Player{
     
     while (!unassigned.isEmpty()) {
       Move placement = readPlacement();
-      String msg = tryApplyAction(placement, actionCheckers.get(placement.getClass()));
+      //TODO:use placeAction instead of use moveAction
+      //String msg = tryApplyAction(placement, actionCheckers.get(placement.getClass()));
+      String msg = null;
       if (msg == null) {
         placements.add(placement);
       }
@@ -336,14 +312,7 @@ public class TextPlayer extends Player{
     }
   }
 
-  /**
-   * helper function used to get the player's occupies outside this class
-   * this function is used to adapt a list of placements(move) to the map which maps territory name to a list of units  
-   * @return a list of territory which is this player's occupies  
-   */  
-  public List<Territory> getOccupies() {
-    return theGame.getClans().get(color).getOccupies();
-  }
+
   /**
    * setup the list of action candidates when doing action phase
    */
@@ -364,15 +333,6 @@ public class TextPlayer extends Player{
     });
   }
   
-  /**
-   * setup the map which maps the action class to the rulechecker
-   */
-  //TODO:add tryapply to action interface
-  protected void setupActionCheckers() {
-    actionCheckers.put(Attack.class, new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null))));
-    actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(null)));
-  }
-
   /**
    * print error message with two lines of symbol around  
    */
