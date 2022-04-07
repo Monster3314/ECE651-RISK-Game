@@ -36,21 +36,19 @@ public abstract class Territory implements Serializable {
   /**
    * Add a single unit to the territory
    */
-  // TODO: merge by level
   public void addUnit(Unit u) {
     for (Unit i : units) {
-      if (i.getClass() == u.getClass()) {
+      if (i.getLevel() == u.getLevel()) {
         i.addSoldiers(u.getNum());
         return;
       }
     }
     units.add(u);
   }
-
-  // TODO: by level
+  
   public void decUnit(Unit u) {
     for (Unit i : units) {
-      if (i.getClass() == u.getClass()) {
+      if (i.getLevel() == u.getLevel()) {
         i.decSoldiers(u.getNum());
         return;
       }
