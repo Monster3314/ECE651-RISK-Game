@@ -35,6 +35,9 @@ public class GameController {
   Scene scene;
   Label hint;
 
+  // flags
+  boolean ifMoveInAction = true;
+  
   public GameController(GUIPlayer p) {
     guiPlayer = p;
     username = p.getColor();
@@ -117,8 +120,16 @@ public class GameController {
   }
 
   @FXML
-  private void submitAction() {
-    //
+  private void submitAction() throws IOException {
+    // check move or attack
+    // if move
+    // create Move
+    // else attack
+    // create Attack
+    
+    // gather data and put into Action
+    // call
+    guiPlayer.sendActions(null);
   }
 
   /**
@@ -126,7 +137,7 @@ public class GameController {
    */
   public void setPlacementPaneLabels() throws ClassNotFoundException, IOException {
     int i = 1;
-    for (Territory t : guiPlayer.getMyTerritories()) {
+    for (Territory t : guiPlayer.getOccupies()) {
       String labelId = "label" + i;
       Label label = (Label) scene.lookup("#placementPane").lookup("#" + labelId);
       label.setText(t.getName());
@@ -159,8 +170,12 @@ public class GameController {
    */
   public void updateActionPane() {    
     // update two drop down menus
-    updateMenuButton((MenuButton) scene.lookup("#actionPane #from"), guiPlayer.getMyTerritories().stream().map(t -> new MenuItem(t.getName())).collect(Collectors.toList()));
-    updateMenuButton((MenuButton) scene.lookup("#actionPane #to"), guiPlayer.getMyTerritories().stream().map(t -> new MenuItem(t.getName())).collect(Collectors.toList()));
+    updateMenuButton((MenuButton) scene.lookup("#actionPane #from"), guiPlayer.getOccupies().stream().map(t -> new MenuItem(t.getName())).collect(Collectors.toList()));
+    if (ifMoveInAction) {
+      updateMenuButton((MenuButton) scene.lookup("#actionPane #to"), guiPlayer.getOccupies().stream().map(t -> new MenuItem(t.getName())).collect(Collectors.toList()));
+    } else { // attack
+      // TODO
+    }
     // TODO : advanced feature, adjust unit numbers based on selected territory
   }
 
@@ -188,9 +203,12 @@ public class GameController {
 
   @FXML
   public void selectMovePane() {
-    // darken the Button the enlight others
-    
-    // show the action pane and set a flag
+    // set upgrade to invisible and action to visible
+    scene.lookup("#upgradePane").setVisible(false);
+    scene.lookup("#actionPane").setVisible(true);
+    // TODO  darken the Button the enlight other 2
+    ifMoveInAction = true;
+    updateActionPane();
   }
 
 }
