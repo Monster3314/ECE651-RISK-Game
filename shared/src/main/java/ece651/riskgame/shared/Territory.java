@@ -36,6 +36,7 @@ public abstract class Territory implements Serializable {
   /**
    * Add a single unit to the territory
    */
+  // TODO: merge by level
   public void addUnit(Unit u) {
     for (Unit i : units) {
       if (i.getClass() == u.getClass()) {
@@ -46,6 +47,7 @@ public abstract class Territory implements Serializable {
     units.add(u);
   }
 
+  // TODO: by level
   public void decUnit(Unit u) {
     for (Unit i : units) {
       if (i.getClass() == u.getClass()) {
@@ -67,6 +69,15 @@ public abstract class Territory implements Serializable {
 
   public List<Unit> getUnits() {
     return units;
+  }
+
+  public Unit getUnitByLevel(int level) {
+    for (Unit unit : units) {
+      if (unit.getLevel() == level) {
+        return unit;
+      }
+    }
+    return null;
   }
 
   /**

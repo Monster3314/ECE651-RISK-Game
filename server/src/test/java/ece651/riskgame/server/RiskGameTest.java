@@ -16,6 +16,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -40,6 +41,7 @@ public class RiskGameTest {
 
   private RiskGame riskGame;
 
+  @Disabled
   @Test
   public void test_getCurrentGameInfo() throws Exception {
     riskGame = new RiskGame(1);

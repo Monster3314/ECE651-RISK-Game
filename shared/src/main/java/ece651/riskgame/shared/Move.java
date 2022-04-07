@@ -3,6 +3,7 @@ package ece651.riskgame.shared;
 import java.io.Serializable;
 import java.util.Map;
 
+// TODO: Rename
 public class Move extends MigrationAction implements Serializable {
 
     public Move(Unit moveUnit, String fromTerritory, String toTerritory, String color) {
