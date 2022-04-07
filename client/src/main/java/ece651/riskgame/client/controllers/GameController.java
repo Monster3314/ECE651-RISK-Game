@@ -3,6 +3,7 @@ package ece651.riskgame.client.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -13,6 +14,9 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.Labeled;
+import javafx.scene.control.MenuButton;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -64,7 +68,7 @@ public class GameController {
 
     try {
       int unitNum = guiPlayer.getGame().getBoard().getTerritory(territoryName).getUnits().get(0).getNum();
-      
+
       Label text = new Label(Integer.toString(unitNum));
       text.setMaxWidth(Double.MAX_VALUE);
       text.setAlignment(Pos.CENTER);
@@ -74,40 +78,37 @@ public class GameController {
       HBox.setHgrow(text, Priority.ALWAYS);
 
       infoView.getChildren().addAll(label, hbox);
-    }
-    catch (IndexOutOfBoundsException e) {
+    } catch (IndexOutOfBoundsException e) {
       hint.setText("You cannot see territory details before placement");
     }
   }
 
   @FXML
-  public void submitPlacement(MouseEvent me) throws ClassNotFoundException {
+  public void submitPlacement(MouseEvent me) throws ClassNotFoundException, InterruptedException {
     // get inputs
-    int[] nums = new int[3];
     String msg = null;
     try {
-      nums[0] = Integer.parseInt(((TextField) scene.lookup("#placementPane").lookup("#field1")).getText());
-      nums[1] = Integer.parseInt(((TextField) scene.lookup("#placementPane").lookup("#field2")).getText());
-      nums[2] = Integer.parseInt(((TextField) scene.lookup("#placementPane").lookup("#field3")).getText());
+      hint.setText("Submitted! Waiting for other players");
       // call guiplayer
       Map<String, Integer> placements = new ArrayList<Integer>(Arrays.asList(1, 2, 3)).stream().collect(
-          Collectors.toMap(i -> ((Label) scene.lookup("#placementPane #label" + i)).getText(), i -> nums[i - 1]));
-      try {
-        System.out.println("sendplacemnt");
+          Collectors.toMap(i -> ((Label) scene.lookup("#placementPane #label" + i)).getText(),
+                           i -> Integer.parseInt(((TextField) scene.lookup("#placementPane").lookup("#field"+i)).getText())));      
+      // wait(50);
+      // TODO: The wait needs Task.setOnSucceded, learn later
+      msg = guiPlayer.tryPlace(placements);
+      if (msg == null) {
         guiPlayer.sendPlacements(placements);
         // update map
         guiPlayer.updateGame();
         updateTerritoryColors();
-        // activate many button
-        
-        // TODO
-        scene.lookup("#placementPane").setVisible(false);
-        scene.lookup("#actionPane").setVisible(true);
 
-        return;
-      } catch (IOException e) {
-        msg = "IOException occurs during connection to server...";
+        fromPlacementToAction();
+        
+        msg = "Welcome to game world! Let's crush enemies!";
       }
+
+    } catch (IOException e) {
+      msg = "IOException occurs during connection to server...";
     } catch (NumberFormatException e) {
       msg = "Please type number to place";
     }
@@ -117,10 +118,12 @@ public class GameController {
 
   @FXML
   private void submitAction() {
-    System.out.println("Action submitted");
+    //
   }
 
-  
+  /**
+   * Set labels(territory names) for
+   */
   public void setPlacementPaneLabels() throws ClassNotFoundException, IOException {
     int i = 1;
     for (Territory t : guiPlayer.getMyTerritories()) {
@@ -133,13 +136,61 @@ public class GameController {
     title.setText("Place your " + guiPlayer.getUnitsToPlace() + " units");
   }
 
+  /**
+   * Set username of the game
+   */
+  public void setUsername(Scene scene, String name) {
+    ((Labeled) scene.lookup("#playerName")).textProperty().setValue(name);
+  }
+
+  /**
+   * Update Territory colors, called at the beginning of each round
+   */
   public void updateTerritoryColors() {
     for (String color : guiPlayer.getGame().getClans().keySet()) {
       for (Territory t : guiPlayer.getGame().getClans().get(color).getOccupies()) {
-        ((Button) scene.lookup("#" + t.getName() + "Territory"))
-            .setStyle("-fx-background-color:" + guiPlayer.getColor());
+        ((Button) scene.lookup("#" + t.getName() + "Territory")).setStyle("-fx-background-color:" + color);
       }
     }
+  }
+
+  /**
+   * Update action pane base on current gameinfo
+   */
+  public void updateActionPane() {    
+    // update two drop down menus
+    updateMenuButton((MenuButton) scene.lookup("#actionPane #from"), guiPlayer.getMyTerritories().stream().map(t -> new MenuItem(t.getName())).collect(Collectors.toList()));
+    updateMenuButton((MenuButton) scene.lookup("#actionPane #to"), guiPlayer.getMyTerritories().stream().map(t -> new MenuItem(t.getName())).collect(Collectors.toList()));
+    // TODO : advanced feature, adjust unit numbers based on selected territory
+  }
+
+  /**
+   * Helper function to update MenuButton with given contents
+   */
+  private void updateMenuButton(MenuButton mb, List<MenuItem> contents) {
+    mb.getItems().clear();
+    contents.stream().forEach(c -> mb.getItems().add(c));
+  }
+
+  /**
+   * Helper function to call function from placement phase to action phase
+   */
+  public void fromPlacementToAction() {
+    // TODO update upgrade pane
+    updateActionPane();
+    updateTerritoryColors();
+    // TODO activate many button
+
+    scene.lookup("#placementPane").setVisible(false);
+    scene.lookup("#actionPane").setVisible(true);
+
+  }
+
+  @FXML
+  public void selectMovePane() {
+    // darken the Button the enlight others
+    
+    // show the action pane and set a flag
   }
 
 }

@@ -36,7 +36,7 @@ public class RiscApplication extends Application {
 
   @Override
   public void start(Stage stage) throws IOException, ClassNotFoundException {
-    String ip = "0.0.0.0";
+    String ip = "vcm-25372.vm.duke.edu";
     int port = 1651;
     // connect to server
     Socket serverSocket = null;
@@ -75,17 +75,17 @@ public class RiscApplication extends Application {
     stage.show();        
   }
 
+  /**
+   * Call initializing functions at the beginning of the game
+   */
   private void initialize(Scene scene) throws IOException, ClassNotFoundException {
-    setUsername(scene, guiPlayer.getColor());
-    chooseAvailableTerritories(scene, guiPlayer.getTerritoryNames()); 
+    gameController.setUsername(scene, guiPlayer.getColor());
+    setAvailableTerritories(scene, guiPlayer.getTerritoryNames()); 
     gameController.updateTerritoryColors();
     gameController.setPlacementPaneLabels();
     gameController.setHint();
   }
   
-  private void setUsername(Scene scene, String name) {
-    ((Labeled) scene.lookup("#playerName")).textProperty().setValue(name);
-  }
   
   private void loadControllers(FXMLLoader loader) {
     HashMap<Class<?>, Object> controllers = new HashMap<>();    
@@ -95,7 +95,10 @@ public class RiscApplication extends Application {
     });    
   }
 
-  private void chooseAvailableTerritories(Scene scene, Set<String> names) {
+  /**
+   * Set available territories based on game ppl
+   */
+  private void setAvailableTerritories(Scene scene, Set<String> names) {
     Set<Node> nodes = scene.getRoot().lookupAll("Button");
     
     nodes.stream().filter(node -> (node.getId() != null))
