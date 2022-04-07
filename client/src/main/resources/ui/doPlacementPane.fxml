@@ -11,7 +11,7 @@
 
 <Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="298.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ece651.riskgame.client.controllers.GameController">
    <children>
-      <Label layoutX="20.0" layoutY="24.0" prefHeight="44.0" prefWidth="124.0" text="Place you units" textFill="WHITE" />
+      <Label layoutX="20.0" layoutY="24.0" prefHeight="44.0" prefWidth="124.0" text="Place you units" textFill="WHITE" id="title"/>
       <GridPane layoutY="88.0" prefHeight="122.0" prefWidth="144.0" >
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="74.0" minWidth="10.0" prefWidth="66.0" />
@@ -31,7 +31,7 @@
             <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" id="field3"/>
          </children>
       </GridPane>
-      <Button layoutX="4.0" layoutY="265.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="Button" onMouseClicked="#submitPlacement">
+      <Button layoutX="4.0" layoutY="265.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="Submit" onMouseClicked="#submitPlacement">
          <effect>
             <DropShadow />
          </effect></Button>

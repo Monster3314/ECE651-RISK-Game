@@ -11,13 +11,13 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="298.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="298.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ece651.riskgame.client.controllers.GameController">
    <children>
-      <Button layoutX="4.0" layoutY="265.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="Button">
+      <Button layoutX="4.0" layoutY="265.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="Submit" id="submit" onMouseClicked="#submitAction">
          <effect>
             <DropShadow />
          </effect></Button>
-      <MenuButton layoutX="1.0" layoutY="1.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" style="-fx-background-color: #b9c5c3#b9c5c3;" text="MenuButton">
+      <MenuButton layoutX="1.0" layoutY="1.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" style="-fx-background-color: #b9c5c3#b9c5c3;" text="From" id="from">
         <items>
           <MenuItem mnemonicParsing="false" text="Action 1" />
           <MenuItem mnemonicParsing="false" text="Action 2" />
@@ -26,7 +26,7 @@
             <DropShadow />
          </effect>
       </MenuButton>
-      <MenuButton layoutX="1.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" style="-fx-background-color: #b9c5c3#b9c5c3;" text="MenuButton">
+      <MenuButton layoutX="1.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" style="-fx-background-color: #b9c5c3#b9c5c3;" text="To" id="to">
         <items>
           <MenuItem mnemonicParsing="false" text="Action 1" />
           <MenuItem mnemonicParsing="false" text="Action 2" />
