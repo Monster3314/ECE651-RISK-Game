@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import ece651.riskgame.shared.Action;
@@ -16,6 +17,7 @@ import ece651.riskgame.shared.ActionRuleChecker;
 import ece651.riskgame.shared.AdjacentTerritoryChecker;
 import ece651.riskgame.shared.Attack;
 import ece651.riskgame.shared.Board;
+import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.EnemyTerritoryChecker;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.Move;
@@ -131,6 +133,22 @@ public abstract class Player {
     return theGame.getClans().get(color).getOccupies();
   }
 
+  /**
+   * getEnemyTerritoryNames get the enemy territory names 
+   * @return a set of string that represent the territory names of all the enemy  
+   */  
+  public Set<String> getEnemyTerritoryNames() {
+    Map<String, Clan> clans = theGame.getClans();
+    Set<String> enemyTerritoryNames = new HashSet<>();
+    for (Entry<String, Clan> clan: clans.entrySet()) {
+      if (!clan.getKey().equals(color)) {
+        for (Territory enemyOccupy: clan.getValue().getOccupies()) {
+          enemyTerritoryNames.add(enemyOccupy.getName());
+        }
+      }
+    }
+    return enemyTerritoryNames;
+  }
   /**
    * get the name of territories in the game
    * @return a set of string which is the name of the territories  
