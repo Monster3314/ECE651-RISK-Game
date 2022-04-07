@@ -45,7 +45,7 @@ public abstract class Territory implements Serializable {
     }
     units.add(u);
   }
-  
+
   public void decUnit(Unit u) {
     for (Unit i : units) {
       if (i.getLevel() == u.getLevel()) {
