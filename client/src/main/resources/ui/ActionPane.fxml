@@ -41,13 +41,13 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Label" textFill="WHITE" id="label1"/>
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="1" id="label2"/>
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="2" id="label3"/>
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="3" id="label4"/>
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="4" id="label5"/>
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="5" id="label6"/>
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="6" id="label7"/>
+            <Label text="Vale Knights" textFill="WHITE" id="label1"/>
+            <Label text="North Army" textFill="WHITE" GridPane.rowIndex="1" id="label2"/>
+            <Label text="Second Sons" textFill="WHITE" GridPane.rowIndex="2" id="label3"/>
+            <Label text="Iron Fleet" textFill="WHITE" GridPane.rowIndex="3" id="label4"/>
+            <Label text="Unsullied" textFill="WHITE" GridPane.rowIndex="4" id="label5"/>
+            <Label text="Golden Company" textFill="WHITE" GridPane.rowIndex="5" id="label6"/>
+            <Label text="Dead Army" textFill="WHITE" GridPane.rowIndex="6" id="label7"/>
             <TextField GridPane.columnIndex="1" id="field1"/>
             <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" id="field2"/>
             <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" id="field3"/>
