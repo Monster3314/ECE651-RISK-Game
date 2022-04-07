@@ -12,9 +12,9 @@ public class WorldTest {
   @Test
   public void test_AddClan() throws Exception {
     World w = new World(3);
-    assertEquals("Red", w.addClan());
-    assertEquals("Blue", w.addClan());
-    assertEquals("Green", w.addClan());
+    assertEquals("red", w.addClan());
+    assertEquals("blue", w.addClan());
+    assertEquals("green", w.addClan());
     //assertThrows(IllegalAccessException.class, ()->{w.addClan();});
   }
 
@@ -39,11 +39,11 @@ public class WorldTest {
     World w = new World(2);
     w.addClan();
     w.addClan();
-    Move m1 = new Move(new BasicUnit(), "Shanghai", "Jiangsu", "Red");
-    Move m2 = new Move(new BasicUnit(), "Shandong", "Fujian", "Blue");
-    Move m3 = new Move(new BasicUnit(), "Anhui", "Jiangsu", "Blue");
-    Move m4 = new Move(new BasicUnit(), "Anhui", "Jiangsu", "Red");
-    Move m5 = new Move(new BasicUnit(), "Anhui", "Anhui", "Blue");
+    Move m1 = new Move(new BasicUnit(), "Shanghai", "Jiangsu", "red");
+    Move m2 = new Move(new BasicUnit(), "Shandong", "Fujian", "blue");
+    Move m3 = new Move(new BasicUnit(), "Anhui", "Jiangsu", "blue");
+    Move m4 = new Move(new BasicUnit(), "Anhui", "Jiangsu", "red");
+    Move m5 = new Move(new BasicUnit(), "Anhui", "Anhui", "blue");
     assertNull(actionRuleChecker.checkAction(w, m1));
     assertNotNull(actionRuleChecker.checkAction(w, m2));
     assertNotNull(actionRuleChecker.checkAction(w, m3));
