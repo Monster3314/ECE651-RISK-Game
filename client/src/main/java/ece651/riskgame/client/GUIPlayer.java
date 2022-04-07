@@ -20,49 +20,18 @@ import ece651.riskgame.shared.PlaceAction;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
-public class GUIPlayer {
-  private String color;
-  private GameInfo theGame;
-  private ObjectInputStream input;
-  private ObjectOutputStream output;
+public class GUIPlayer extends Player{
   //private List<Action> actionsToSend;
-  //final HashMap<Class, ActionRuleChecker> actionCheckers;
 
-  public String getColor() {
-    return color;
-  }
-  public GameInfo getGame() {
-    return theGame;
-  }
+
   /**
    * GUIPlayer Constructor
    * @param server is the socket of the server
-   * @param color is the color of the player
-   * @param game is the initialized game
    */
   public GUIPlayer(Socket server) throws IOException {
-    this.input = new ObjectInputStream(server.getInputStream());
-    this.output = new ObjectOutputStream(server.getOutputStream());
-    this.color = null;
-    this.theGame = null;
-  }
-  public void initializeGame() throws ClassNotFoundException, IOException{
-    this.color = (String) input.readObject();
-    this.theGame = (GameInfo) input.readObject();
+    super(server);
   }
 
-  /**
-   * getUnitsToPlace get the number of basic units to place
-   * @throws ClassNotFoundException when failed to cast
-   * @throws IOException when nothing fetched  
-   */  
-  @SuppressWarnings("unchecked")
-  //TODO:return list of units instead of integer
-  public Integer getUnitsToPlace() throws ClassNotFoundException, IOException{
-    List<Unit> toPlace = (List<Unit>) input.readObject();
-    return toPlace.get(0).getNum();
-  }
-  
   public String tryPlace(Map<String, Integer> placements) {
     //TODO:get a list of placeActions instead of map
     //Adapter pattern
@@ -89,33 +58,6 @@ public class GUIPlayer {
     output.flush();
     output.reset();
   }
-  /**
-   * updateGame will receive the latest game from the server and update the game on client side
-   * @throws IOException when latest game is not recieved
-   * @throws ClassNotFoundException when case failed
-   */
-  public void updateGame() throws IOException, ClassNotFoundException {
-    theGame = (GameInfo) input.readObject();    
-  }
-  /*
-  public String tryApplyAction(Action toApply) {
-    
-  }
-  */
-  public List<Territory> getMyTerritories() {
-    Clan myClan = theGame.getClans().get(color);
-    return myClan.getOccupies();
-  }
-  public Set<String> getTerritoryNames() {
-    Board theBoard = theGame.getBoard();
-    Set<Territory> territories = theBoard.getTerritoriesSet();
-    Set<String> territoryNames = new HashSet<>();
-    for (Territory t: territories) {
-      territoryNames.add(t.getName());
-    }
-    return territoryNames;
-  }
-
   
   
 

@@ -121,18 +121,15 @@
          </font>
       </Button>
       <Button layoutX="521.0" layoutY="618.0" mnemonicParsing="false" opacity="0.15" prefHeight="31.0" prefWidth="110.0" rotate="-10.0" text="Iron islands" textFill="TRANSPARENT"  onMouseClicked="#showTerritoryInfo" id="Iron islandsTerritory"/>
-      <Button fx:id="moveAction" layoutX="16.0" layoutY="133.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="50.0" style="-fx-background-color: #AF9468;" text="Move" textFill="WHITE">
-         <effect>
-            <Glow />
-         </effect>
-         <font>
-            <Font name="System Bold" size="13.0" />
-         </font></Button>
-      <Button fx:id="attackAction" layoutX="78.0" layoutY="133.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="60.0" style="-fx-background-color: #AF9468;" text="Attack" textFill="WHITE">
+      <Button fx:id="moveButton" layoutX="16.0" layoutY="133.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="50.0" style="-fx-background-color: #AF9468;" text="Move" textFill="WHITE" onMouseClicked="#selectMovePane">
          <effect>
             <Glow />
          </effect></Button>
-      <Button fx:id="upgradeAction" layoutX="148.0" layoutY="132.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="70.0" style="-fx-background-color: #AF9468;" text="Upgrade" textFill="WHITE">
+      <Button fx:id="attackButton" layoutX="78.0" layoutY="133.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="60.0" style="-fx-background-color: #AF9468;" text="Attack" textFill="WHITE">
+         <effect>
+            <Glow />
+         </effect></Button>
+      <Button fx:id="upgradeButton" layoutX="148.0" layoutY="132.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="70.0" style="-fx-background-color: #AF9468;" text="Upgrade" textFill="WHITE">
          <effect>
             <Glow />
          </effect></Button>

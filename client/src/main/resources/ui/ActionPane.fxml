@@ -18,19 +18,13 @@
             <DropShadow />
          </effect></Button>
       <MenuButton layoutX="1.0" layoutY="1.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" style="-fx-background-color: #b9c5c3#b9c5c3;" text="From" id="from">
-        <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
-        </items>
+        <items></items>          
          <effect>
             <DropShadow />
          </effect>
       </MenuButton>
       <MenuButton layoutX="1.0" layoutY="33.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" style="-fx-background-color: #b9c5c3#b9c5c3;" text="To" id="to">
-        <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
-        </items>
+        <items></items>
       </MenuButton>
       <GridPane layoutX="3.0" layoutY="59.0" prefHeight="198.0" prefWidth="154.0">
         <columnConstraints>
@@ -47,20 +41,20 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <Label text="Label" textFill="WHITE" />
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="1" />
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="2" />
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="3" />
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="4" />
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="5" />
-            <Label text="Label" textFill="WHITE" GridPane.rowIndex="6" />
-            <TextField GridPane.columnIndex="1" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="5" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="6" />
+            <Label text="Label" textFill="WHITE" id="label1"/>
+            <Label text="Label" textFill="WHITE" GridPane.rowIndex="1" id="label2"/>
+            <Label text="Label" textFill="WHITE" GridPane.rowIndex="2" id="label3"/>
+            <Label text="Label" textFill="WHITE" GridPane.rowIndex="3" id="label4"/>
+            <Label text="Label" textFill="WHITE" GridPane.rowIndex="4" id="label5"/>
+            <Label text="Label" textFill="WHITE" GridPane.rowIndex="5" id="label6"/>
+            <Label text="Label" textFill="WHITE" GridPane.rowIndex="6" id="label7"/>
+            <TextField GridPane.columnIndex="1" id="field1"/>
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" id="field2"/>
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" id="field3"/>
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" id="field4"/>
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" id="field5"/>
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="5" id="field6"/>
+            <TextField GridPane.columnIndex="1" GridPane.rowIndex="6" id="field7"/>
          </children>
       </GridPane>
    </children>
