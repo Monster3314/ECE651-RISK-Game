@@ -69,7 +69,7 @@ public class GameController {
   }
 
   /**
-   * Method to update
+   * Method to update territoryinfo pane according given territory name
    */
   private void updateTerritoryInfo(String territoryName) {
     infoView.getChildren().clear();
@@ -78,6 +78,7 @@ public class GameController {
     Label label = new Label(territoryName);
     label.setTextAlignment(TextAlignment.CENTER);
     label.setFont(new Font(20));
+    label.setId("territoryName");
 
     HBox hbox = new HBox();
     Label labelUnit = new Label("Units");
@@ -96,6 +97,14 @@ public class GameController {
     HBox.setHgrow(text, Priority.ALWAYS);
 
     infoView.getChildren().addAll(label, hbox);    
+  }
+
+  private void updateCurrentTerritoryInfo() {
+    try {
+      updateTerritoryInfo(((Label)infoView.lookup("#territoryName")).getText());
+    }
+    catch(NullPointerException e) {
+    }
   }
   
   @FXML
@@ -150,8 +159,8 @@ public class GameController {
       }
       else {
         acts.add(act);
-        guiPlayer.sendActions(acts);
-        // TODO update territory info
+        guiPlayer.addActionToSend(act);
+        updateCurrentTerritoryInfo();
         msg = "Action submitted!";
       }
     } // end try
@@ -325,15 +334,26 @@ public class GameController {
 
   @FXML
   public void nextTurn() throws IOException, ClassNotFoundException {
-    guiPlayer.doEndOfTurn();
-    // check when or lose
-
+    guiPlayer.doEndOfTurn();    
     //update game
     updateTerritoryColors();
     set3ActionPanesInvisible();
     set3ButtonsUnselected();
     // update territory info
+    updateCurrentTerritoryInfo();
     // TODO update level
+    if (guiPlayer.isLost()) {
+      disableButtonsInPlacement();
+      hint.setText("Woops. You have lost.");
+      while (!guiPlayer.isGameOver()) {
+        guiPlayer.updateGame();
+        // TODO update everything and do 2 threads 
+      }
+    }
+    else if (guiPlayer.isGameOver()) { // winner
+      hint.setText("Congratulations! You are the winner");
+      disableButtonsInPlacement();
+    }
   }
   
 }
