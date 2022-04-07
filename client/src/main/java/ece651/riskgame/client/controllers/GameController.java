@@ -60,8 +60,18 @@ public class GameController {
   @FXML
   public void showTerritoryInfo(MouseEvent me) {
     String territoryName = ((Button) me.getSource()).getText();
-    // check after get from guiplayer
-    // display territory information
+    try {
+      updateTerritoryInfo(territoryName);
+    }
+    catch (IndexOutOfBoundsException e) {
+      hint.setText("You cannot see territory details before placement");
+    }
+  }
+
+  /**
+   * Method to update
+   */
+  private void updateTerritoryInfo(String territoryName) {
     infoView.getChildren().clear();
     infoView.setAlignment(Pos.TOP_CENTER);
 
@@ -74,24 +84,20 @@ public class GameController {
     labelUnit.setMaxWidth(Double.MAX_VALUE);
     labelUnit.setAlignment(Pos.CENTER);
     labelUnit.setFont(new Font(15));
+    
+    int unitNum = guiPlayer.getGame().getBoard().getTerritory(territoryName).getUnits().get(0).getNum();
 
-    try {
-      int unitNum = guiPlayer.getGame().getBoard().getTerritory(territoryName).getUnits().get(0).getNum();
+    Label text = new Label(Integer.toString(unitNum));
+    text.setMaxWidth(Double.MAX_VALUE);
+    text.setAlignment(Pos.CENTER);
+    text.setFont(new Font(15));
+    hbox.getChildren().addAll(labelUnit, text);
+    HBox.setHgrow(labelUnit, Priority.ALWAYS);
+    HBox.setHgrow(text, Priority.ALWAYS);
 
-      Label text = new Label(Integer.toString(unitNum));
-      text.setMaxWidth(Double.MAX_VALUE);
-      text.setAlignment(Pos.CENTER);
-      text.setFont(new Font(15));
-      hbox.getChildren().addAll(labelUnit, text);
-      HBox.setHgrow(labelUnit, Priority.ALWAYS);
-      HBox.setHgrow(text, Priority.ALWAYS);
-
-      infoView.getChildren().addAll(label, hbox);
-    } catch (IndexOutOfBoundsException e) {
-      hint.setText("You cannot see territory details before placement");
-    }
+    infoView.getChildren().addAll(label, hbox);    
   }
-
+  
   @FXML
   public void submitPlacement(MouseEvent me) throws ClassNotFoundException, InterruptedException {
     // get inputs
@@ -204,7 +210,7 @@ public class GameController {
    * Disable button in placement phase to avoid undefined actions
    */
   private void disableButtonsInPlacement() {
-    List<String> btns = new ArrayList<>(Arrays.asList("continue", "switchRoom", "logout", "newRoom", "moveButton", "attackButton", "upgradeButton", "levelUp"));
+    List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "switchRoom", "logout", "newRoom", "moveButton", "attackButton", "upgradeButton", "levelUp"));
     btns.stream().forEach(s -> scene.lookup("#"+s).setDisable(true));
   }
   
@@ -265,7 +271,7 @@ public class GameController {
    * Active button after placement phase
    */
   private void activateButtonsAfterPlacement() {
-    List<String> btns = new ArrayList<>(Arrays.asList("continue", "switchRoom", "logout", "newRoom", "moveButton", "attackButton", "upgradeButton", "levelUp"));
+    List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "switchRoom", "logout", "newRoom", "moveButton", "attackButton", "upgradeButton", "levelUp"));
     btns.stream().forEach(s -> scene.lookup("#"+s).setDisable(false));
   }
 
@@ -315,6 +321,19 @@ public class GameController {
     scene.lookup("#moveButton").setStyle("-fx-background-color: #af9468");
     scene.lookup("#attackButton").setStyle("-fx-background-color: #af9468");
     scene.lookup("#upgradeButton").setStyle("-fx-background-color: #af9468");
+  }
+
+  @FXML
+  public void nextTurn() throws IOException, ClassNotFoundException {
+    guiPlayer.doEndOfTurn();
+    // check when or lose
+
+    //update game
+    updateTerritoryColors();
+    set3ActionPanesInvisible();
+    set3ButtonsUnselected();
+    // update territory info
+    // TODO update level
   }
   
 }

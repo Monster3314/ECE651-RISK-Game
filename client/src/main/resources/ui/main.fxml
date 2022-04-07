@@ -23,7 +23,7 @@
             <Image url="@css/img/map.jpeg" />
          </image>
       </ImageView>
-      <Button fx:id="continue" layoutX="913.0" layoutY="770.0" mnemonicParsing="false" opacity="0.2" prefHeight="25.0" prefWidth="138.0" text="Continue" textFill="TRANSPARENT"/>
+      <Button fx:id="nextTurn" layoutX="913.0" layoutY="770.0" mnemonicParsing="false" opacity="0.2" prefHeight="25.0" prefWidth="138.0" text="Next Turn" textFill="TRANSPARENT" onMouseClicked="#nextTurn"/>
       <Label fx:id="hint" layoutX="312.0" layoutY="62.0" prefHeight="53.0" prefWidth="504.0" text="Hint" textFill="WHITE">
          <font>
             <Font size="18.0" />
