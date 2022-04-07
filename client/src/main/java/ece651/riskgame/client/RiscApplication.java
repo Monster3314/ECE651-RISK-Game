@@ -75,10 +75,12 @@ public class RiscApplication extends Application {
     stage.show();        
   }
 
-  private void initialize(Scene scene) {
+  private void initialize(Scene scene) throws IOException, ClassNotFoundException {
     setUsername(scene, guiPlayer.getColor());
     chooseAvailableTerritories(scene, guiPlayer.getTerritoryNames()); 
     gameController.updateTerritoryColors();
+    gameController.setPlacementPaneLabels();
+    gameController.setHint();
   }
   
   private void setUsername(Scene scene, String name) {
@@ -102,4 +104,5 @@ public class RiscApplication extends Application {
         node.setVisible(false);
         });
   }
+
 }
