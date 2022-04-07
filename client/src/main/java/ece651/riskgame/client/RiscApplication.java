@@ -11,18 +11,23 @@ import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import ece651.riskgame.client.controllers.GameController;
+import ece651.riskgame.client.controllers.LoginController;
+import ece651.riskgame.shared.UserInit;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.apache.commons.math3.analysis.function.Log;
 
 public class RiscApplication extends Application {
   // GUIPlayer
   GUIPlayer guiPlayer;
 
   GameController gameController;
-  
+  LoginController loginController;
+
   /**
    * Method called to launch the frontend application
    */
@@ -32,6 +37,8 @@ public class RiscApplication extends Application {
 
   @Override
   public void start(Stage stage) throws IOException, ClassNotFoundException {
+
+    /*
     String ip = "vcm-25372.vm.duke.edu";
     int port = 1651;
     // connect to server
@@ -46,7 +53,22 @@ public class RiscApplication extends Application {
       System.exit(1);
     }
     System.out.println("Connection Estabilished");
+    */
 
+    loginController = new LoginController(new UserInit());
+
+    URL loginxml = getClass().getResource("/ui/login.fxml");
+    FXMLLoader loginLoader = new FXMLLoader(loginxml);
+    loadControllers(loginLoader);
+
+    Parent loginPane = loginLoader.load();
+
+    loginController.setLoginPane(loginPane);
+    Scene scene = new Scene(loginPane, 1138, 823);
+    stage.setScene(scene);
+    stage.show();
+
+    /*
     guiPlayer = new GUIPlayer(serverSocket);
     guiPlayer.initializeGame();
 
@@ -68,7 +90,8 @@ public class RiscApplication extends Application {
     initialize(scene);
     
     stage.setScene(scene);
-    stage.show();        
+    stage.show();
+    */
   }
 
   /**
@@ -82,6 +105,7 @@ public class RiscApplication extends Application {
   private void loadControllers(FXMLLoader loader) {
     HashMap<Class<?>, Object> controllers = new HashMap<>();    
     controllers.put(GameController.class, gameController);
+    controllers.put(LoginController.class, loginController);
     loader.setControllerFactory((c) -> {
       return controllers.get(c);
     });    
