@@ -23,7 +23,7 @@
             <Image url="@css/img/map.jpeg" />
          </image>
       </ImageView>
-      <Button fx:id="continue" layoutX="913.0" layoutY="770.0" mnemonicParsing="false" opacity="0.2" prefHeight="25.0" prefWidth="138.0" text="Continue" textFill="TRANSPARENT"/>
+      <Button fx:id="nextTurn" layoutX="913.0" layoutY="770.0" mnemonicParsing="false" opacity="0.2" prefHeight="25.0" prefWidth="138.0" text="Next Turn" textFill="TRANSPARENT" onMouseClicked="#nextTurn"/>
       <Label fx:id="hint" layoutX="312.0" layoutY="62.0" prefHeight="53.0" prefWidth="504.0" text="Hint" textFill="WHITE">
          <font>
             <Font size="18.0" />
@@ -125,11 +125,11 @@
          <effect>
             <Glow />
          </effect></Button>
-      <Button fx:id="attackButton" layoutX="78.0" layoutY="133.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="60.0" style="-fx-background-color: #AF9468;" text="Attack" textFill="WHITE">
+      <Button fx:id="attackButton" layoutX="78.0" layoutY="133.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="60.0" style="-fx-background-color: #AF9468;" text="Attack" textFill="WHITE" onMouseClicked="#selectAttackPane">
          <effect>
             <Glow />
          </effect></Button>
-      <Button fx:id="upgradeButton" layoutX="148.0" layoutY="132.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="70.0" style="-fx-background-color: #AF9468;" text="Upgrade" textFill="WHITE">
+      <Button fx:id="upgradeButton" layoutX="148.0" layoutY="132.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="70.0" style="-fx-background-color: #AF9468;" text="Upgrade" textFill="WHITE" onMouseClicked="#selectUpgradePane">
          <effect>
             <Glow />
          </effect></Button>
@@ -137,7 +137,7 @@
       <fx:include source="doPlacementPane.fxml" layoutX="37.0" layoutY="184.0" fx:id="placementPane" />
       <fx:include source="ActionPane.fxml" layoutX="37.0" layoutY="184.0" fx:id="actionPane" visible="false"/>
       <fx:include source="upgradePane.fxml" layoutX="37.0" layoutY="184.0" fx:id="upgradePane" visible="false"/>
-      <Button layoutX="331.0" layoutY="4.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" style="-fx-background-color: #9ea1a2;" text="Level UP!">
+      <Button layoutX="331.0" layoutY="4.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" style="-fx-background-color: #9ea1a2;" text="Level UP!" id="levelUp">
          <effect>
             <DropShadow />
          </effect>

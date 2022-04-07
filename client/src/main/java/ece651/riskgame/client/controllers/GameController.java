@@ -5,12 +5,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import ece651.riskgame.client.GUIPlayer;
+import ece651.riskgame.shared.Action;
+import ece651.riskgame.shared.Attack;
+import ece651.riskgame.shared.BasicUnit;
+import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.Territory;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -54,8 +60,18 @@ public class GameController {
   @FXML
   public void showTerritoryInfo(MouseEvent me) {
     String territoryName = ((Button) me.getSource()).getText();
-    // check after get from guiplayer
-    // display territory information
+    try {
+      updateTerritoryInfo(territoryName);
+    }
+    catch (IndexOutOfBoundsException e) {
+      hint.setText("You cannot see territory details before placement");
+    }
+  }
+
+  /**
+   * Method to update
+   */
+  private void updateTerritoryInfo(String territoryName) {
     infoView.getChildren().clear();
     infoView.setAlignment(Pos.TOP_CENTER);
 
@@ -68,24 +84,20 @@ public class GameController {
     labelUnit.setMaxWidth(Double.MAX_VALUE);
     labelUnit.setAlignment(Pos.CENTER);
     labelUnit.setFont(new Font(15));
+    
+    int unitNum = guiPlayer.getGame().getBoard().getTerritory(territoryName).getUnits().get(0).getNum();
 
-    try {
-      int unitNum = guiPlayer.getGame().getBoard().getTerritory(territoryName).getUnits().get(0).getNum();
+    Label text = new Label(Integer.toString(unitNum));
+    text.setMaxWidth(Double.MAX_VALUE);
+    text.setAlignment(Pos.CENTER);
+    text.setFont(new Font(15));
+    hbox.getChildren().addAll(labelUnit, text);
+    HBox.setHgrow(labelUnit, Priority.ALWAYS);
+    HBox.setHgrow(text, Priority.ALWAYS);
 
-      Label text = new Label(Integer.toString(unitNum));
-      text.setMaxWidth(Double.MAX_VALUE);
-      text.setAlignment(Pos.CENTER);
-      text.setFont(new Font(15));
-      hbox.getChildren().addAll(labelUnit, text);
-      HBox.setHgrow(labelUnit, Priority.ALWAYS);
-      HBox.setHgrow(text, Priority.ALWAYS);
-
-      infoView.getChildren().addAll(label, hbox);
-    } catch (IndexOutOfBoundsException e) {
-      hint.setText("You cannot see territory details before placement");
-    }
+    infoView.getChildren().addAll(label, hbox);    
   }
-
+  
   @FXML
   public void submitPlacement(MouseEvent me) throws ClassNotFoundException, InterruptedException {
     // get inputs
@@ -120,18 +132,45 @@ public class GameController {
   }
 
   @FXML
-  private void submitAction() throws IOException {
-    // check move or attack
-    // if move
-    // create Move
-    // else attack
-    // create Attack
+  private void submitAction() throws IOException {    
+    String msg = null;
+    try {
+      String from = ((MenuButton)scene.lookup("#actionPane #from")).getText();
+      String to = ((MenuButton)scene.lookup("#actionPane #to")).getText();
+
+      List<Action> acts = new ArrayList<Action>();
+      
+      // TODO check all fields
+      int num = Integer.parseInt(((TextField) scene.lookup("#actionPane #field1")).getText());
     
-    // gather data and put into Action
-    // call
-    guiPlayer.sendActions(null);
+      Action act = this.ifMoveInAction ? new Move(new BasicUnit(num), from, to, guiPlayer.getColor()) : new Attack(new BasicUnit(num), from, to, guiPlayer.getColor());
+      String result = guiPlayer.tryApplyAction(act);
+      if (result != null) {
+        msg = result;
+      }
+      else {
+        acts.add(act);
+        guiPlayer.sendActions(acts);
+        // TODO update territory info
+        msg = "Action submitted!";
+      }
+    } // end try
+    catch (NumberFormatException e) {
+      msg = "Assign numbers please";
+    }
+    hint.setText(msg);
   }
 
+  public void initializeGame() throws IOException, ClassNotFoundException {
+    setUsername(scene, guiPlayer.getColor());
+    setAvailableTerritories(scene, guiPlayer.getTerritoryNames()); 
+    disableButtonsInPlacement();    
+    setPlacementPaneLabels();
+    setHint();
+
+    updateTerritoryColors();
+  }
+  
   /**
    * Set labels(territory names) for
    */
@@ -155,6 +194,27 @@ public class GameController {
   }
 
   /**
+   * Set available territories based on game ppl
+   */
+  private void setAvailableTerritories(Scene scene, Set<String> names) {
+    Set<Node> nodes = scene.getRoot().lookupAll("Button");
+    
+    nodes.stream().filter(node -> (node.getId() != null))
+      .filter(node -> ((Button) node).getId().toString().endsWith("Territory"))
+      .filter(node -> !names.contains(((Button)node).getText())).forEach(node -> {
+        node.setVisible(false);
+        });
+  }
+
+  /**
+   * Disable button in placement phase to avoid undefined actions
+   */
+  private void disableButtonsInPlacement() {
+    List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "switchRoom", "logout", "newRoom", "moveButton", "attackButton", "upgradeButton", "levelUp"));
+    btns.stream().forEach(s -> scene.lookup("#"+s).setDisable(true));
+  }
+  
+  /**
    * Update Territory colors, called at the beginning of each round
    */
   public void updateTerritoryColors() {
@@ -168,15 +228,25 @@ public class GameController {
   /**
    * Update action pane base on current gameinfo
    */
-  public void updateActionPane() {    
+  public void updateActionPane() {
+    MenuButton from = (MenuButton) scene.lookup("#actionPane #from");
+    MenuButton to = (MenuButton) scene.lookup("#actionPane #to");
     // update two drop down menus
-    updateMenuButton((MenuButton) scene.lookup("#actionPane #from"), guiPlayer.getOccupies().stream().map(t -> new MenuItem(t.getName())).collect(Collectors.toList()));
+    updateMenuButton(from, guiPlayer.getOccupies().stream().map(t -> createMenuItem(t.getName(), from)).collect(Collectors.toList()));
     if (ifMoveInAction) {
-      updateMenuButton((MenuButton) scene.lookup("#actionPane #to"), guiPlayer.getOccupies().stream().map(t -> new MenuItem(t.getName())).collect(Collectors.toList()));
+      updateMenuButton(to, guiPlayer.getOccupies().stream().map(t -> createMenuItem(t.getName(), to)).collect(Collectors.toList()));
     } else { // attack
-      // TODO
+      updateMenuButton(to, guiPlayer.getEnemyTerritoryNames().stream().map(t -> createMenuItem(t, to)).collect(Collectors.toList()));
     }
     // TODO : advanced feature, adjust unit numbers based on selected territory
+  }
+
+  private MenuItem createMenuItem(String name, MenuButton button) {
+    MenuItem mb = new MenuItem(name);
+    mb.setOnAction(a -> {
+        button.setText(name);
+      });
+    return mb;
   }
 
   /**
@@ -191,24 +261,79 @@ public class GameController {
    * Helper function to call function from placement phase to action phase
    */
   public void fromPlacementToAction() {
-    // TODO update upgrade pane
-    updateActionPane();
     updateTerritoryColors();
-    // TODO activate many button
+    activateButtonsAfterPlacement();
+    set3ButtonsUnselected();
+    set3ActionPanesInvisible();
+  }
 
-    scene.lookup("#placementPane").setVisible(false);
-    scene.lookup("#actionPane").setVisible(true);
-
+  /**
+   * Active button after placement phase
+   */
+  private void activateButtonsAfterPlacement() {
+    List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "switchRoom", "logout", "newRoom", "moveButton", "attackButton", "upgradeButton", "levelUp"));
+    btns.stream().forEach(s -> scene.lookup("#"+s).setDisable(false));
   }
 
   @FXML
   public void selectMovePane() {
     // set upgrade to invisible and action to visible
-    scene.lookup("#upgradePane").setVisible(false);
+    set3ActionPanesInvisible();
     scene.lookup("#actionPane").setVisible(true);
-    // TODO  darken the Button the enlight other 2
+    set3ButtonsUnselected();
+    scene.lookup("#moveButton").setStyle("-fx-background-color: #ab7011");
     ifMoveInAction = true;
     updateActionPane();
   }
 
+  @FXML
+  public void selectAttackPane() {
+    set3ActionPanesInvisible();
+    scene.lookup("#actionPane").setVisible(true);
+    set3ButtonsUnselected();
+    scene.lookup("#attackButton").setStyle("-fx-background-color: #ab7011");
+    ifMoveInAction = false;
+    updateActionPane();
+  }
+
+  @FXML
+  public void selectUpgradePane() {
+    set3ActionPanesInvisible();    
+    scene.lookup("#upgradePane").setVisible(true);
+    set3ButtonsUnselected();
+    scene.lookup("#upgradeButton").setStyle("-fx-background-color: #ab7011");
+    // TODO update upgrade pane
+  }
+
+  /**
+   * Method to set placmentPane, actionpane and upgradePane invisible
+   */
+  private void set3ActionPanesInvisible() {
+    scene.lookup("#upgradePane").setVisible(false);
+    scene.lookup("#placementPane").setVisible(false);
+    scene.lookup("#actionPane").setVisible(false);
+  }
+  
+  /**
+   * Method to set move, attack, upgrade buttons to unselected mode
+   */
+  private void set3ButtonsUnselected() {
+    scene.lookup("#moveButton").setStyle("-fx-background-color: #af9468");
+    scene.lookup("#attackButton").setStyle("-fx-background-color: #af9468");
+    scene.lookup("#upgradeButton").setStyle("-fx-background-color: #af9468");
+  }
+
+  @FXML
+  public void nextTurn() throws IOException, ClassNotFoundException {
+    guiPlayer.doEndOfTurn();
+    // check when or lose
+
+    //update game
+    updateTerritoryColors();
+    set3ActionPanesInvisible();
+    set3ButtonsUnselected();
+    // update territory info
+    // TODO update level
+  }
+  
 }

@@ -9,14 +9,11 @@ import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
 import java.util.HashMap;
-import java.util.Set;
 
 import ece651.riskgame.client.controllers.GameController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -78,11 +75,7 @@ public class RiscApplication extends Application {
    * Call initializing functions at the beginning of the game
    */
   private void initialize(Scene scene) throws IOException, ClassNotFoundException {
-    gameController.setUsername(scene, guiPlayer.getColor());
-    setAvailableTerritories(scene, guiPlayer.getTerritoryNames()); 
-    gameController.updateTerritoryColors();
-    gameController.setPlacementPaneLabels();
-    gameController.setHint();
+    gameController.initializeGame();
   }
   
   
@@ -94,17 +87,5 @@ public class RiscApplication extends Application {
     });    
   }
 
-  /**
-   * Set available territories based on game ppl
-   */
-  private void setAvailableTerritories(Scene scene, Set<String> names) {
-    Set<Node> nodes = scene.getRoot().lookupAll("Button");
-    
-    nodes.stream().filter(node -> (node.getId() != null))
-      .filter(node -> ((Button) node).getId().toString().endsWith("Territory"))
-      .filter(node -> !names.contains(((Button)node).getText())).forEach(node -> {
-        node.setVisible(false);
-        });
-  }
 
 }
