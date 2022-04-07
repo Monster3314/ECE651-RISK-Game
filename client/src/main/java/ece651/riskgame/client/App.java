@@ -28,21 +28,7 @@ public class App {
   private ObjectInputStream socketIn;
   private ObjectOutputStream socketOut;
   
-  
-  /*
-  @Override
-  public void start(Stage stage) throws IOException {
-    URL xmlResource = getClass().getResource("/ui/main-page.xml");
-    System.out.println(xmlResource);
-
-    FXMLLoader loader = new FXMLLoader(xmlResource);
-    GridPane gp = loader.load();
-
-    Scene scene = new Scene(gp, 800, 600);
-    stage.setScene(scene);
-    stage.show();
-    }*/
-
+ 
   public static void main(String[] args) throws IOException {
     String ip = args[0];
     int port = -1;
