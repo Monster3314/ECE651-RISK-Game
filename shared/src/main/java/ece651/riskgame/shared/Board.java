@@ -51,34 +51,6 @@ public class Board implements Serializable {
     throw new IllegalArgumentException("Territory name not found.");
   }
 
-  public Map<String, Integer> getUnitMoveCost(String src) {
-    Map<String, Integer> ret = new HashMap<>();
-    Territory t = getTerritory(src);
-    int cost = t.getSize();
-    if (!territories.containsKey(src)) {
-      throw new IllegalArgumentException("Source territory not found.");
-    }
-    ret.put(src, cost);
-    TreeMap<Territory, Integer> treeMap = new TreeMap<>(Comparator.comparingInt(Territory::getSize));
-    for (Territory territory : getNeighbors(t)) {
-      treeMap.put(territory, cost + territory.getSize());
-    }
-    while (!treeMap.isEmpty()) {
-      Map.Entry<Territory, Integer> entry = treeMap.pollFirstEntry();
-      cost = entry.getValue();
-      ret.put(entry.getKey().getName(), cost);
-      for (Territory territory : getNeighbors(entry.getKey())) {
-        if (!ret.containsKey(territory.getName())) {
-          Integer value = treeMap.get(territory);
-          int newCost = cost + territory.getSize();
-          treeMap.put(territory, value == null ? newCost : Math.min(newCost, value));
-        }
-      }
-    }
-    ret.remove(src);
-    return ret;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

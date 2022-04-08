@@ -84,21 +84,4 @@ class BoardTest {
         });
     }
 
-    @Test
-    public void testGetUnitMoveCost() {
-        Board map = new Board();
-        Territory t1 = new BasicTerritory("A", 1, new Resource());
-        LinkedList<Territory> neig = new LinkedList<>();
-        Territory t2 = new BasicTerritory("B", 2, new Resource());
-        Territory t3 = new BasicTerritory("C", 3, new Resource());
-        Territory t4 = new BasicTerritory("D", 4, new Resource());
-        map.addTerritory(t1);
-        neig.add(t2);
-        neig.add(t3);
-        map.putEntry(t1, neig);
-        map.putEntry(t2, Arrays.asList(t1, t4));
-        map.putEntry(t3, Arrays.asList(t1, t4));
-        map.putEntry(t4, Arrays.asList(t2, t3));
-        assertEquals(7, map.getUnitMoveCost("A").get("D"));
-    }
 }
