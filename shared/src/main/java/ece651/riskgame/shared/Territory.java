@@ -4,6 +4,8 @@ import java.io.Serializable;
 import java.util.*;
 
 public abstract class Territory implements Serializable {
+  private static final long serialVersionUID = -543339904871157059L;
+
   protected String name;
   protected List<Unit> units;
   protected Resource production;
@@ -145,6 +147,7 @@ public abstract class Territory implements Serializable {
     }
   }
 
+  
   @Override
   public boolean equals(Object o) {
     if (this == o)

@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,12 +17,14 @@ import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.ActionRuleChecker;
 import ece651.riskgame.shared.AdjacentTerritoryChecker;
 import ece651.riskgame.shared.Attack;
+import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.EnemyTerritoryChecker;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.MovePathChecker;
+import ece651.riskgame.shared.PlaceAction;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 import ece651.riskgame.shared.UnitsRuleChecker;
@@ -29,17 +32,12 @@ import ece651.riskgame.shared.UnitsRuleChecker;
 public abstract class Player {
   protected String color;
   protected GameInfo theGame;
-  protected ObjectInputStream input;
-  protected ObjectOutputStream output;
   protected final Map<Class, ActionRuleChecker> actionCheckers;
-  protected List<Action> actionsToSend;
-  public Player(Socket server) throws IOException{
-    this.input = new ObjectInputStream(server.getInputStream());
-    this.output = new ObjectOutputStream(server.getOutputStream());
-    this.color = null;
-    this.theGame = null;
+  public Player(String color, GameInfo game) {
+
+    this.color = color;
+    this.theGame = game;;
     this.actionCheckers = new HashMap<Class, ActionRuleChecker>();
-    this.actionsToSend = new ArrayList<>();
     setupActionCheckers();
   }
 
@@ -62,16 +60,6 @@ public abstract class Player {
     }
     return errorMsg;
   }
-
-  /**
-   * initialize the game by recieving player color and initialized game model from server
-   * @throws ClassNotFoundException when casting failed
-   * @throws IOException when nothing is fetched from server  
-   */  
-  public void initializeGame() throws ClassNotFoundException, IOException{
-    this.color = (String) input.readObject();
-    this.theGame = (GameInfo) input.readObject();
-  }
   
   /**
    * get the color of the player
@@ -88,42 +76,28 @@ public abstract class Player {
   public GameInfo getGame() {
     return theGame;
   }
-  
-  /**
-   * addActionToSend will add an action to the list which will be sent to the server at the end of turn  
-   */  
-  public void addActionToSend(Action toSend) {
-    actionsToSend.add(toSend);
-  }
-  
-  /**
-   * sendActions will send the list of actions to the server  
-   */  
-  public void sendActions(List<Action> toSend) throws IOException {
-    output.writeObject(toSend);
-    output.flush();
-    output.reset();
-    actionsToSend.clear();
-  }
-  /**
-   * updateGame will receive the latest game from the server and update the game on client side
-   * @throws IOException when latest game is not recieved
-   * @throws ClassNotFoundException when case failed
-   */
-  public void updateGame() throws IOException, ClassNotFoundException {
-    theGame = (GameInfo) input.readObject();
-    
-  }
 
   /**
-   * doEndOfTurn will do the end of the regular turn which consists of send actions and update game
-   * @throws IOException when latest game is not recieved
-   * @throws ClassNotFoundException when case failed   
-   */  
-  public void doEndOfTurn() throws IOException, ClassNotFoundException{
-    sendActions(actionsToSend);
-    updateGame();
+   * updateGame will receive the latest game from the server and update the game on client side
+   */
+  public void updateGame(GameInfo latestGame) {
+    theGame = latestGame;
+    
   }
+    //adapting from list of moves to map(territory string to list of placed units)
+  public Map<String, List<Unit>> adaptPlacements(List<PlaceAction> placements) {
+    Map<String, List<Unit>> serverPlacements = new HashMap<>();
+    List<Territory> occupies = getOccupies();
+    for (Territory occupy : occupies) {
+      serverPlacements.put(occupy.getName(), new ArrayList<Unit>(Arrays.asList(new BasicUnit(0))));
+    }
+    for (PlaceAction placement: placements) {
+      serverPlacements.get(placement.getDestination()).add(placement.getUnit());
+    }
+    return serverPlacements;
+  }
+  
+  
   /**
    * helper function used to get the player's occupies outside this class
    * this function is used to adapt a list of placements(move) to the map which maps territory name to a list of units  
@@ -176,16 +150,6 @@ public abstract class Player {
   public boolean isGameOver() {
     return !(theGame.getWinner() == null); 
   }
-  /**
-   * getUnitsToPlace get the number of basic units to place
-   * @throws ClassNotFoundException when failed to cast
-   * @throws IOException when nothing fetched  
-   */  
-  @SuppressWarnings("unchecked")
-  //TODO:return list of units instead of integer
-  public Integer getUnitsToPlace() throws ClassNotFoundException, IOException{
-    List<Unit> toPlace = (List<Unit>) input.readObject();
-    return toPlace.get(0).getNum();
-  }
+  
 
 }

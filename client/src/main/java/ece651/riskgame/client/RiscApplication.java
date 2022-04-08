@@ -12,6 +12,7 @@ import java.util.HashMap;
 
 import ece651.riskgame.client.controllers.GameController;
 import ece651.riskgame.client.controllers.LoginController;
+import ece651.riskgame.client.controllers.PlacementPaneController;
 import ece651.riskgame.shared.UserInit;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -94,18 +95,11 @@ public class RiscApplication extends Application {
     stage.show();
     */
   }
-
-  /**
-   * Call initializing functions at the beginning of the game
-   */
-  private void initialize(Scene scene) throws IOException, ClassNotFoundException {
-    gameController.initializeGame();
-  }
   
   
   private void loadControllers(FXMLLoader loader) {
     HashMap<Class<?>, Object> controllers = new HashMap<>();    
-    controllers.put(GameController.class, gameController);
+    //controllers.put(GameController.class, gameController);
     controllers.put(LoginController.class, loginController);
     loader.setControllerFactory((c) -> {
       return controllers.get(c);

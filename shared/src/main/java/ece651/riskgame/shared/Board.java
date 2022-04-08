@@ -4,6 +4,7 @@ import java.io.Serializable;
 import java.util.*;
 
 public class Board implements Serializable {
+  private static final long serialVersionUID = -5196897839043527760L;
   private HashMap<Territory, List<Territory>> adjacency;
   private Map<String, Territory> territories;
   
