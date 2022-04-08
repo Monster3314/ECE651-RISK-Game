@@ -1,12 +1,15 @@
 package ece651.riskgame.client.controllers;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.Collectors;
 
 import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.Attack;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Move;
+import ece651.riskgame.shared.Unit;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
@@ -51,11 +54,23 @@ public class ActionPaneController {
       String from = ((MenuButton) pane.lookup("#from")).getText();
       String to = ((MenuButton) pane.lookup("#to")).getText();
 
-      // TODO check all fields
-      int num = Integer.parseInt(((TextField) pane.lookup("#field1")).getText());
-
-      Action act = ifMove ? new Move(new BasicUnit(num), from, to, gameController.guiPlayer.getColor())
-          : new Attack(new BasicUnit(num), from, to, gameController.guiPlayer.getColor());
+      List<Unit> units = new ArrayList<Unit>();
+      for (int i = 1; i <= 7; i++) {
+        try {
+          int num = Integer.parseInt(((TextField) pane.lookup("#field"+i)).getText());
+          Unit unit = new BasicUnit(num, i);
+          units.add(unit);
+        }
+        catch (NullPointerException e) {
+          // ignore it
+        }
+      }
+      if (units.isEmpty()) {
+        throw new IllegalArgumentException("Type number to submit");
+      }
+      
+      Action act = ifMove ? new Move(units, from, to, gameController.guiPlayer.getColor())
+          : new Attack(units, from, to, gameController.guiPlayer.getColor());
       String result = gameController.guiPlayer.tryApplyAction(act);
       if (result != null) {
         gameController.updateHint(result);
@@ -64,9 +79,13 @@ public class ActionPaneController {
         gameController.updateCurrentTerritoryInfo();
         gameController.updateHint("Action submitted!");
       }
+      gameController.updateTopBar();
     } // end try
     catch (NumberFormatException e) {
       gameController.updateHint("Assign numbers please");
+    }
+    catch (IllegalArgumentException e) {
+      gameController.updateHint(e.getMessage());
     }
   }
 

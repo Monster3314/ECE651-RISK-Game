@@ -80,6 +80,10 @@ public class ActionPaneControllerTest {
     
     when(gameController.guiPlayer.tryApplyAction(any())).thenReturn("wrong");
     actionPaneController.submitAction();
+
+    // find no unit
+    f1.setId("1");
+    actionPaneController.submitAction();
   }
 
 }

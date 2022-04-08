@@ -118,6 +118,17 @@ public class GameControllerTest {
     gameController.updateHint("hintt");
   }
 
+  @Test
+  public void test_levelUp() {
+    mockPrepare();
+    doNothing().when(gameController).updateHint(any());
+    doNothing().when(gameController).updateTopBar();
+    gameController.levelUp(null);
+
+    // result not null
+    doReturn("wow").when(guiPlayer).tryApplyAction(any());
+    gameController.levelUp(null);
+  }
 
   @Test
   public void test_showTerritoryInfoInPlacement(FxRobot robot)
@@ -126,7 +137,7 @@ public class GameControllerTest {
     MouseEvent me = mock(MouseEvent.class);
     when(me.getSource()).thenReturn(new Button("durham"));
     doNothing().when(gameController).updateTerritoryInfo(any());
-    gameController.showTerritoryInfo(me);
+    gameController.showTerritoryInfo(me);    
   }
 
   @Test

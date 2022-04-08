@@ -10,9 +10,11 @@ import java.util.Set;
 
 import ece651.riskgame.client.GUIPlayer;
 import ece651.riskgame.client.GameIO;
+import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
+import ece651.riskgame.shared.UpgradeTechAction;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -71,6 +73,18 @@ public class GameController implements Initializable {
     hint.setText(s);
   }
 
+  @FXML
+  public void levelUp(MouseEvent me) {
+    Action lu = new UpgradeTechAction(guiPlayer.getColor());
+    String result = guiPlayer.tryApplyAction(lu);
+    if (result != null) {
+      updateHint(result);
+    }
+    else {
+      updateTopBar();
+    }
+  }
+  
   @FXML
   public void showTerritoryInfo(MouseEvent me) {
     String territoryName = ((Button) me.getSource()).getText();
@@ -180,8 +194,9 @@ public class GameController implements Initializable {
    * Update food, gold, food
    */
   public void updateTopBar() {
-    // TODO
-    //((Label)scene.lookup("#playerFood")).setText();
+    ((Label)scene.lookup("#playerFood")).setText("Food: "+Integer.toString(guiPlayer.getFood()));
+    ((Label)scene.lookup("#playerGold")).setText("Gold: "+Integer.toString(guiPlayer.getGold()));
+    ((Label)scene.lookup("#playerLevel")).setText("Level: "+Integer.toString(guiPlayer.getTechLevel()));    
   }
 
   /**
@@ -241,6 +256,7 @@ public class GameController implements Initializable {
     activateButtonsAfterPlacement();
     set3ButtonsUnselected();
     set3ActionPanesInvisible();
+    updateTopBar();
   }
 
   /**
@@ -308,8 +324,8 @@ public class GameController implements Initializable {
     updateTerritoryColors();
     set3ActionPanesInvisible();
     set3ButtonsUnselected();
-    // update territory info
     updateCurrentTerritoryInfo();
+    updateTopBar();
     // TODO update level
     isLostOrWin();
   }
