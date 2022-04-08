@@ -14,6 +14,7 @@ public class serverRoom {
     Map<String, String> nameColorMap;
     Map<String, Boolean> online;
     Map<Socket, String> socketUsernameMap;
+    private int number = 0;
 
     public serverRoom() {
         this.sockets = new ConcurrentHashMap<>();
@@ -29,6 +30,7 @@ public class serverRoom {
         oosMap.put(player, new ObjectOutputStream(player.getOutputStream()));
         oisMap.put(player, new ObjectInputStream(player.getInputStream()));
         socketUsernameMap.put(player, username);
+        number ++;
     }
 
     public void addoldPlayer(Socket player, String username) throws IOException {
@@ -39,5 +41,7 @@ public class serverRoom {
         online.put(color, true);
     }
 
-
+    public int getNumber() {
+        return number;
+    }
 }

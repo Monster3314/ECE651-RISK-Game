@@ -308,10 +308,8 @@ public class RiskGame implements Runnable{
         sendGameInfo(gi);
       }
       closeSockets();
-    } catch (IOException e) {
-      e.printStackTrace();
-    } catch (ClassNotFoundException e) {
-      e.printStackTrace();
+    } catch (Exception ignored) {
+      ignored.printStackTrace();
     }
 
   }

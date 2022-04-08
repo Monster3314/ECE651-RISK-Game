@@ -13,6 +13,7 @@ public class RoomManager implements Runnable{
 
     public RoomManager(int port) {
         this.port = port;
+        latestRoom = new serverRoom();
     }
 
 
@@ -24,16 +25,23 @@ public class RoomManager implements Runnable{
                 Socket player = roomManager.accept();
                 ObjectInputStream ois = new ObjectInputStream(player.getInputStream());
                 int roomnumber = (int) ois.readObject();
+                String username = (String) ois.readObject();
                 if(roomnumber < 0) { //start a new room
-                    serverRoom roominfo = new serverRoom();
-                    //roominfo.addNewPlayer();
-                    RiskGame game = new RiskGame(5, "new_territories.csv", "new_adj_list.csv", roominfo);
+                    if(latestRoom.getNumber() != 2) {
+                        latestRoom.addNewPlayer(player, username);
+                    } else {
+                        latestRoom = new serverRoom();
+                        latestRoom.addNewPlayer(player, username);
+                        RiskGame game = new RiskGame(2, "new_territories.csv", "new_adj_list.csv", latestRoom);
+                        Thread t = new Thread(game);
+                        t.start();
+                    }
+
+                } else {
 
                 }
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 

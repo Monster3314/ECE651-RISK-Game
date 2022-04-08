@@ -35,7 +35,6 @@ public class LoginController {
     private TextField username;
 
     private UserInit userInit;
-    private GameController gameController;
     private RoomPaneController roomPaneController;
     private Parent loginPane;
     private Socket serverSocket;
@@ -70,9 +69,21 @@ public class LoginController {
         if(result.equals("yes")) {
             serverSocket.close();
 
+            Room first = new Room();
+            Map<Integer, Room> rooms = new HashMap<>();
+            rooms.put(1, first);
 
+            roomPaneController = new RoomPaneController(loginPane, rooms, username.getText());
+            URL roomXML = getClass().getResource("/ui/roomPane.fxml");
+            FXMLLoader roomLoader = new FXMLLoader(roomXML);
+            loadControllers(roomLoader);
+            Parent roomPane = roomLoader.load();
+            roomPaneController.setRoomPane(roomPane);
+
+            loginPane.getScene().setRoot(roomPane);
         }
 
+        /*
         GameIO gameIO = new GameIO(serverSocket);
         String color = gameIO.recvColor();
         GameInfo gi = gameIO.recvGame();
@@ -89,18 +100,8 @@ public class LoginController {
 
         initialize();
 
-        Room fisrt = new Room(guiPlayer, gameController, gp);
-        Map<Integer, Room> rooms = new HashMap<>();
-        rooms.put(1, fisrt);
+        */
 
-        roomPaneController = new RoomPaneController(loginPane, rooms);
-        URL roomXML = getClass().getResource("/ui/roomPane.fxml");
-        FXMLLoader roomLoader = new FXMLLoader(roomXML);
-        loadControllers(roomLoader);
-        Parent roomPane = roomLoader.load();
-        roomPaneController.setRoomPane(roomPane);
-
-        loginPane.getScene().setRoot(roomPane);
     }
 
     @FXML
@@ -109,27 +110,18 @@ public class LoginController {
         userInit.setUsername(username.getText());
         userInit.setPassword(password.getText());
 
-        oos.writeObject(userInit);
         oos.flush();
         oos.reset();
+        oos.writeObject(userInit);
 
         String result = (String) ois.readObject();
     }
 
-    private void initialize() throws IOException, ClassNotFoundException {
-        gameController.initializeGame();
-    }
-
-
     private void loadControllers(FXMLLoader loader) {
         HashMap<Class<?>, Object> controllers = new HashMap<>();
-        controllers.put(GameController.class, gameController);
-        controllers.put(PlacementPaneController.class, new PlacementPaneController());
-        controllers.put(ActionPaneController.class, new ActionPaneController());
         controllers.put(RoomPaneController.class, roomPaneController);
         loader.setControllerFactory((c) -> {
             return controllers.get(c);
         });
     }
-
 }

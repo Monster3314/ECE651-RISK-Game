@@ -58,6 +58,7 @@ public class Login implements Runnable{
                     if(userTable.containsKey(userinfo.getUsername())) {
                         if(userTable.get(userinfo.getUsername()).equals(userinfo.getPassword())) {
                             oos.writeObject("yes");
+                            //TODO: send each room info
                             break;
                         } else {
                             oos.writeObject("no");

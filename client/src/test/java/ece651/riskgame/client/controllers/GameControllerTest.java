@@ -6,11 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.net.Socket;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
@@ -30,6 +26,7 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+@Disabled
 @ExtendWith(ApplicationExtension.class)
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 public class GameControllerTest {
@@ -48,8 +45,8 @@ public class GameControllerTest {
         @Override
         public void run() {
           try {
-            RiskGame rg = new RiskGame(1, "new_territories.csv", "new_adj_list.csv");
-            rg.run(port);
+            //RiskGame rg = new RiskGame(1, "new_territories.csv", "new_adj_list.csv");
+            //rg.run(port);
           }
           catch (Exception e) {
             System.out.println(e.getMessage());
