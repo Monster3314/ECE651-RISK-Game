@@ -15,13 +15,13 @@ public class Clan implements Serializable {
     static public int[] COST = new int[] {0, 50, 75, 125, 200, 300};
 
     public Clan() {
-        this.occupies = new ArrayList<>();
-        this.maxTechLevel = 1;
-        this.resource = new Resource(new int[] {0, 0});
+      this(new ArrayList<>());
     }
 
     public Clan(List<Territory> occupies) {
-        this.occupies = occupies;
+      this.occupies = occupies;
+      this.maxTechLevel = 1;
+      this.resource = new Resource(new int[] {0, 0});
     }
 
     public Clan(int maxTechLevel, Resource resource) {
