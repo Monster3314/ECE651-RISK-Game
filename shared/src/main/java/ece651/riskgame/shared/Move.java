@@ -18,6 +18,7 @@ public class Move extends MigrationAction implements Serializable {
         board.getTerritory(toTerritory).addUnit(Unit);
 
         int unitCost = board.getUnitMoveCost(fromTerritory).get(toTerritory);
+        System.out.println(world.getClans().get(color));
         world.getClans().get(color).getResource().costFood(unitCost * Unit.getNum());
     }
     @Override

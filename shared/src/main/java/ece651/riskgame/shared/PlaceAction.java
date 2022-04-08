@@ -7,6 +7,12 @@ public class PlaceAction implements Action {
     this.toPlace = toPlace;
     this.placeTerritory = placeTerritory;
   }
+  public Unit getUnit() {
+    return toPlace;
+  }
+  public String getDestination() {
+    return placeTerritory;
+  }
 
   @Override
   public void apply(Actable world) {

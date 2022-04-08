@@ -2,6 +2,7 @@ package ece651.riskgame.client.controllers;
 
 import com.sun.javafx.stage.EmbeddedWindow;
 import ece651.riskgame.client.GUIPlayer;
+import ece651.riskgame.client.GameIO;
 import ece651.riskgame.client.Room;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.UserInit;
 import javafx.scene.layout.Pane;
 
@@ -49,6 +51,7 @@ public class LoginController {
         userInit.setPassword(password.getText());
 
         String ip = "0.0.0.0";
+        //String ip = "vcm-25372.vm.duke.edu";
         int port = 1651;
         // connect to server
         Socket serverSocket = null;
@@ -63,10 +66,12 @@ public class LoginController {
         }
         System.out.println("Connection Estabilished");
 
-        GUIPlayer guiPlayer = new GUIPlayer(serverSocket);
-        guiPlayer.initializeGame();
+        GameIO gameIO = new GameIO(serverSocket);
+        String color = gameIO.recvColor();
+        GameInfo gi = gameIO.recvGame();
+        GUIPlayer guiPlayer = new GUIPlayer(color, gi);
 
-        gameController = new GameController(guiPlayer);
+        gameController = new GameController(guiPlayer, gameIO);
 
         URL xmlResource = getClass().getResource("/ui/main.fxml");
 
@@ -74,12 +79,6 @@ public class LoginController {
         loadControllers(loader);
 
         Parent gp = loader.load();
-
-        gameController.setScene(gp);
-
-
-        //URL cssResource = getClass().getResource("/ui/css/main.css");
-        //scene.getStylesheets().add(cssResource.toString());
 
         initialize();
 
@@ -112,6 +111,8 @@ public class LoginController {
     private void loadControllers(FXMLLoader loader) {
         HashMap<Class<?>, Object> controllers = new HashMap<>();
         controllers.put(GameController.class, gameController);
+        controllers.put(PlacementPaneController.class, new PlacementPaneController());
+        controllers.put(ActionPaneController.class, new ActionPaneController());
         controllers.put(RoomPaneController.class, roomPaneController);
         loader.setControllerFactory((c) -> {
             return controllers.get(c);

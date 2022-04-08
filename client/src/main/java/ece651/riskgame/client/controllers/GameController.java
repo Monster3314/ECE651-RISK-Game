@@ -1,52 +1,62 @@
 package ece651.riskgame.client.controllers;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import ece651.riskgame.client.GUIPlayer;
-import ece651.riskgame.shared.Action;
-import ece651.riskgame.shared.Attack;
-import ece651.riskgame.shared.BasicUnit;
-import ece651.riskgame.shared.Move;
+import ece651.riskgame.client.GameIO;
+import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
+import ece651.riskgame.shared.Unit;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-public class GameController {
+public class GameController implements Initializable {
 
   @FXML
   VBox infoView;
 
+  @FXML
+  PlacementPaneController placementPaneController;
+  @FXML
+  ActionPaneController actionPaneController;
+  
   String username;
   GUIPlayer guiPlayer;
+  GameIO gameIO;
+  
+  @FXML
   Parent scene;
   Label hint;
 
   // flags
   boolean ifMoveInAction = true;
   
-  public GameController(GUIPlayer p) {
+  public GameController(GUIPlayer p, GameIO gameIO) {
     guiPlayer = p;
+    this.gameIO = gameIO;
     username = p.getColor();
   }
 
@@ -58,109 +68,102 @@ public class GameController {
     hint = (Label) scene.lookup("#hint");
   }
 
+  public void updateHint(String s) {
+    hint.setText(s);
+  }
+
   @FXML
   public void showTerritoryInfo(MouseEvent me) {
     String territoryName = ((Button) me.getSource()).getText();
     try {
       updateTerritoryInfo(territoryName);
     }
-    catch (IndexOutOfBoundsException e) {
-      hint.setText("You cannot see territory details before placement");
+    catch (Exception e) {
+      updateHint("You cannot see territory details before placement");
     }
   }
 
   /**
-   * Method to update
+   * Method to update territoryinfo pane according given territory name
    */
   private void updateTerritoryInfo(String territoryName) {
-    infoView.getChildren().clear();
+    ObservableList<Node> children = infoView.getChildren();
+    children.clear();
     infoView.setAlignment(Pos.TOP_CENTER);
 
     Label label = new Label(territoryName);
     label.setTextAlignment(TextAlignment.CENTER);
     label.setFont(new Font(20));
-
-    HBox hbox = new HBox();
-    Label labelUnit = new Label("Units");
-    labelUnit.setMaxWidth(Double.MAX_VALUE);
-    labelUnit.setAlignment(Pos.CENTER);
-    labelUnit.setFont(new Font(15));
+    label.setId("territoryName");
+    children.add(label);
     
-    int unitNum = guiPlayer.getGame().getBoard().getTerritory(territoryName).getUnits().get(0).getNum();
+    for (int i = 0; i < 7; i++) {
+      String armyName = Unit.NAME[i];
+      HBox hbox = new HBox();
+      Label labelUnit = new Label(armyName);
+      labelUnit.setMaxWidth(Double.MAX_VALUE);
+      labelUnit.setAlignment(Pos.CENTER_LEFT);
+      labelUnit.setFont(new Font(15));          
 
-    Label text = new Label(Integer.toString(unitNum));
-    text.setMaxWidth(Double.MAX_VALUE);
-    text.setAlignment(Pos.CENTER);
-    text.setFont(new Font(15));
-    hbox.getChildren().addAll(labelUnit, text);
-    HBox.setHgrow(labelUnit, Priority.ALWAYS);
-    HBox.setHgrow(text, Priority.ALWAYS);
-
-    infoView.getChildren().addAll(label, hbox);    
-  }
-  
-  @FXML
-  public void submitPlacement(MouseEvent me) throws ClassNotFoundException, InterruptedException {
-    // get inputs
-    String msg = null;
-    try {
-      hint.setText("Submitted! Waiting for other players");
-      // call guiplayer
-      Map<String, Integer> placements = new ArrayList<Integer>(Arrays.asList(1, 2, 3)).stream().collect(
-          Collectors.toMap(i -> ((Label) scene.lookup("#placementPane #label" + i)).getText(),
-                           i -> Integer.parseInt(((TextField) scene.lookup("#placementPane").lookup("#field"+i)).getText())));      
-      // wait(50);
-      // TODO: The wait needs Task.setOnSucceded, learn later
-      msg = guiPlayer.tryPlace(placements);
-      if (msg == null) {
-        guiPlayer.sendPlacements(placements);
-        // update map
-        guiPlayer.updateGame();
-        updateTerritoryColors();
-
-        fromPlacementToAction();
-        
-        msg = "Welcome to game world! Let's crush enemies!";
+      Label text = new Label("0");
+      text.setMaxWidth(Double.MAX_VALUE);
+      text.setAlignment(Pos.CENTER_RIGHT);
+      text.setFont(new Font(15));
+      try {
+        int unitNum = guiPlayer.getGame().getBoard().getTerritory(territoryName).getUnitByLevel(i).getNum();
+        text.setText(Integer.toString(unitNum));
       }
-
-    } catch (IOException e) {
-      msg = "IOException occurs during connection to server...";
-    } catch (NumberFormatException e) {
-      msg = "Please type number to place";
+      catch(Exception e) {
+      }      
+      hbox.getChildren().addAll(labelUnit, text);    
+      HBox.setHgrow(labelUnit, Priority.ALWAYS);
+      HBox.setHgrow(text, Priority.ALWAYS);
+      children.add(hbox);
     }
-    // set bad message
-    hint.setText(msg);
-  }
 
-  @FXML
-  private void submitAction() throws IOException {    
-    String msg = null;
-    try {
-      String from = ((MenuButton)scene.lookup("#actionPane #from")).getText();
-      String to = ((MenuButton)scene.lookup("#actionPane #to")).getText();
-
-      List<Action> acts = new ArrayList<Action>();
-      
-      // TODO check all fields
-      int num = Integer.parseInt(((TextField) scene.lookup("#actionPane #field1")).getText());
+    Label title2 = new Label("Resource Production");
+    title2.setTextAlignment(TextAlignment.CENTER);
+    title2.setFont(new Font(20));
+    children.add(title2);    
     
-      Action act = this.ifMoveInAction ? new Move(new BasicUnit(num), from, to, guiPlayer.getColor()) : new Attack(new BasicUnit(num), from, to, guiPlayer.getColor());
-      String result = guiPlayer.tryApplyAction(act);
-      if (result != null) {
-        msg = result;
-      }
-      else {
-        acts.add(act);
-        guiPlayer.sendActions(acts);
-        // TODO update territory info
-        msg = "Action submitted!";
-      }
-    } // end try
-    catch (NumberFormatException e) {
-      msg = "Assign numbers please";
+    for (String resourceName: new String[] {Resource.FOOD, Resource.GOLD}) {
+      HBox hbox = new HBox();
+      Label labelUnit = new Label(resourceName);
+      labelUnit.setMaxWidth(Double.MAX_VALUE);
+      labelUnit.setAlignment(Pos.CENTER);
+      labelUnit.setFont(new Font(15));          
+
+      Label text = new Label(Integer.toString(guiPlayer.getGame().getBoard().getTerritory(territoryName).getProduction().getResourceNum(resourceName)));
+      text.setMaxWidth(Double.MAX_VALUE);
+      text.setAlignment(Pos.CENTER);
+      text.setFont(new Font(15));
+      hbox.getChildren().addAll(labelUnit, text);    
+      HBox.setHgrow(labelUnit, Priority.ALWAYS);
+      HBox.setHgrow(text, Priority.ALWAYS);
+      children.add(hbox);
     }
-    hint.setText(msg);
+
+    // This should be removed in the future
+    Label title3 = new Label("Neighbors");
+    title3.setTextAlignment(TextAlignment.CENTER);
+    title3.setFont(new Font(20));
+    children.add(title3);
+
+    for (Territory neighbor: guiPlayer.getGame().getBoard().getNeighbors(guiPlayer.getGame().getBoard().getTerritory(territoryName))) {
+      Label neigh = new Label(neighbor.getName());
+      neigh.setTextAlignment(TextAlignment.CENTER);
+      neigh.setFont(new Font(15));
+      children.add(neigh);
+    }    
   }
+
+  public void updateCurrentTerritoryInfo() {
+    try {
+      updateTerritoryInfo(((Label)infoView.lookup("#territoryName")).getText());
+    }
+    catch(NullPointerException e) {
+    }
+  }  
 
   public void initializeGame() throws IOException, ClassNotFoundException {
     setUsername(scene, guiPlayer.getColor());
@@ -184,7 +187,8 @@ public class GameController {
       i++;
     }
     Label title = ((Label) scene.lookup("#placementPane").lookup("#title"));
-    title.setText("Place your " + guiPlayer.getUnitsToPlace() + " units");
+    List<Unit> units = gameIO.recvUnitsToPlace();
+    title.setText("Place your " + units.get(0).getNum() + " units");
   }
 
   /**
@@ -192,6 +196,14 @@ public class GameController {
    */
   public void setUsername(Parent scene, String name) {
     ((Labeled) scene.lookup("#playerName")).textProperty().setValue(name);
+  }
+
+  /**
+   * Update food, gold, food
+   */
+  public void updateTopBar() {
+    // TODO
+    //((Label)scene.lookup("#playerFood")).setText();
   }
 
   /**
@@ -265,7 +277,7 @@ public class GameController {
     updateTerritoryColors();
     activateButtonsAfterPlacement();
     set3ButtonsUnselected();
-    set3ActionPanesInvisible();
+    set3ActionPanesInvisible();    
   }
 
   /**
@@ -326,15 +338,40 @@ public class GameController {
 
   @FXML
   public void nextTurn() throws IOException, ClassNotFoundException {
-    guiPlayer.doEndOfTurn();
-    // check when or lose
-
+    gameIO.sendActions(guiPlayer.getActionsToSend());
+    guiPlayer.clearActionsToSend();
+    guiPlayer.updateGame(gameIO.recvGame());
     //update game
     updateTerritoryColors();
     set3ActionPanesInvisible();
     set3ButtonsUnselected();
     // update territory info
+    updateCurrentTerritoryInfo();
     // TODO update level
+    isLostOrWin();
+  }
+
+  public void isLostOrWin() throws IOException, ClassNotFoundException{
+    if (guiPlayer.isLost()) {
+      disableButtonsInPlacement();
+      updateHint("Woops. You have lost.");
+      while (!guiPlayer.isGameOver()) {
+        guiPlayer.updateGame(gameIO.recvGame());
+        // TODO update everything and do 2 threads 
+      }
+    }
+    else if (guiPlayer.isGameOver()) { // winner
+      updateHint("Congratulations! You are the winner");
+      disableButtonsInPlacement();
+    }
+  }
+
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {
+    placementPaneController.gameController = this;
+    placementPaneController.pane = (Pane)scene.lookup("#placementPane");
+    actionPaneController.gameController = this;
+    actionPaneController.pane = (Pane)scene.lookup("#actionPane");
   }
   
 }
