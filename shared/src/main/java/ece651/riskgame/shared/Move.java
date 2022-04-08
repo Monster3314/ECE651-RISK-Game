@@ -3,6 +3,7 @@ package ece651.riskgame.shared;
 import java.io.Serializable;
 import java.util.Map;
 
+// TODO: Rename
 public class Move extends MigrationAction implements Serializable {
 
     public Move(Unit moveUnit, String fromTerritory, String toTerritory, String color) {
@@ -15,6 +16,9 @@ public class Move extends MigrationAction implements Serializable {
 
         board.getTerritory(fromTerritory).decUnit(Unit);
         board.getTerritory(toTerritory).addUnit(Unit);
+
+        int unitCost = board.getUnitMoveCost(fromTerritory).get(toTerritory);
+        world.getClans().get(color).getResource().costFood(unitCost * Unit.getNum());
     }
     @Override
     public void clientApply(Actable game) {

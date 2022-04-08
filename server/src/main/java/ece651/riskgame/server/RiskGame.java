@@ -170,43 +170,53 @@ public class RiskGame {
     List<Action> Actions = readActions();
     if(Actions.size() == 0) return;
 
-    List<Move> moves = new ArrayList<>();
+    List<Action> movesAndUpgradeUnits = new ArrayList<>();
     List<Attack> attacks = new ArrayList<>();
 
     for (Action a : Actions) {
-      if (a.getClass() == Move.class) {
-        moves.add((Move) a);
-        continue;
-      }
-      //if (a.getClass() == Attack.class) {
-      else { // for coverage
+      if (a.getClass() == Attack.class) {
         attacks.add((Attack) a);
-        continue;
+      }
+      else { // for coverage
+        movesAndUpgradeUnits.add(a);
       }
     }
 
-    doMoveAction(moves);
+    doMoveAndUpgradeUnitAction(movesAndUpgradeUnits);
     doAttackAction(attacks);
 
     // TODO: Send to players before flushing
     logger.flushBuffer();
   }
 
+  private void doMoveAndUpgradeUnitAction(List<Action> movesAndUpgradeUnits) {
+    for (Action a : movesAndUpgradeUnits) {
+      if (a.getClass() == Move.class) {
+        doMoveAction((Move) a);
+      }
+      else {
+        doUpgradeUnitAction((UpgradeUnitAction) a);
+      }
+    }
+  }
+
+  private void doUpgradeUnitAction(UpgradeUnitAction a) {
+
+  }
+
   /**
    * do move action
-   * @param moveActions the list of Move actions
+   * @param a the Move action
    */
-  private void doMoveAction(List<Move> moveActions) {
-    for (Move a : moveActions) {
-      String checkResult = MoveActionChecker.checkAction(world, a);
-      if (checkResult != null) {
-        logger.writeLog("Discard " + a.getColor() + "'s move" + "(" + a.getFromTerritory() + ", " + a.getToTerritory()
-                + ", " + a.getUnit() + ") for reason: " + checkResult);
-        continue;
-      }
-      world.acceptAction(a);
-      logger.writeLog(a.getColor() + " player moves " + a.getUnit() + " from " + a.getFromTerritory() + " to " + a.getToTerritory() + ".");
+  private void doMoveAction(Move a) {
+    String checkResult = MoveActionChecker.checkAction(world, a);
+    if (checkResult != null) {
+      logger.writeLog("Discard " + a.getColor() + "'s move" + "(" + a.getFromTerritory() + ", " + a.getToTerritory()
+              + ", " + a.getUnit() + ") for reason: " + checkResult);
+      return;
     }
+    world.acceptAction(a);
+    logger.writeLog(a.getColor() + " player moves " + a.getUnit() + " from " + a.getFromTerritory() + " to " + a.getToTerritory() + ".");
   }
 
   /**
