@@ -10,13 +10,28 @@ import java.util.List;
  */
 public class Clan implements Serializable {
     private final List<Territory> occupies;
+    private int maxTechLevel;
+    private Resource resource;
+    static public int[] COST = new int[] {0, 50, 75, 125, 200, 300};
 
     public Clan() {
         this.occupies = new ArrayList<>();
+        this.maxTechLevel = 1;
+        this.resource = new Resource(new int[] {0, 0});
     }
 
     public Clan(List<Territory> occupies) {
         this.occupies = occupies;
+    }
+
+    public Clan(int maxTechLevel, Resource resource) {
+        this.occupies = new ArrayList<>();
+        this.maxTechLevel = maxTechLevel;
+        this.resource = resource;
+    }
+
+    public Resource getResource() {
+        return this.resource;
     }
 
     public void addTerritory(Territory t) {
@@ -48,4 +63,14 @@ public class Clan implements Serializable {
         occupies.remove(t);
     }
 
+    public void upgradeLevel() {
+        resource.costGold(COST[maxTechLevel]);
+        maxTechLevel ++;
+    }
+
+    public void getTerritoryProduction() {
+        for (Territory t : occupies) {
+            resource.addResource(t.getProduction());
+        }
+    }
 }
