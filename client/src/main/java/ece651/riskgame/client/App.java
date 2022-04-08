@@ -19,17 +19,15 @@ import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.Move;
+import ece651.riskgame.shared.PlaceAction;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
+import javafx.scene.text.Text;
 
 public class App {
-
-  private TextPlayer player;
-  private ObjectInputStream socketIn;
-  private ObjectOutputStream socketOut;
-  
- 
-  public static void main(String[] args) throws IOException {
+  private TextPlayer player;  
+  private GameIO serverIO; 
+  public static void main(String[] args) throws IOException, ClassNotFoundException{
     String ip = args[0];
     int port = -1;
     try {
@@ -40,12 +38,8 @@ public class App {
     }
     // connect to server
     Socket serverSocket = null;
-    ObjectInputStream socketIn = null;
-    ObjectOutputStream socketOut = null;
     try {
       serverSocket = new Socket(ip, port);
-      socketIn = new ObjectInputStream(serverSocket.getInputStream());
-      socketOut = new ObjectOutputStream(serverSocket.getOutputStream());
     } catch (UnknownHostException e) {
       System.err.println("Don't know about host: " + ip);
       System.exit(1);
@@ -55,25 +49,15 @@ public class App {
     }
     System.out.println("Connection Estabilished");
 
-    //recv allocated player color
-    //recv GameInfo
-    String color = null;
-    GameInfo game = null;
-    try {
-      color = (String) socketIn.readObject();
-      game = (GameInfo) socketIn.readObject();
-    } catch (ClassNotFoundException e) {
-      System.err.println("Class Not Found when reading Object through socket");
-      System.exit(1);
-    }
-    TextPlayer player = new TextPlayer(serverSocket);
-    App app = new App(player, socketIn, socketOut);
+    GameIO serverIO = new GameIO(serverSocket);
+    String color = serverIO.recvColor();
+    GameInfo initializedGame = serverIO.recvGame();
+    App app = new App(new TextPlayer(color, initializedGame), serverIO);
 
-    /*
     app.doPlacementPhase();
-    app.doActionPhase();
+    app.doActionPhases();
     //game over
-    if (player.isGameOver()) {
+    if (app.isOver()) {
       app.doGameOverPhase();
     }
     //player lost
@@ -83,84 +67,42 @@ public class App {
        
     serverSocket.close();
     System.exit(0);
-    */
   }
 
   /**
    * constructor of app
    * @param player is the current player of the game on this client program
-   * @param socketIn is the objectInputStream of the socket
-   * @param socketOut is the objectOutputStream of the socket
+   * @param io is the interface between client and server to send and recv objects  
    */
-  public App(TextPlayer player, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
+  public App(TextPlayer player, GameIO io) {
     this.player = player;
-    this.socketIn = socketIn;
-    this.socketOut = socketOut;
+    this.serverIO = io;
   }
 
-  /**
-   * recvGame is used to recieve the game function from the socket to server
-   * @throws IOException when nothing fetched from objectstream input
-   */
-  protected GameInfo recvGame() throws IOException{
-    GameInfo game;
-    try {
-      game = (GameInfo) socketIn.readObject();
-      return game;
-    } catch (ClassNotFoundException e) {
-      System.err.println("Class Not Found when reading Object through socket");
-      System.exit(1);
-      return null;
-    }
-  }
 
   /**
    * doPlacementPhase is used to send the initial placements to the server
    * @throws IOException when the initial units to allocate is not recieved
+   * @thrwos ClassNotFoundException when failed to cast when recieving objects  
    */
-  @SuppressWarnings("unchecked")
-  public void doPlacementPhase() throws IOException {
-    List<Unit> toPlace = null;
-    try {
-      toPlace = (List<Unit>) socketIn.readObject();
-    } catch (ClassNotFoundException e) {
-      System.err.println("Class Not Found when reading Object through socket");
-      System.exit(1);
-    }
-    List<Move> placements = player.readPlacementPhase(toPlace);
-    //adapting from list of moves to map(territory string to list of placed units)
-    Map<String, List<Unit>> serverPlacements = new HashMap<>();
-    List<Territory> occupies = player.getOccupies();
-    for (Territory occupy : occupies) {
-      serverPlacements.put(occupy.getName(), new ArrayList<Unit>(Arrays.asList(new BasicUnit(0))));
-    }
-    for (Move placement: placements) {
-      serverPlacements.get(placement.getToTerritory()).add(placement.getUnit());
-    }
 
-    socketOut.writeObject(serverPlacements);
-    socketOut.flush();
-    socketOut.reset();
-
-    printWaitingMsg();
+  public void doPlacementPhase() throws IOException, ClassNotFoundException{
+    List<Unit> unitsToPlace = serverIO.recvUnitsToPlace();
+    List<PlaceAction> placementsToSend = player.readPlacements(unitsToPlace);
+    serverIO.sendPlacements(player.adaptPlacements(placementsToSend));
+    player.updateGame(serverIO.recvGame());
   }
 
+
   /**
-   * doActionPhase is used to read valid actions from client and send them to the server
+   * doActionPhases is used to read valid actions from client and send them to the server
    * @throws IOException when latest game is not recieved
    */
-  public void doActionPhase() throws IOException {
-    GameInfo game = recvGame();
-    player.update(game);
-    while (!player.isLost() && !player.isGameOver()) {
-      List<Action> actions = player.readActionsPhase();
-      socketOut.writeObject(actions);
-      socketOut.flush();
-      socketOut.reset();
-
-      printWaitingMsg();
-      game = recvGame();
-      player.update(game);
+  public void doActionPhases() throws IOException, ClassNotFoundException {
+    while (player.isGameOver() || player.isLost()) {
+      List<Action> actionsToSend = player.readActions();
+      serverIO.sendActions(actionsToSend);
+      player.updateGame(serverIO.recvGame());;
     }
   }
 
@@ -170,24 +112,8 @@ public class App {
    */
   public void doGameOverPhase() throws IOException {
     player.doGameOverPhase();
-    socketIn.close();
-    socketOut.close();
   }
-  /**
-   * doSpectationPhase is used when client choose to speculate the game after dead
-   * @return IOException when the latest game is not recieved
-   */
-  public void doSpectationPhase() throws IOException{
-    GameInfo game;
-    while(!player.isGameOver()) {
-      player.doOneSpectation();
-      
-      printWaitingMsg();
 
-      game = recvGame();
-      player.update(game);      
-    }
-  }
   
   /**
    * doPostDeathPhase is to let user choose speculate or quit after dead
@@ -198,17 +124,17 @@ public class App {
   public void doPostDeathPhase() throws IOException {
     String choice = player.getPostDeathChoice();
     if (choice.equals("S")) {
-      doSpectationPhase();
-      doGameOverPhase();
+      player.doSpectationPhase();
+      player.doGameOverPhase();
     }
     else if (choice.equals("Q")) {
-      doGameOverPhase();
+      player.doGameOverPhase();
     }
     else {
     }
   }
-  //TODO:Time elapse
-  private void printWaitingMsg() {
-    System.out.println("Waiting for other players...");
+  public boolean isOver() {
+    return player.isGameOver();
   }
+
 }
