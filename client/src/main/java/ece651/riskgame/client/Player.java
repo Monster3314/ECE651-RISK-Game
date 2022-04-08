@@ -5,6 +5,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -16,12 +17,14 @@ import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.ActionRuleChecker;
 import ece651.riskgame.shared.AdjacentTerritoryChecker;
 import ece651.riskgame.shared.Attack;
+import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.EnemyTerritoryChecker;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.MovePathChecker;
+import ece651.riskgame.shared.PlaceAction;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 import ece651.riskgame.shared.UnitsRuleChecker;
@@ -95,7 +98,21 @@ public abstract class Player {
   public void addActionToSend(Action toSend) {
     actionsToSend.add(toSend);
   }
-  
+
+  public void sendPlacements(List<PlaceAction> placements) throws IOException{
+    //adapting from list of moves to map(territory string to list of placed units)
+    Map<String, List<Unit>> serverPlacements = new HashMap<>();
+    List<Territory> occupies = getOccupies();
+    for (Territory occupy : occupies) {
+      serverPlacements.put(occupy.getName(), new ArrayList<Unit>(Arrays.asList(new BasicUnit(0))));
+    }
+    for (PlaceAction placement: placements) {
+      serverPlacements.get(placement.getToTerritory()).add(placement.getUnit());
+    }
+    output.writeObject(serverPlacements);
+    output.flush();
+    output.reset();
+  }
   /**
    * sendActions will send the list of actions to the server  
    */  
@@ -108,13 +125,22 @@ public abstract class Player {
   /**
    * updateGame will receive the latest game from the server and update the game on client side
    * @throws IOException when latest game is not recieved
-   * @throws ClassNotFoundException when case failed
+   * @throws ClassNotFoundException when casting failed during reading object
    */
   public void updateGame() throws IOException, ClassNotFoundException {
-    theGame = (GameInfo) input.readObject();
+    theGame = recvLatestGame();
     
   }
 
+  /**
+   * recieve the Latest Game from server
+   * @throws IOException when latest game is not recieved
+   * @throws ClassNotFoundException when casting failed during reading object  
+   */  
+  protected GameInfo recvLatestGame() throws IOException, ClassNotFoundException {
+    return (GameInfo) input.readObject();
+  }
+  
   /**
    * doEndOfTurn will do the end of the regular turn which consists of send actions and update game
    * @throws IOException when latest game is not recieved
@@ -177,15 +203,13 @@ public abstract class Player {
     return !(theGame.getWinner() == null); 
   }
   /**
-   * getUnitsToPlace get the number of basic units to place
+   * recvUnitsToPlace get the number of basic units to place
    * @throws ClassNotFoundException when failed to cast
    * @throws IOException when nothing fetched  
    */  
   @SuppressWarnings("unchecked")
-  //TODO:return list of units instead of integer
-  public Integer getUnitsToPlace() throws ClassNotFoundException, IOException{
-    List<Unit> toPlace = (List<Unit>) input.readObject();
-    return toPlace.get(0).getNum();
+  protected List<Unit> recvUnitsToPlace() throws ClassNotFoundException, IOException{
+     return (List<Unit>) input.readObject();
   }
 
 }
