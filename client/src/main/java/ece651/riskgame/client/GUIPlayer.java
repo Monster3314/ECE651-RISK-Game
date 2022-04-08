@@ -1,27 +1,20 @@
 package ece651.riskgame.client;
 
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
+import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.BasicUnit;
-import ece651.riskgame.shared.Board;
-import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.PlaceAction;
-import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
 public class GUIPlayer extends Player{
-
+  private List<Action> actionsToSend;
 
   /**
    * Construct the GUIPlayer
@@ -30,6 +23,7 @@ public class GUIPlayer extends Player{
    */
   public GUIPlayer(String color, GameInfo game) throws IOException {
     super(color, game);
+    actionsToSend = new ArrayList<>();
   }
 
   public String tryPlace(Map<String, Integer> placements) {
@@ -55,6 +49,16 @@ public class GUIPlayer extends Player{
       adaptedPlacements.put(placement.getKey(), toPlace);
     }
     return adaptedPlacements;
+  }
+
+  public List<Action> getActionsToSend() {
+    return actionsToSend;
+  }
+  public void addActionToSend(Action toSend) {
+    actionsToSend.add(toSend);
+  }
+  public void clearActionsToSend() {
+    actionsToSend.clear();
   }
   
   
