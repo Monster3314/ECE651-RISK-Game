@@ -35,23 +35,25 @@ public class TextPlayer extends Player{
 
   /**
    * Construct the TextPlayer using Standard I/O
-   * @param server is the socket connection with game server
+   * @param color is the color that represents player's clan
+   * @param game is the game the player is playing in  
    */
-  public TextPlayer(Socket server) throws IOException{
-    this(server, new BufferedReader(new InputStreamReader(System.in)), System.out);
+  public TextPlayer(String color, GameInfo game) {
+    this(color, game, new BufferedReader(new InputStreamReader(System.in)), System.out);
 
 
   }
   
   /**
    * Construct the TextPlayer using specified I/O
-   * @param server is the socket connection with server
+   * @param color is the color that represents player's clan
+   * @param game is the game the player is playing in    
    * @param input is the reader which is used to fetch instructions from player
    * @param out is to print view and prompt to  
    */
-  public TextPlayer(Socket server, BufferedReader input, PrintStream out) throws IOException{
-    super(server);
-    this.view = null;
+  public TextPlayer(String color, GameInfo game, BufferedReader input, PrintStream out) {
+    super(color, game);
+    this.view = new GameTextView(this.theGame);
     this.inputReader = input;
     this.out = out;
 
@@ -60,21 +62,12 @@ public class TextPlayer extends Player{
     setupActionList();
     setupActionReadingMap();
   }
-
-  @Override
-  public void initializeGame() throws ClassNotFoundException, IOException {
-    this.color = (String) input.readObject();
-    this.theGame = (GameInfo) input.readObject();
-    this.view = new GameTextView(this.theGame);
-  }
   /**
-   * recieving the latest game from server, then update current Game and view 
-   * @throws IOException when latest game is not recieved 
-   * @throws ClassNotFoundException when casting failed during reading object  
+   * update current game and view 
    */
   @Override
-  public void updateGame() throws IOException, ClassNotFoundException {
-    theGame = recvLatestGame();
+  public void updateGame(GameInfo latestGame) {
+    theGame = latestGame;
     view = new GameTextView(theGame);
   }
 
@@ -134,8 +127,11 @@ public class TextPlayer extends Player{
     while (true)  {
       try {
         Territory src = readTerritory("Which territory do you want to move unit from?");
-        List<Unit> unitsToMove = readUnits(src, "How many units do you want to move?");
+        //TODO:unit to list of units
         Territory dst = readTerritory("Which territory do you want to move unit to?");
+        Unit unitsToMove = readUnits(src.getUnits(), "How many units do you want to move?");
+        //List<Unit> unitsToMove = readUnits(src, "How many units do you want to move?");
+        
         return new Move(unitsToMove, src.getName(), dst.getName(), this.color);
 
       } catch (IOException e) {
@@ -154,7 +150,10 @@ public class TextPlayer extends Player{
       try {
         Territory src = readTerritory("Which territory do you want to attack from?");
         Territory dst = readTerritory("Which territory do you want to attack?");
-        List<Unit> unitsToAttack = readUnits(src, "How many units do you want to dispatch?");
+        //TODO:unit to list of units
+        Unit unitsToAttack = readUnits(src.getUnits(), "How many units do you want to dispatch?");
+        //List<Unit> unitsToAttack = readUnits(src, "How many units do you want to dispatch?");
+
         return new Attack(unitsToAttack, src.getName(), dst.getName(), color);
       } catch (IOException e) {
       }
@@ -191,13 +190,14 @@ public class TextPlayer extends Player{
       }
     }
   }
+
+  //TODO: Unit to List<Unit> 
   /**
    * read Units to move/attack from terminal
-   * @param src is the source territory to move unit from
+   * @param toAllocate is the units you can dispatch/move/place  
    * @throws IOException when nothing fetched from input (STD input or BufferedReader)
   */
-  public List<Unit> readUnits(Territory src, String prompt) throws IOException{
-    List<Unit> toAllocate = src.getUnits();
+  public Unit readUnits(List<Unit> toAllocate, String prompt) throws IOException{
     List<Unit> unitsToMove = new ArrayList<>();
     for (Unit toRead : toAllocate) {
       Unit unitToMove = readOneUnit(toRead);
@@ -205,7 +205,7 @@ public class TextPlayer extends Player{
         unitsToMove.add(unitToMove);
       }
     }
-    return unitsToMove;
+    return unitsToMove.get(0);
   }
 
   /**
@@ -267,9 +267,11 @@ public class TextPlayer extends Player{
     return placements;
 
   }
+  public void doOneSpectation() {
+    printInfo(view.displayGame());
+  }
   /**
    * doSpectationPhase is used when player choose to speculate the game
-   * @return IOException when the latest game is not recieved
    */
   public void doSpectationPhase() throws IOException{
     while(!isGameOver()) {
@@ -287,19 +289,10 @@ public class TextPlayer extends Player{
       printInfo(view.displayWinner());
       inputReader.close();
       out.close();
-      input.close();
-      output.close();
     }
     else {
       throw new IllegalStateException("Game is not over yet.");
     }
-  }
-
-  /**
-   * player spectate for one round
-   */
-  public void doOneSpectation() {
-    printInfo(view.displayGame());
   }
 
   protected String getDeathChoicesPrompt() {

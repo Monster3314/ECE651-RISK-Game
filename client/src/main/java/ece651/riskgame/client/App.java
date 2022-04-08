@@ -25,9 +25,8 @@ import ece651.riskgame.shared.Unit;
 import javafx.scene.text.Text;
 
 public class App {
-
   private TextPlayer player;  
- 
+  private GameIO serverIO; 
   public static void main(String[] args) throws IOException, ClassNotFoundException{
     String ip = args[0];
     int port = -1;
@@ -50,9 +49,10 @@ public class App {
     }
     System.out.println("Connection Estabilished");
 
-    App app = new App(new TextPlayer(serverSocket));
-
-    
+    GameIO serverIO = new GameIO(serverSocket);
+    String color = serverIO.recvColor();
+    GameInfo initializedGame = serverIO.recvGame();
+    App app = new App(new TextPlayer(color, initializedGame), serverIO);
 
     app.doPlacementPhase();
     app.doActionPhases();
@@ -72,22 +72,25 @@ public class App {
   /**
    * constructor of app
    * @param player is the current player of the game on this client program
+   * @param io is the interface between client and server to send and recv objects  
    */
-  public App(TextPlayer player) throws IOException, ClassNotFoundException{
+  public App(TextPlayer player, GameIO io) {
     this.player = player;
-    this.player.initializeGame();   
+    this.serverIO = io;
   }
 
 
   /**
    * doPlacementPhase is used to send the initial placements to the server
    * @throws IOException when the initial units to allocate is not recieved
+   * @thrwos ClassNotFoundException when failed to cast when recieving objects  
    */
 
   public void doPlacementPhase() throws IOException, ClassNotFoundException{
-    List<Unit> unitsToPlace = player.recvUnitsToPlace();
+    List<Unit> unitsToPlace = serverIO.recvUnitsToPlace();
     List<PlaceAction> placementsToSend = player.readPlacements(unitsToPlace);
-    player.sendPlacements(placementsToSend);
+    serverIO.sendPlacements(player.adaptPlacements(placementsToSend));
+    player.updateGame(serverIO.recvGame());
   }
 
 
@@ -98,8 +101,8 @@ public class App {
   public void doActionPhases() throws IOException, ClassNotFoundException {
     while (player.isGameOver() || player.isLost()) {
       List<Action> actionsToSend = player.readActions();
-      player.sendActions(actionsToSend);
-      player.updateGame();
+      serverIO.sendActions(actionsToSend);
+      player.updateGame(serverIO.recvGame());;
     }
   }
 

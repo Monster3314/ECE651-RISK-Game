@@ -32,17 +32,12 @@ import ece651.riskgame.shared.UnitsRuleChecker;
 public abstract class Player {
   protected String color;
   protected GameInfo theGame;
-  protected ObjectInputStream input;
-  protected ObjectOutputStream output;
   protected final Map<Class, ActionRuleChecker> actionCheckers;
-  protected List<Action> actionsToSend;
-  public Player(Socket server) throws IOException{
-    this.input = new ObjectInputStream(server.getInputStream());
-    this.output = new ObjectOutputStream(server.getOutputStream());
-    this.color = null;
-    this.theGame = null;
+  public Player(String color, GameInfo game) {
+
+    this.color = color;
+    this.theGame = game;;
     this.actionCheckers = new HashMap<Class, ActionRuleChecker>();
-    this.actionsToSend = new ArrayList<>();
     setupActionCheckers();
   }
 
@@ -65,16 +60,6 @@ public abstract class Player {
     }
     return errorMsg;
   }
-
-  /**
-   * initialize the game by recieving player color and initialized game model from server
-   * @throws ClassNotFoundException when casting failed
-   * @throws IOException when nothing is fetched from server  
-   */  
-  public void initializeGame() throws ClassNotFoundException, IOException{
-    this.color = (String) input.readObject();
-    this.theGame = (GameInfo) input.readObject();
-  }
   
   /**
    * get the color of the player
@@ -91,65 +76,28 @@ public abstract class Player {
   public GameInfo getGame() {
     return theGame;
   }
-  
-  /**
-   * addActionToSend will add an action to the list which will be sent to the server at the end of turn  
-   */  
-  public void addActionToSend(Action toSend) {
-    actionsToSend.add(toSend);
-  }
 
-  public void sendPlacements(List<PlaceAction> placements) throws IOException{
+  /**
+   * updateGame will receive the latest game from the server and update the game on client side
+   */
+  public void updateGame(GameInfo latestGame) {
+    theGame = latestGame;
+    
+  }
     //adapting from list of moves to map(territory string to list of placed units)
+  public Map<String, List<Unit>> adaptPlacements(List<PlaceAction> placements) {
     Map<String, List<Unit>> serverPlacements = new HashMap<>();
     List<Territory> occupies = getOccupies();
     for (Territory occupy : occupies) {
       serverPlacements.put(occupy.getName(), new ArrayList<Unit>(Arrays.asList(new BasicUnit(0))));
     }
     for (PlaceAction placement: placements) {
-      serverPlacements.get(placement.getToTerritory()).add(placement.getUnit());
+      serverPlacements.get(placement.getDestination()).add(placement.getUnit());
     }
-    output.writeObject(serverPlacements);
-    output.flush();
-    output.reset();
-  }
-  /**
-   * sendActions will send the list of actions to the server  
-   */  
-  public void sendActions(List<Action> toSend) throws IOException {
-    output.writeObject(toSend);
-    output.flush();
-    output.reset();
-    actionsToSend.clear();
-  }
-  /**
-   * updateGame will receive the latest game from the server and update the game on client side
-   * @throws IOException when latest game is not recieved
-   * @throws ClassNotFoundException when casting failed during reading object
-   */
-  public void updateGame() throws IOException, ClassNotFoundException {
-    theGame = recvLatestGame();
-    
-  }
-
-  /**
-   * recieve the Latest Game from server
-   * @throws IOException when latest game is not recieved
-   * @throws ClassNotFoundException when casting failed during reading object  
-   */  
-  protected GameInfo recvLatestGame() throws IOException, ClassNotFoundException {
-    return (GameInfo) input.readObject();
+    return serverPlacements;
   }
   
-  /**
-   * doEndOfTurn will do the end of the regular turn which consists of send actions and update game
-   * @throws IOException when latest game is not recieved
-   * @throws ClassNotFoundException when case failed   
-   */  
-  public void doEndOfTurn() throws IOException, ClassNotFoundException{
-    sendActions(actionsToSend);
-    updateGame();
-  }
+  
   /**
    * helper function used to get the player's occupies outside this class
    * this function is used to adapt a list of placements(move) to the map which maps territory name to a list of units  
@@ -202,14 +150,6 @@ public abstract class Player {
   public boolean isGameOver() {
     return !(theGame.getWinner() == null); 
   }
-  /**
-   * recvUnitsToPlace get the number of basic units to place
-   * @throws ClassNotFoundException when failed to cast
-   * @throws IOException when nothing fetched  
-   */  
-  @SuppressWarnings("unchecked")
-  protected List<Unit> recvUnitsToPlace() throws ClassNotFoundException, IOException{
-     return (List<Unit>) input.readObject();
-  }
+  
 
 }
