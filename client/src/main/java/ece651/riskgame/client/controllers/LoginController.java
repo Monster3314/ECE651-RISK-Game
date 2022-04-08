@@ -2,6 +2,7 @@ package ece651.riskgame.client.controllers;
 
 import com.sun.javafx.stage.EmbeddedWindow;
 import ece651.riskgame.client.GUIPlayer;
+import ece651.riskgame.client.GameIO;
 import ece651.riskgame.client.Room;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -10,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.UserInit;
 import javafx.scene.layout.Pane;
 
@@ -64,10 +66,12 @@ public class LoginController {
         }
         System.out.println("Connection Estabilished");
 
-        GUIPlayer guiPlayer = new GUIPlayer(serverSocket);
-        guiPlayer.initializeGame();
+        GameIO gameIO = new GameIO(serverSocket);
+        String color = gameIO.recvColor();
+        GameInfo gi = gameIO.recvGame();
+        GUIPlayer guiPlayer = new GUIPlayer(color, gi);
 
-        gameController = new GameController(guiPlayer);
+        gameController = new GameController(guiPlayer, gameIO);
 
         URL xmlResource = getClass().getResource("/ui/main.fxml");
 

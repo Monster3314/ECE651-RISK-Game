@@ -5,16 +5,12 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 import ece651.riskgame.client.GUIPlayer;
-import ece651.riskgame.shared.Action;
-import ece651.riskgame.shared.Attack;
-import ece651.riskgame.shared.BasicUnit;
-import ece651.riskgame.shared.Move;
+import ece651.riskgame.client.GameIO;
 import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
@@ -29,7 +25,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -50,7 +45,8 @@ public class GameController implements Initializable {
   
   String username;
   GUIPlayer guiPlayer;
-
+  GameIO gameIO;
+  
   @FXML
   Parent scene;
   Label hint;
@@ -58,8 +54,9 @@ public class GameController implements Initializable {
   // flags
   boolean ifMoveInAction = true;
   
-  public GameController(GUIPlayer p) {
+  public GameController(GUIPlayer p, GameIO gameIO) {
     guiPlayer = p;
+    this.gameIO = gameIO;
     username = p.getColor();
   }
 
@@ -190,7 +187,8 @@ public class GameController implements Initializable {
       i++;
     }
     Label title = ((Label) scene.lookup("#placementPane").lookup("#title"));
-    title.setText("Place your " + guiPlayer.getUnitsToPlace() + " units");
+    List<Unit> units = gameIO.recvUnitsToPlace();
+    title.setText("Place your " + units.get(0).getNum() + " units");
   }
 
   /**
@@ -340,7 +338,9 @@ public class GameController implements Initializable {
 
   @FXML
   public void nextTurn() throws IOException, ClassNotFoundException {
-    guiPlayer.doEndOfTurn();    
+    gameIO.sendActions(guiPlayer.getActionsToSend());
+    guiPlayer.clearActionsToSend();
+    guiPlayer.updateGame(gameIO.recvGame());
     //update game
     updateTerritoryColors();
     set3ActionPanesInvisible();
@@ -356,7 +356,7 @@ public class GameController implements Initializable {
       disableButtonsInPlacement();
       updateHint("Woops. You have lost.");
       while (!guiPlayer.isGameOver()) {
-        guiPlayer.updateGame();
+        guiPlayer.updateGame(gameIO.recvGame());
         // TODO update everything and do 2 threads 
       }
     }
@@ -371,7 +371,7 @@ public class GameController implements Initializable {
     placementPaneController.gameController = this;
     placementPaneController.pane = (Pane)scene.lookup("#placementPane");
     actionPaneController.gameController = this;
-    actionPaneController.pane = (Pane)scene.lookup("#actionpane");
+    actionPaneController.pane = (Pane)scene.lookup("#actionPane");
   }
   
 }

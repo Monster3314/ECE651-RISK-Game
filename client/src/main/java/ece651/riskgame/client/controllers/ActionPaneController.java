@@ -25,7 +25,8 @@ public class ActionPaneController {
       String from = ((MenuButton) pane.lookup("#from")).getText();
       String to = ((MenuButton) pane.lookup("#to")).getText();
 
-      List<Action> acts = new ArrayList<Action>();
+      System.out.println(from+to);
+      //List<Action> acts = new ArrayList<Action>();
 
       // TODO check all fields
       int num = Integer.parseInt(((TextField) pane.lookup("#field1")).getText());
@@ -36,8 +37,8 @@ public class ActionPaneController {
       if (result != null) {
         gameController.updateHint(result);
       } else {
-        acts.add(act);
-        gameController.guiPlayer.addActionToSend(act);
+        //acts.add(act);
+        gameController.guiPlayer.addActionToSend(act);                
         gameController.updateCurrentTerritoryInfo();
         gameController.updateHint("Action submitted!");
       }

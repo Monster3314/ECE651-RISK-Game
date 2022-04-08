@@ -31,9 +31,9 @@ public class PlacementPaneController {
       // TODO: The wait needs Task.setOnSucceded, learn later
       String result = gameController.guiPlayer.tryPlace(placements);
       if (result == null) {
-        gameController.guiPlayer.sendPlacements(placements);        
+        gameController.gameIO.sendPlacements(gameController.guiPlayer.adaptPlacements(placements));
         // update map
-        gameController.guiPlayer.updateGame();        
+        gameController.guiPlayer.updateGame(gameController.gameIO.recvGame());        
         gameController.updateHint("Welcome to game world! Let's crush enemies!");
         gameController.fromPlacementToAction();        
         gameController.isLostOrWin();        
