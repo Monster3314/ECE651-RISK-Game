@@ -1,1 +1,15 @@
-../server/new_adj_list.csv
+North,Dorne,Vale
+Dorne,North,Reach,Riverlands
+Vale,North,Stormlands,Westerlands
+Stormlands,Vale,Riverlands,Crownlands,Westerlands
+Riverlands,Stormlands,Slaver's bay,Reach,Dorne
+Reach,Asshai,Dorne,Riverlands
+Asshai,Reach,Qarth
+Qarth,Asshai,Slaver's bay,Free cities
+Slave's bay,Qarth,Riverlands,Crownlands
+Free cities,Beyond the wall,Qarth,
+Crownlands,Stormlands,Slaver's bay,Dothraki sea,Iron islands
+Beyond the wall,Free cities,Iron islands
+Westerlands,Vale,Dothraki sea,Stormlands
+Dothraki sea,Westerlands,Crownlands
+Iron islands,Crownlands,Beyond the wall

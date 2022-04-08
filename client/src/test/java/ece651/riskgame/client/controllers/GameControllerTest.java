@@ -19,7 +19,6 @@ import org.testfx.util.WaitForAsyncUtils;
 import ece651.riskgame.client.GUIPlayer;
 import ece651.riskgame.server.RiskGame;
 import javafx.application.Platform;
-import javafx.event.ActionEvent;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
