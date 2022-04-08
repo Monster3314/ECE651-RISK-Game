@@ -30,9 +30,11 @@ class AttackTest {
         Clan c1 = new Clan();
         c1.addTerritory(t1);
         c1.addTerritory(t3);
+        c1.getResource().addResource(new Resource(new int[]{100, 100}));
         Clan c2 = new Clan();
         c2.addTerritory(t2);
         c2.addTerritory(t4);
+        c2.getResource().addResource(new Resource(new int[]{100, 100}));
         Map<String, Clan> clans = new HashMap<>();
         clans.put("Red", c1);
         clans.put("Blue", c2);
