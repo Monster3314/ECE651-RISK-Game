@@ -25,6 +25,7 @@ import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.MovePathChecker;
 import ece651.riskgame.shared.PlaceAction;
+import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 import ece651.riskgame.shared.UnitsRuleChecker;
@@ -149,6 +150,30 @@ public abstract class Player {
    */
   public boolean isGameOver() {
     return !(theGame.getWinner() == null); 
+  }
+
+  /**
+   * get the Technology Level of this player
+   * @return technology level 
+   */
+  public Integer getTechLevel() {
+    return theGame.getClans().get(color).getMaxTechLevel();
+  }
+
+  /**
+   * get the current Food Resource of this player
+   * @return an integer that represents the remained food  
+   */
+  public Integer getFood() {
+    return theGame.getClans().get(color).getResource().getResourceNum(Resource.FOOD);
+  }
+
+  /**
+   * get the current Gold Resource of this player
+   * @return an integer that represents the remained gold  
+   */
+  public Integer getGold() {
+    return theGame.getClans().get(color).getResource().getResourceNum(Resource.GOLD);
   }
   
 
