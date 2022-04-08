@@ -1,5 +1,7 @@
 package ece651.riskgame.shared;
 
+import java.util.List;
+
 /**
  * check if departure territories have enough units
  */
@@ -11,17 +13,16 @@ public class UnitsRuleChecker extends ActionRuleChecker {
     @Override
     protected String checkMyRule(Actable actable, Action action) {
         MigrationAction ma = (MigrationAction) action;
-        Unit unitToMove = ma.getUnit();
+        List<Unit> units = ma.getUnit();
         Territory territory = actable.getBoard().getTerritory(ma.getFromTerritory());
-        for (Unit unit : territory.getUnits()) {
-            if (unit.getClass().equals(unitToMove.getClass())) {
-              if (unit.getNum() >= unitToMove.getNum()) {
+        for (Unit unit : units) {
+            Unit territoryUnit = territory.getUnitByLevel(unit.getLevel());
+              if (territoryUnit != null && unit.getNum() <= territoryUnit.getNum()) {
                 return null;
               }
               else {
                 return "No enough number of Unit remaining.";
               }
-            }
         }
         return "No specified Unit found.";
     }

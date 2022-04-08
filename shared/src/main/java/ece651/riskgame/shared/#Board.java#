@@ -1,10 +1,8 @@
 package ece651.riskgame.shared;
 
-import java.io.Serializable;
-import java.util.*;
+import org.apache.commons.math3.util.OpenIntToFieldHashMap.Iterator;
 
 public class Board implements Serializable {
-  private static final long serialVersionUID = -5196897839043527760L;
   private HashMap<Territory, List<Territory>> adjacency;
   private Map<String, Territory> territories;
   
@@ -54,6 +52,34 @@ public class Board implements Serializable {
       return territories.get(name);
     }
     throw new IllegalArgumentException("Territory name not found.");
+  }
+
+  public Map<String, Integer> getUnitMoveCost(String src) {
+    Map<String, Integer> ret = new HashMap<>();
+    Territory t = getTerritory(src);
+    int cost = t.getSize();
+    if (!territories.containsKey(src)) {
+      throw new IllegalArgumentException("Source territory not found.");
+    }
+    ret.put(src, cost);
+    TreeMap<Territory, Integer> treeMap = new TreeMap<>(Comparator.comparingInt(Territory::getSize));
+    for (Territory territory : getNeighbors(t)) {
+      treeMap.put(territory, cost + territory.getSize());
+    }
+    while (!treeMap.isEmpty()) {
+      Map.Entry<Territory, Integer> entry = treeMap.pollFirstEntry();
+      cost = entry.getValue();
+      ret.put(entry.getKey().getName(), cost);
+      for (Territory territory : getNeighbors(entry.getKey())) {
+        if (!ret.containsKey(territory.getName())) {
+          Integer value = treeMap.get(territory);
+          int newCost = cost + territory.getSize();
+          treeMap.put(territory, value == null ? newCost : Math.min(newCost, value));
+        }
+      }
+    }
+    ret.remove(src);
+    return ret;
   }
 
   @Override
