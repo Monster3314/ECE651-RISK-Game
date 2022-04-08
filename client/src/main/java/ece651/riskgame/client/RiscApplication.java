@@ -4,33 +4,30 @@
 package ece651.riskgame.client;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import ece651.riskgame.client.controllers.GameController;
-import ece651.riskgame.client.controllers.GameMapController;
-import ece651.riskgame.client.controllers.PlacementPanelController;
-import ece651.riskgame.client.models.TerritoryInfo;
-import ece651.riskgame.client.models.TerritoryList;
+import ece651.riskgame.client.controllers.LoginController;
+import ece651.riskgame.shared.UserInit;
 import javafx.application.Application;
-import javafx.beans.property.StringProperty;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Labeled;
-import javafx.scene.control.ListView;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
+import org.apache.commons.math3.analysis.function.Log;
 
 public class RiscApplication extends Application {
-
-  // SocketIO
-  private AppIO appIO;
-  // Models
-  private TerritoryList territoryList;
-  private StringProperty username;
-  private TerritoryInfo territoryInfo = new TerritoryInfo();
   // GUIPlayer
-  
+  GUIPlayer guiPlayer;
+
+  GameController gameController;
+  LoginController loginController;
+
   /**
    * Method called to launch the frontend application
    */
@@ -39,60 +36,80 @@ public class RiscApplication extends Application {
   }
 
   @Override
-  public void start(Stage stage) throws IOException {
-    appIO = new AppIO(new String[] {"0.0.0.0", "1651"});
-    
-    URL xmlResource = getClass().getResource("/ui/main-page.xml");
+  public void start(Stage stage) throws IOException, ClassNotFoundException {
+
+    /*
+    String ip = "vcm-25372.vm.duke.edu";
+    int port = 1651;
+    // connect to server
+    Socket serverSocket = null;
+    try {
+      serverSocket = new Socket(ip, port);
+    } catch (UnknownHostException e) {
+      System.err.println("Don't know about host: " + ip);
+      System.exit(1);
+    } catch (ConnectException e) {
+      System.err.println("Can not connect to server. Please contact 984-377-9836.");
+      System.exit(1);
+    }
+    System.out.println("Connection Estabilished");
+    */
+
+    loginController = new LoginController(new UserInit());
+
+    URL loginxml = getClass().getResource("/ui/login.fxml");
+    FXMLLoader loginLoader = new FXMLLoader(loginxml);
+    loadControllers(loginLoader);
+
+    Parent loginPane = loginLoader.load();
+
+    loginController.setLoginPane(loginPane);
+    Scene scene = new Scene(loginPane, 1138, 823);
+    stage.setScene(scene);
+    stage.show();
+
+    /*
+    guiPlayer = new GUIPlayer(serverSocket);
+    guiPlayer.initializeGame();
+
+    gameController = new GameController(guiPlayer);
+
+    URL xmlResource = getClass().getResource("/ui/main.fxml");
 
     FXMLLoader loader = new FXMLLoader(xmlResource);
     loadControllers(loader);
     
-    GridPane gp = loader.load();
+    Pane gp = loader.load();
 
-    Scene scene = new Scene(gp, 800, 600);
+    Scene scene = new Scene(gp, 1138, 823);
+    gameController.setScene(scene);
     
-    
-    //URL cssResource = getClass().getResource("/ui/css/game-map.css");
-    //scene.getStylesheets().add(cssResource.toString());
+    URL cssResource = getClass().getResource("/ui/css/main.css");
+    scene.getStylesheets().add(cssResource.toString());
 
-    setUsername(scene, appIO.getColor());
+    initialize(scene);
     
-    territoryInfo.setInfo(((Labeled) scene.lookup("#territoryInformation")).textProperty());    
-    territoryList = new TerritoryList(appIO.getGameInfo().getBoard().getTerritoryNames());
-
-    System.out.println(territoryInfo);
-    
-    @SuppressWarnings("unchecked")
-    ListView<String> territories = (ListView<String>) scene.lookup("#territoryList");
-    territories.setItems(territoryList.getList());
-
-    /*
-    Button confirmBtn = (Button) scene.lookup("#placeBtn");
-    confirmBtn.setOnMouseClicked(new EventHandler<MouseEvent>() {
-        @Override
-        public void handle(MouseEvent event) {
-            scene.lookup("#placementPanel").setVisible(false);
-            scene.lookup("#actionPanel").setVisible(true);
-        }
-      });
-    */
     stage.setScene(scene);
-    stage.show();        
+    stage.show();
+    */
   }
 
-  private void setUsername(Scene scene, String name) {
-    username = ((Labeled) scene.lookup("#username")).textProperty();
-    username.set(appIO.getColor());
+  /**
+   * Call initializing functions at the beginning of the game
+   */
+  private void initialize(Scene scene) throws IOException, ClassNotFoundException {
+    gameController.initializeGame();
   }
+  
   
   private void loadControllers(FXMLLoader loader) {
     HashMap<Class<?>, Object> controllers = new HashMap<>();    
-    controllers.put(GameMapController.class, new GameMapController(territoryInfo));
-    controllers.put(PlacementPanelController.class, new PlacementPanelController());
-    controllers.put(GameController.class, new GameController());
+    controllers.put(GameController.class, gameController);
+    controllers.put(LoginController.class, loginController);
     loader.setControllerFactory((c) -> {
       return controllers.get(c);
-    });
-    
+    });    
   }
+
+
 }

@@ -12,8 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import ece651.riskgame.shared.Action;
-import ece651.riskgame.shared.ActionRuleChecker;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;

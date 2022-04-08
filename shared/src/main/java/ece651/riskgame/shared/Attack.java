@@ -36,6 +36,7 @@ public class Attack extends MigrationAction implements Serializable {
             c.addTerritory(t);
         }
 
+        world.getClans().get(color).getResource().costFood(Unit.getNum());
     }
 
     /**
