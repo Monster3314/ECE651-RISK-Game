@@ -256,13 +256,15 @@ public class TextPlayer extends Player{
     while (unitToPlace.getNum() > 0) {
       PlaceAction placement = readOnePlacement(unitToPlace);
       //TODO: check validity
-      String errorMsg = tryApplyAction(placement, actionCheckers.get(placement.getClass()));
+      String errorMsg = null;
+      //String errorMsg = tryApplyAction(placement, actionCheckers.get(placement.getClass()));
       if (errorMsg == null) {
         placement.apply(theGame);
         placements.add(placement);
         unitToPlace.decSoldiers(placement.getUnit().getNum());
       }
     }
+    return placements;
 
   }
   /**
