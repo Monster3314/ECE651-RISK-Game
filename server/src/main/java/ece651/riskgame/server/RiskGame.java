@@ -9,12 +9,13 @@ import java.util.*;
 
 import ece651.riskgame.shared.*;
 
-public class RiskGame {
+public class RiskGame implements Runnable{
 
   private Map<Socket, String> sockets; // A map of sockets and their colors
   private Map<Socket, ObjectOutputStream> oosMap;
   private Map<Socket, ObjectInputStream> oisMap;
   private Map<String, Boolean> online;
+  private Map<String, String> nameColorMap;
 
   /**
    * The board(map) of game, storing all territories and their adjacencies
@@ -23,19 +24,20 @@ public class RiskGame {
   private int playerNumber;
   private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(null));
   private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
-
+  private serverRoom roominfo;
   private Logger logger = Logger.getInstance();
 
   /**
    * Constructor with specifying player number
    */
-  public RiskGame(int playerNum, String territoryListFile, String adjacencyListFile) throws IOException {
+  public RiskGame(int playerNum, String territoryListFile, String adjacencyListFile, serverRoom roominfo) throws IOException {
     playerNumber = playerNum;
     world = new World(playerNum, territoryListFile, adjacencyListFile);
-    sockets = new HashMap<>();
-    oosMap = new HashMap<>();
-    oisMap = new HashMap<>();
-    online = new HashMap<>();
+    sockets = roominfo.sockets;
+    oosMap = roominfo.oosMap;
+    oisMap = roominfo.oisMap;
+    online = roominfo.online;
+    nameColorMap = roominfo.nameColorMap;
   }
 
   
@@ -62,6 +64,7 @@ public class RiskGame {
       String color = world.addClan();
       sockets.put(socket, color);
       online.put(color, true);
+      nameColorMap.put(roominfo.socketUsernameMap.get(socket), color);
       ObjectOutputStream oos = oosMap.get(socket);
       oos.writeObject(color);
     }
@@ -71,17 +74,9 @@ public class RiskGame {
   /**
    * Wait for players to connect
    */
-  private void waitForPlayers(ServerSocket ss, int playerNum) throws IOException {
+  private void waitForPlayers(int playerNum) throws IOException {
     logger.writeLog("Begin to wait for " + playerNum + " players.");
-    for (int i = 0; i < playerNum; i++) { // what if player exits while waiting for other players
-      Socket socket = ss.accept();
-      logger.writeLog("Player " + i + " connected successfully!");
-      sockets.put(socket, null);
-      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-      oosMap.put(socket, oos);
-      ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-      oisMap.put(socket, ois);
-    }
+    while(sockets.size() != playerNum);  //TODO: selfspin
     logger.flushBuffer();
   }
 
@@ -104,6 +99,9 @@ public class RiskGame {
         oos.reset();
         oos.writeObject(gi);
       } catch (IOException e) {
+        sockets.remove(player.getKey());
+        oosMap.remove(player.getKey());
+        oisMap.remove(player.getKey());
         online.put(player.getValue(), false);
         logger.writeLog("Player " + player.getValue() + " disconnect");
       }
@@ -154,7 +152,10 @@ public class RiskGame {
       ObjectInputStream ois = oisMap.get(player.getKey());
       try {
         Actions.addAll((List<Action>) ois.readObject());
-      } catch (Exception ignored) {
+      } catch (Exception e) {
+        sockets.remove(player.getKey());
+        oosMap.remove(player.getKey());
+        oisMap.remove(player.getKey());
         online.put(player.getValue(), false);
         logger.writeLog("Player " + player.getValue() + " disconnect");
       }
@@ -290,22 +291,29 @@ public class RiskGame {
     for(Socket s: sockets.keySet()) s.close();
   }
 
-  public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {
-    ServerSocket ss = new ServerSocket(port);
+  @Override
+  public void run() {
     // only one player is allowed now
-    waitForPlayers(ss, playerNumber);
-    initPlayers(); // assign color and territories for each player
-    sendGameInfo(getCurrentGameInfo()); // send a initial board without unit number to client
-    assignUnits(30);
-    sendGameInfo(getCurrentGameInfo());
-    GameInfo gi = getCurrentGameInfo();
-    while(stillHaveAlivePlayers() && (gi.getWinner() == null)) {
-      doAction();
-      afterTurn();
-      gi = getCurrentGameInfo();
-      sendGameInfo(gi);
+    try{
+      waitForPlayers(playerNumber);
+      initPlayers(); // assign color and territories for each player
+      sendGameInfo(getCurrentGameInfo()); // send a initial board without unit number to client
+      assignUnits(30);
+      sendGameInfo(getCurrentGameInfo());
+      GameInfo gi = getCurrentGameInfo();
+      while(stillHaveAlivePlayers() && (gi.getWinner() == null)) {
+        doAction();
+        afterTurn();
+        gi = getCurrentGameInfo();
+        sendGameInfo(gi);
+      }
+      closeSockets();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
     }
-    ss.close();
-    closeSockets();
-  }    
+
+  }
+
 }

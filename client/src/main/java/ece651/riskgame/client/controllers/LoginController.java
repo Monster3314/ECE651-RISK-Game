@@ -14,6 +14,9 @@ import ece651.riskgame.shared.UserInit;
 import javafx.scene.layout.Pane;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URL;
@@ -33,6 +36,9 @@ public class LoginController {
     private GameController gameController;
     private RoomPaneController roomPaneController;
     private Parent loginPane;
+    private Socket serverSocket;
+    private ObjectOutputStream oos;
+    private ObjectInputStream ois;
 
     public LoginController(UserInit userInit) {
         this.userInit = userInit;
@@ -42,26 +48,28 @@ public class LoginController {
         this.loginPane = loginPane;
     }
 
+    public void setSocket(Socket serverSocket) throws IOException {
+        this.serverSocket = serverSocket;
+        this.oos = new ObjectOutputStream(serverSocket.getOutputStream());
+        this.ois = new ObjectInputStream(serverSocket.getInputStream());
+    }
+
     @FXML
     void login(ActionEvent event) throws IOException, ClassNotFoundException {
         userInit.setIs_login(true);
         userInit.setUsername(username.getText());
         userInit.setPassword(password.getText());
 
-        String ip = "0.0.0.0";
-        int port = 1651;
-        // connect to server
-        Socket serverSocket = null;
-        try {
-            serverSocket = new Socket(ip, port);
-        } catch (UnknownHostException e) {
-            System.err.println("Don't know about host: " + ip);
-            System.exit(1);
-        } catch (IOException e) {
-            System.err.println("Can not connect to server. Please contact 984-377-9836.");
-            System.exit(1);
+        oos.writeObject(userInit);
+        oos.flush();
+        oos.reset();
+
+        String result = (String) ois.readObject();
+        if(result.equals("yes")) {
+            serverSocket.close();
+
+
         }
-        System.out.println("Connection Estabilished");
 
         GUIPlayer guiPlayer = new GUIPlayer(serverSocket);
         guiPlayer.initializeGame();
@@ -98,10 +106,16 @@ public class LoginController {
     }
 
     @FXML
-    void register(ActionEvent event) {
+    void register(ActionEvent event) throws IOException, ClassNotFoundException {
         userInit.setIs_login(false);
         userInit.setUsername(username.getText());
         userInit.setPassword(password.getText());
+
+        oos.writeObject(userInit);
+        oos.flush();
+        oos.reset();
+
+        String result = (String) ois.readObject();
     }
 
     private void initialize() throws IOException, ClassNotFoundException {

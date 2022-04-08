@@ -20,7 +20,7 @@ public class App {
     int playerNum = Integer.parseInt(args[0]);
     try {
       App app = new App(playerNum);
-      app.riskGame.run(1651);
+      //app.riskGame.run(1651);
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
