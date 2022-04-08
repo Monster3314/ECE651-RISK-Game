@@ -36,12 +36,12 @@ import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
+@Disabled
 @ExtendWith(MockitoExtension.class)
 public class RiskGameTest {
 
   private RiskGame riskGame;
 
-  @Disabled
   @Test
   public void test_getCurrentGameInfo() throws Exception {
     riskGame = new RiskGame(1);
