@@ -2,19 +2,22 @@ package ece651.riskgame.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 public class Board implements Serializable {
   private HashMap<Territory, List<Territory>> adjacency;
-  private List<Territory> territories;
+  private Map<String, Territory> territories;
   
   public Board() {
     adjacency = new HashMap<Territory, List<Territory>>();
-    territories = new ArrayList<>();
+    territories = new LinkedHashMap<>();
   }
 
   /**
@@ -29,7 +32,7 @@ public class Board implements Serializable {
   }
 
   public void addTerritory(Territory t) {
-    territories.add(t);
+    territories.put(t.getName(), t);
     adjacency.put(t, new LinkedList<>());
   }
 
@@ -38,18 +41,24 @@ public class Board implements Serializable {
   }
   
   public List<Territory> getTerritoriesList() {
-    return territories;
+    return new ArrayList<Territory>(territories.values());
   }
 
+  public Collection<String> getTerritoryNames() {
+    return territories.keySet();
+  }
+  
+  public boolean containsTerritory(String name) {
+    return territories.containsKey(name);
+  }
+  
   /**
    * Get territory by its name
    * @throws IllegalArgumentException if no territory in list has the name
    */
   public Territory getTerritory(String name) {
-    for (Territory t: this.territories) {
-      if (name.equals(t.getName())) {
-        return t;
-      }
+    if (territories.containsKey(name)) {
+      return territories.get(name);
     }
     throw new IllegalArgumentException("Territory name not found.");
   }

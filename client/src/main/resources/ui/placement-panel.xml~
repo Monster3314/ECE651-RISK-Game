@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<GridPane xmlns:fx="http://javafx.com/fxml">
+  <rowConstraints>
+    <RowConstraints percentHeight="15" />
+    <RowConstraints percentHeight="85" />        
+  </rowConstraints>
+  <columnConstraints>
+    <ColumnConstraints percentWidth="33" />
+    <ColumnConstraints percentWidth="33" />
+    <ColumnConstraints percentWidth="34" />
+  </columnConstraints>
+  <children>
+    <Button fx:id="moveBtn" text="Move" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+    <Button fx:id="attackBtn" text="Attack" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+    <Button fx:id="upgradeBtn" text="Upgrade" GridPane.rowIndex="0" GridPane.columnIndex="2"/>      
+  </children>
+</GridPane>

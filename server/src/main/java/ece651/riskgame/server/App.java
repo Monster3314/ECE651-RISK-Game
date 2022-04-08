@@ -9,11 +9,11 @@ public class App {
   public RiskGame riskGame;
 
   public App(int n) throws IOException {
-    riskGame = new RiskGame(n);
+    riskGame = new RiskGame(n, "new_territories.csv", "new_adj_list.csv");
   }
 
   public static void main(String[] args) {
-    if ((args.length != 1) || (args[0].length() != 1) || args[0].charAt(0) < '2' || args[0].charAt(0) > '5') {
+    if ((args.length != 1) || (args[0].length() != 1) || args[0].charAt(0) < '1' || args[0].charAt(0) > '5') {
       System.out.println("Player number 2-5");
       return;
     }

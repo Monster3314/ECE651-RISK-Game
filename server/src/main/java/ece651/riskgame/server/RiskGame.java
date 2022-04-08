@@ -29,6 +29,20 @@ public class RiskGame {
   /**
    * Constructor with specifying player number
    */
+  public RiskGame(int playerNum, String territoryListFile, String adjacencyListFile) throws IOException {
+    playerNumber = playerNum;
+    world = new World(playerNum, territoryListFile, adjacencyListFile);
+    sockets = new HashMap<>();
+    oosMap = new HashMap<>();
+    oisMap = new HashMap<>();
+    online = new HashMap<>();
+  }
+
+  
+  /**
+   * Constructor with specifying player number
+   */
+  @Deprecated
   public RiskGame(int playerNum) throws IOException {
     playerNumber = playerNum;
     world = new World(playerNum);
@@ -38,6 +52,7 @@ public class RiskGame {
     online = new HashMap<>();
   }
 
+  
   /**
    * Initialize each connected player, send color to client
    */

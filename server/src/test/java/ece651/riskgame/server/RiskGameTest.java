@@ -125,7 +125,7 @@ public class RiskGameTest {
     ObjectInputStream ois = new ObjectInputStream(s1.getInputStream());
     ObjectOutputStream oos = new ObjectOutputStream(s1.getOutputStream());
     String color = (String) ois.readObject();
-    assertEquals("Red", color);
+    assertEquals("red", color);
     s1.close();
     th.interrupt();
     th.join();
@@ -158,8 +158,8 @@ public class RiskGameTest {
     ObjectOutputStream oos2 = new ObjectOutputStream(s2.getOutputStream());
     String color = (String) ois.readObject();
     String color2 = (String) ois2.readObject();
-    assertTrue(color.equals("Red") || color.equals("Blue"));
-    assertTrue(color2.equals("Red") || color2.equals("Blue")); // The order of Red and Blue is not as expected
+    assertTrue(color.equals("red") || color.equals("blue"));
+    assertTrue(color2.equals("red") || color2.equals("blue")); // The order of Red and Blue is not as expected
     s1.close();
     s2.close();
     th.interrupt();
@@ -317,14 +317,14 @@ public class RiskGameTest {
 
     // do the move
     List<Move> moves0 = new ArrayList<Move>();
-    moves0.add(new Move(new BasicUnit(2), "Shanghai", "Shandong", "Red"));
+    moves0.add(new Move(new BasicUnit(2), "Shanghai", "Shandong", "red"));
 
     Whitebox.invokeMethod(riskGame, "doMoveAction", moves0);
     assertEquals(5, board.getTerritory("Shanghai").getUnits().get(0).getNum());
     assertEquals(5, board.getTerritory("Shandong").getUnits().get(0).getNum());
 
     List<Move> moves1 = new ArrayList<Move>();
-    moves1.add(new Move(new BasicUnit(2), "Shanghai", "Jiangsu", "Red"));
+    moves1.add(new Move(new BasicUnit(2), "Shanghai", "Jiangsu", "red"));
 
     Whitebox.invokeMethod(riskGame, "doMoveAction", moves1);
     assertEquals(3, board.getTerritory("Shanghai").getUnits().get(0).getNum());
@@ -349,15 +349,15 @@ public class RiskGameTest {
 
     // do the move
     List<Attack> attacks0 = new ArrayList<Attack>();
-    attacks0.add(new Attack(Mockito.spy(new BasicUnit(3)), "Shanghai", "Shandong", "Red"));
-    attacks0.add(new Attack(Mockito.spy(new BasicUnit(3)), "Shanghai", "Jiangsu", "Red"));
+    attacks0.add(new Attack(Mockito.spy(new BasicUnit(3)), "Shanghai", "Shandong", "red"));
+    attacks0.add(new Attack(Mockito.spy(new BasicUnit(3)), "Shanghai", "Jiangsu", "red"));
 
     Whitebox.invokeMethod(riskGame, "doAttackAction", attacks0);
     assertEquals(5, board.getTerritory("Shanghai").getUnits().get(0).getNum());
     assertEquals(5, board.getTerritory("Shandong").getUnits().get(0).getNum());
 
     List<Attack> attacks1 = new ArrayList<Attack>();
-    attacks1.add(new Attack(Mockito.spy(new BasicUnit(2)), "Shandong", "Jiangsu", "Blue"));
+    attacks1.add(new Attack(Mockito.spy(new BasicUnit(2)), "Shandong", "Jiangsu", "blue"));
 
     Whitebox.invokeMethod(riskGame, "doAttackAction", attacks1);
     assertEquals(3, board.getTerritory("Shandong").getUnits().get(0).getNum());
@@ -437,15 +437,15 @@ public class RiskGameTest {
     ois2.readObject();
     assertEquals(5, board.getTerritory("Shanghai").getUnits().get(0).getNum());
     assertEquals(10, board.getTerritory("Jiangsu").getUnits().get(0).getNum());
-    assertEquals(15, board.getTerritory("Zhejiang").getUnits().get(0).getNum());
+    assertEquals(15, board.getTerritory("Anhui").getUnits().get(0).getNum());
 
-    assertEquals(5, board.getTerritory("Anhui").getUnits().get(0).getNum());
+    assertEquals(5, board.getTerritory("Hebei").getUnits().get(0).getNum());
     assertEquals(10, board.getTerritory("Shandong").getUnits().get(0).getNum());
-    assertEquals(15, board.getTerritory("Fujian").getUnits().get(0).getNum());
+    assertEquals(15, board.getTerritory("Henan").getUnits().get(0).getNum());
     System.out.println("game start");
     // send actions, round 1
     List<Action> actions1 = new ArrayList<Action>();
-    actions1.add(new Move(new BasicUnit(5), "Jiangsu", "Shanghai", "Red"));
+    actions1.add(new Move(new BasicUnit(5), "Jiangsu", "Shanghai", "red"));
     oos1.writeObject(actions1);
     List<Action> actions2 = new ArrayList<Action>();
     oos2.writeObject(actions2);
@@ -474,7 +474,7 @@ public class RiskGameTest {
     l3.add(new BasicUnit(15));
     assignResults.put("Shanghai", l1);
     assignResults.put("Jiangsu", l2);
-    assignResults.put("Zhejiang", l3);
+    assignResults.put("Anhui", l3);
     return assignResults;
   }
 
@@ -486,9 +486,9 @@ public class RiskGameTest {
     l1.add(new BasicUnit(5));
     l2.add(new BasicUnit(10));
     l3.add(new BasicUnit(15));
-    assignResults.put("Anhui", l1);
+    assignResults.put("Hebei", l1);
     assignResults.put("Shandong", l2);
-    assignResults.put("Fujian", l3);
+    assignResults.put("Henan", l3);
     return assignResults;
   }
 }
