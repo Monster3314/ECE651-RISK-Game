@@ -1,12 +1,11 @@
 package ece651.riskgame.shared;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Map;
 
 public class Attack extends MigrationAction implements Serializable {
 
-    public Attack(List<Unit> attackUnit, String fromTerritory, String toTerritory, String color) {
+    public Attack(Unit attackUnit, String fromTerritory, String toTerritory, String color) {
         super(attackUnit, fromTerritory, toTerritory, color);
     }
 
@@ -23,9 +22,7 @@ public class Attack extends MigrationAction implements Serializable {
         Territory t = board.getTerritory(toTerritory);
 
         if(c.occupyTerritory(toTerritory)) {
-            for (Unit unit : units) {
-                t.addUnit(unit);
-            }
+            t.addUnit(Unit);
             return;
         }
 
@@ -39,7 +36,7 @@ public class Attack extends MigrationAction implements Serializable {
             c.addTerritory(t);
         }
 
-        world.getClans().get(color).getResource().costFood(getTotalUnits());
+        world.getClans().get(color).getResource().costFood(Unit.getNum());
     }
 
     /**
@@ -57,8 +54,6 @@ public class Attack extends MigrationAction implements Serializable {
     public void onTheWay(Actable world) {
         Board board = world.getBoard();
 
-        for (Unit unit : units) {
-            board.getTerritory(fromTerritory).decUnit(unit);
-        }
+        board.getTerritory(fromTerritory).decUnit(Unit);
     }
 }
