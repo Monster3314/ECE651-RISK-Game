@@ -30,6 +30,10 @@ public class Clan implements Serializable {
         this.resource = resource;
     }
 
+    public int getMaxTechLevel() {
+        return maxTechLevel;
+    }
+
     public Resource getResource() {
         return this.resource;
     }

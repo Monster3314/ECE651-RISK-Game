@@ -17,6 +17,26 @@ public class UpgradeUnitAction implements Action, Serializable {
         this.color = color;
     }
 
+    public String getTerritoryName() {
+        return territoryName;
+    }
+
+    public int getBaseLevel() {
+        return baseLevel;
+    }
+
+    public int getTargetLevel() {
+        return targetLevel;
+    }
+
+    public int getNum() {
+        return num;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
     @Override
     public void apply(Actable world) {
         int cost = Unit.getLevelUpCost(baseLevel, targetLevel) * num;
