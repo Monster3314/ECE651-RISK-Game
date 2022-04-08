@@ -7,12 +7,14 @@ import static org.mockito.Mockito.when;
 
 import java.io.IOException;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
 import ece651.riskgame.client.GUIPlayer;
+import ece651.riskgame.client.GameIO;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -25,18 +27,28 @@ public class PlacementPaneControllerTest {
   private Pane pane;
   private PlacementPaneController placementPaneController;
   private GUIPlayer guiPlayer;
+  private GameIO gameIO;
 
   @Start
   private void start(Stage stage) {
     pane = new Pane();
     guiPlayer = mock(GUIPlayer.class);
+    gameIO = mock(GameIO.class);
     gameController = mock(GameController.class);
     gameController.guiPlayer = guiPlayer;
+    gameController.gameIO = gameIO;
     placementPaneController = new PlacementPaneController();
     placementPaneController.pane = pane;
     placementPaneController.gameController = gameController;
   }
 
+  
+  @AfterAll
+  public static void finish() {
+    System.out.println("finish");
+  }
+
+  
   @Test
   public void test_submitPlacement() throws IOException, ClassNotFoundException, InterruptedException {
     // successful situation
@@ -65,7 +77,7 @@ public class PlacementPaneControllerTest {
     placementPaneController.submitPlacement(null);
 
     // make GUIplayer throws IOException
-    doThrow(IOException.class).when(guiPlayer).sendPlacements(any());
+    doThrow(IOException.class).when(gameIO).sendPlacements(any());;
     placementPaneController.submitPlacement(null);
 
     // make guiplayer.tryplace fail

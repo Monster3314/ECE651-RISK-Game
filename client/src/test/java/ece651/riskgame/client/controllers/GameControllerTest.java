@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import java.io.IOException;
 import java.net.Socket;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,9 @@ import org.testfx.framework.junit5.Start;
 import org.testfx.util.WaitForAsyncUtils;
 
 import ece651.riskgame.client.GUIPlayer;
+import ece651.riskgame.client.GameIO;
 import ece651.riskgame.server.RiskGame;
+import ece651.riskgame.shared.GameInfo;
 import javafx.application.Platform;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
@@ -36,17 +39,17 @@ public class GameControllerTest {
   private String username;
   private Parent scene;
   private Label hint;
-
+  private GameIO gameIO;
   private Thread serverT;
   
   // @BeforeEach
-  private void prepare(int port) throws IOException, InterruptedException{
+  private void prepare(int port) throws IOException, InterruptedException, ClassNotFoundException{
     serverT = new Thread() {
         @Override
         public void run() {
           try {
-            RiskGame rg = new RiskGame(2, "new_territories.csv", "new_adj_list.csv");
-            rg.run(port);            
+            RiskGame rg = new RiskGame(1, "new_territories.csv", "new_adj_list.csv");
+            rg.run(port);
           }
           catch (Exception e) {
             System.out.println(e.getMessage());
@@ -58,19 +61,26 @@ public class GameControllerTest {
     Thread.sleep(150);
 
     Socket socket = new Socket("0.0.0.0", port);
-
+    gameIO = new GameIO(socket);
+    String color = gameIO.recvColor();
+    GameInfo gi = gameIO.recvGame();
     infoView = new VBox();
-    guiPlayer = new GUIPlayer(socket);
-    gameController = new GameController(guiPlayer);
+    guiPlayer = new GUIPlayer(color, gi);
+    gameController = new GameController(guiPlayer, gameIO);
     username = "Jon Snow";    
     hint = new Label();
 
     gameController.hint = hint;
   }
 
-  @AfterEach
-  private void closeSocket() {
-    serverT.interrupt();
+  //@AfterEach
+  private void afterone() {
+    System.out.println("1 complete");
+  }
+  
+  //@AfterAll
+  public static void finish() {
+    System.out.println("finish");
   }
   
   @Start
@@ -79,20 +89,20 @@ public class GameControllerTest {
   }
   
   @Test
-  public void test_SetScene() throws IOException, InterruptedException {
+  public void test_SetScene() throws IOException, ClassNotFoundException, InterruptedException {
     prepare(8888);
     gameController.setScene(scene);
     assertEquals(gameController.scene.getClass(), scene.getClass());
   }
 
   @Test
-  public void test_setHint() throws IOException, InterruptedException{
+  public void test_setHint() throws IOException, ClassNotFoundException, InterruptedException{
     prepare(8889);
     assertThrows(NullPointerException.class, () -> gameController.setHint());
   }
 
   @Test
-  public void test_updateHint() throws IOException, InterruptedException {
+  public void test_updateHint() throws IOException, ClassNotFoundException, InterruptedException {
     prepare(8890);
     gameController.updateHint("hintt");
     assertEquals("hintt", hint.getText());
@@ -107,7 +117,7 @@ public class GameControllerTest {
   }
   
   @Test
-  public void test_showTerritoryInfoInPlacement(FxRobot robot) throws IOException, InterruptedException {
+  public void test_showTerritoryInfoInPlacement(FxRobot robot) throws IOException, ClassNotFoundException, InterruptedException {
     prepare(9900);
     gameController.infoView = infoView;
     clickDorne();    
