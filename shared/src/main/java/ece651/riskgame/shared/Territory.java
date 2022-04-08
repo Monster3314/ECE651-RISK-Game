@@ -1,8 +1,7 @@
 package ece651.riskgame.shared;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class Territory implements Serializable {
   protected String name;
@@ -50,6 +49,9 @@ public abstract class Territory implements Serializable {
     for (Unit i : units) {
       if (i.getLevel() == u.getLevel()) {
         i.decSoldiers(u.getNum());
+        if (i.getNum() == 0) {
+          units.remove(i);
+        }
         return;
       }
     }
@@ -102,6 +104,45 @@ public abstract class Territory implements Serializable {
       }
     }
     throw new IllegalArgumentException("there is no such type of unit");
+  }
+
+  public boolean beAttacked(List<Unit> attacker) {
+    boolean attackRound = true;
+    while (attacker.size() != 0 && units.size() != 0) {
+      if (attackRound) {
+        combat(attacker, units);
+      }
+      else {
+        combat(units, attacker);
+      }
+      attackRound = !attackRound;
+    }
+    if (units.size() == 0) {
+      addUnitList(attacker);
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  private void combat(List<Unit> units1, List<Unit> units2) {
+    Unit u1 = Collections.max(units1, Comparator.comparingInt(Unit::getLevel));
+    Unit u2 = Collections.min(units2, Comparator.comparingInt(Unit::getLevel));
+    while (u1.getNum() != 0 && u2.getNum() != 0) {
+      int u1Dice = u1.getRandomAttack();
+      int u2Dice = u2.getRandomAttack();
+      if (u1Dice >= u2Dice)
+        u2.decSoldiers(1);
+      else
+        u1.decSoldiers(1);
+    }
+    if (u1.getNum() == 0) {
+      units1.remove(u1);
+    }
+    else {
+      units2.remove(u2);
+    }
   }
 
   @Override

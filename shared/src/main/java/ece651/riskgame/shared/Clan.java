@@ -12,10 +12,11 @@ public class Clan implements Serializable {
     private final List<Territory> occupies;
     private int maxTechLevel;
     private Resource resource;
+    static public int[] COST = new int[] {0, 50, 75, 125, 200, 300};
 
     public Clan() {
         this.occupies = new ArrayList<>();
-        this.maxTechLevel = 0;
+        this.maxTechLevel = 1;
         this.resource = new Resource(new int[] {0, 0});
     }
 
@@ -62,9 +63,10 @@ public class Clan implements Serializable {
         occupies.remove(t);
     }
 
-//    boolean tryUpgradeLevel() {
-//
-//    }
+    public void upgradeLevel() {
+        resource.costGold(COST[maxTechLevel]);
+        maxTechLevel ++;
+    }
 
     public void getTerritoryProduction() {
         for (Territory t : occupies) {
