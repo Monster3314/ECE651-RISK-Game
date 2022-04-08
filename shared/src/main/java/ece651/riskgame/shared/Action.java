@@ -1,7 +1,5 @@
 package ece651.riskgame.shared;
 
-import java.util.Map;
-
 public interface Action {
     /**
      * @param world the Action applying on
