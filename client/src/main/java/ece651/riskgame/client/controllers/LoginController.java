@@ -113,6 +113,7 @@ public class LoginController {
         controllers.put(GameController.class, gameController);
         controllers.put(PlacementPaneController.class, new PlacementPaneController());
         controllers.put(ActionPaneController.class, new ActionPaneController());
+        controllers.put(UpgradePaneController.class, new UpgradePaneController());
         controllers.put(RoomPaneController.class, roomPaneController);
         loader.setControllerFactory((c) -> {
             return controllers.get(c);

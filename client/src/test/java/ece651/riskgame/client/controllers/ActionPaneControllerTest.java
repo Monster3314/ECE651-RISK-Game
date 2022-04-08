@@ -2,6 +2,8 @@ package ece651.riskgame.client.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
@@ -41,6 +43,22 @@ public class ActionPaneControllerTest {
   public static void finish() {
     System.out.println("finish");
   }
+
+  @Test
+  public void test_updateActionPane() {
+    MenuButton mb = new MenuButton();
+    mb.setId("from");
+    pane.getChildren().add(mb);
+    MenuButton mb2 = new MenuButton();
+    mb2.setId("from");
+    pane.getChildren().add(mb2);
+    actionPaneController.updateActionPane();
+    verify(gameController, times(2)).updateMenuButton(any(), any());
+
+    actionPaneController.attackMode();
+    actionPaneController.updateActionPane();
+    verify(gameController, times(4)).updateMenuButton(any(), any());
+  }
   
   @Test
   public void test_submitAction() throws IOException {
@@ -54,9 +72,10 @@ public class ActionPaneControllerTest {
     actionPaneController.submitAction();
     
     f1.setText("3");
+    actionPaneController.moveMode();
     actionPaneController.submitAction();
 
-    gameController.ifMoveInAction = !gameController.ifMoveInAction;
+    actionPaneController.attackMode();
     actionPaneController.submitAction();
     
     when(gameController.guiPlayer.tryApplyAction(any())).thenReturn("wrong");

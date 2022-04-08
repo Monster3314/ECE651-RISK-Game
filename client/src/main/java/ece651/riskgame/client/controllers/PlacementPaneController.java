@@ -3,9 +3,12 @@ package ece651.riskgame.client.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import ece651.riskgame.shared.Territory;
+import ece651.riskgame.shared.Unit;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
@@ -18,6 +21,23 @@ public class PlacementPaneController {
   Pane pane;
   
   GameController gameController;
+
+  /**
+   * Set labels(territory names) for
+   */
+  public void setPlacementPaneLabels() throws ClassNotFoundException, IOException {
+    int i = 1;
+    for (Territory t : gameController.guiPlayer.getOccupies()) {
+      String labelId = "label" + i;
+      Label label = (Label) pane.lookup("#" + labelId);
+      label.setText(t.getName());
+      i++;
+    }
+    Label title = ((Label) pane.lookup("#title"));
+    List<Unit> units = gameController.gameIO.recvUnitsToPlace();
+    title.setText("Place your " + units.get(0).getNum() + " units");
+  }
+
   
   @FXML
   public void submitPlacement(MouseEvent me) throws ClassNotFoundException, InterruptedException {
