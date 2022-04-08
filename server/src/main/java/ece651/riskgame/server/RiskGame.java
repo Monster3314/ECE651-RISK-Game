@@ -186,7 +186,7 @@ public class RiskGame {
   }
 
   private void doUpgradeUnitAction(UpgradeUnitAction a) {
-
+    world.acceptAction(a);
   }
 
   /**
