@@ -49,6 +49,7 @@ public class LoginController {
         userInit.setPassword(password.getText());
 
         String ip = "0.0.0.0";
+        //String ip = "vcm-25372.vm.duke.edu";
         int port = 1651;
         // connect to server
         Socket serverSocket = null;

@@ -24,7 +24,7 @@ import ece651.riskgame.shared.Unit;
 
 public class App {
 
-  private DemoGUIPlayer player;
+  private TextPlayer player;
   private ObjectInputStream socketIn;
   private ObjectOutputStream socketOut;
   
@@ -66,9 +66,8 @@ public class App {
       System.err.println("Class Not Found when reading Object through socket");
       System.exit(1);
     }
-    DemoGUIPlayer player = new DemoGUIPlayer(color, game);
+    TextPlayer player = new TextPlayer(serverSocket);
     App app = new App(player, socketIn, socketOut);
-    player.startGame();
 
     /*
     app.doPlacementPhase();
@@ -93,7 +92,7 @@ public class App {
    * @param socketIn is the objectInputStream of the socket
    * @param socketOut is the objectOutputStream of the socket
    */
-  public App(DemoGUIPlayer player, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
+  public App(TextPlayer player, ObjectInputStream socketIn, ObjectOutputStream socketOut) {
     this.player = player;
     this.socketIn = socketIn;
     this.socketOut = socketOut;
