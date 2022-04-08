@@ -54,6 +54,7 @@ public class Login implements Runnable{
             ObjectOutputStream oos = new ObjectOutputStream(ownplayer.getOutputStream());
             while(true) {
                 UserInit userinfo = (UserInit) ois.readObject();
+                System.out.println(userinfo.getUsername());
                 if(userinfo.isIs_login()) {
                     if(userTable.containsKey(userinfo.getUsername())) {
                         if(userTable.get(userinfo.getUsername()).equals(userinfo.getPassword())) {

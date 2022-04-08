@@ -115,6 +115,7 @@ public class LoginController {
         oos.writeObject(userInit);
 
         String result = (String) ois.readObject();
+        System.out.println(result);
     }
 
     private void loadControllers(FXMLLoader loader) {
