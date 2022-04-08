@@ -25,7 +25,7 @@ import ece651.riskgame.shared.Unit;
  * Textplayer is a class on client side which is responsible for reading initial placements, reading actions, applying actions locally, and spectating.
  */
 public class TextPlayer extends Player{
-  private GameView view;
+  private GameTextView view;
   final BufferedReader inputReader;
   final PrintStream out;
 
@@ -129,7 +129,7 @@ public class TextPlayer extends Player{
         Territory src = readTerritory("Which territory do you want to move unit from?");
         //TODO:unit to list of units
         Territory dst = readTerritory("Which territory do you want to move unit to?");
-        Unit unitsToMove = readUnits(src.getUnits(), "How many units do you want to move?");
+        List<Unit> unitsToMove = readUnits(src.getUnits(), "How many units do you want to move?");
         //List<Unit> unitsToMove = readUnits(src, "How many units do you want to move?");
         
         return new Move(unitsToMove, src.getName(), dst.getName(), this.color);
@@ -151,7 +151,7 @@ public class TextPlayer extends Player{
         Territory src = readTerritory("Which territory do you want to attack from?");
         Territory dst = readTerritory("Which territory do you want to attack?");
         //TODO:unit to list of units
-        Unit unitsToAttack = readUnits(src.getUnits(), "How many units do you want to dispatch?");
+        List<Unit> unitsToAttack = readUnits(src.getUnits(), "How many units do you want to dispatch?");
         //List<Unit> unitsToAttack = readUnits(src, "How many units do you want to dispatch?");
 
         return new Attack(unitsToAttack, src.getName(), dst.getName(), color);
@@ -176,12 +176,10 @@ public class TextPlayer extends Player{
           return null;
         }
         else if (readNumber <= toAllocate.getNum()) {
-          //TODO:Use unit instead of basic unit
-          return new BasicUnit(readNumber);
+          return new BasicUnit(readNumber, toAllocate.getLevel());
         }
         else {
-          //TODO: Unit name
-          printErrorMsg("You don't have enough units.");
+          printErrorMsg("You don't have enough " + toAllocate.getName() + ".");
         }
       } catch (NumberFormatException e) {
         printErrorMsg("You should type a valid non negative number.");
@@ -191,13 +189,12 @@ public class TextPlayer extends Player{
     }
   }
 
-  //TODO: Unit to List<Unit> 
   /**
    * read Units to move/attack from terminal
    * @param toAllocate is the units you can dispatch/move/place  
    * @throws IOException when nothing fetched from input (STD input or BufferedReader)
   */
-  public Unit readUnits(List<Unit> toAllocate, String prompt) throws IOException{
+  public List<Unit> readUnits(List<Unit> toAllocate, String prompt) throws IOException{
     List<Unit> unitsToMove = new ArrayList<>();
     for (Unit toRead : toAllocate) {
       Unit unitToMove = readOneUnit(toRead);
@@ -205,7 +202,7 @@ public class TextPlayer extends Player{
         unitsToMove.add(unitToMove);
       }
     }
-    return unitsToMove.get(0);
+    return unitsToMove;
   }
 
   /**
@@ -234,9 +231,6 @@ public class TextPlayer extends Player{
    * @return a placeAction which place a unit to target territory 
    */
   public PlaceAction readOnePlacement(Unit toAllocate) throws IOException {
-    //TODO:unit name
-    printInfo("You have " + Integer.toString(toAllocate.getNum()) + " to palce.");
-
     Territory dst = readTerritory("Which territory do you want to place?");
     Unit unitToPlace = readOneUnit(toAllocate);
     return new PlaceAction(unitToPlace, dst.getName());
@@ -398,21 +392,11 @@ public class TextPlayer extends Player{
     infoMsg.append("You are the " + color + " player.");
     return infoMsg.toString();
   }
-  protected String getUnitsInfo(List<Unit> units) {
-    StringBuilder infoMsg = new StringBuilder();
-    infoMsg.append("You have the following units:\n");
-    for (Unit u: units) {
-      //TODO:Add unit name
-      infoMsg.append(Integer.toString(u.getNum()) + "\n");
-    }
-    return infoMsg.toString();
-  }
   protected String getUnitPrompt(Unit toMove) {
     StringBuilder promptMsg = new StringBuilder();
     promptMsg.append("You have ");
-    promptMsg.append(Integer.toString(toMove.getNum()));
-    //TODO:Add unit name
-    promptMsg.append(" units.\n");
+    promptMsg.append(view.getUnitInfo(toMove));
+    promptMsg.append("\n");
     promptMsg.append("How many units do you want to place?");
     return promptMsg.toString();
   }
