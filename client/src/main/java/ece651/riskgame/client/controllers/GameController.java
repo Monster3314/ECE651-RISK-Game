@@ -1,10 +1,12 @@
 package ece651.riskgame.client.controllers;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -18,6 +20,7 @@ import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Parent;
@@ -29,18 +32,26 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
-public class GameController {
+public class GameController implements Initializable {
 
   @FXML
   VBox infoView;
 
+  @FXML
+  PlacementPaneController placementPaneController;
+  @FXML
+  ActionPaneController actionPaneController;
+  
   String username;
   GUIPlayer guiPlayer;
+
+  @FXML
   Parent scene;
   Label hint;
 
@@ -146,75 +157,16 @@ public class GameController {
       neigh.setTextAlignment(TextAlignment.CENTER);
       neigh.setFont(new Font(15));
       children.add(neigh);
-    }
-    
-    
-    
+    }    
   }
 
-  private void updateCurrentTerritoryInfo() {
+  public void updateCurrentTerritoryInfo() {
     try {
       updateTerritoryInfo(((Label)infoView.lookup("#territoryName")).getText());
     }
     catch(NullPointerException e) {
     }
-  }
-  
-  @FXML
-  public void submitPlacement(MouseEvent me) throws ClassNotFoundException, InterruptedException {
-    // get inputs
-    try {
-      updateHint("Submitted! Waiting for other players");
-      // call guiplayer
-      Map<String, Integer> placements = new ArrayList<Integer>(Arrays.asList(1, 2, 3)).stream().collect(
-          Collectors.toMap(i -> ((Label) scene.lookup("#placementPane #label" + i)).getText(),
-                           i -> Integer.parseInt(((TextField) scene.lookup("#placementPane").lookup("#field"+i)).getText())));            
-      // TODO: The wait needs Task.setOnSucceded, learn later
-      String result = guiPlayer.tryPlace(placements);
-      if (result == null) {
-        guiPlayer.sendPlacements(placements);        
-        // update map
-        guiPlayer.updateGame();        
-        updateHint("Welcome to game world! Let's crush enemies!");
-        fromPlacementToAction();        
-        this.isLostOrWin();        
-      } else {
-        updateHint(result);
-      }
-    } catch (IOException e) {
-      updateHint("IOException occurs during connection to server...");
-    } catch (NumberFormatException e) {
-      updateHint("Please type number to place");
-    }
-  }
-
-  @FXML
-  private void submitAction() throws IOException {    
-    try {
-      String from = ((MenuButton)scene.lookup("#actionPane #from")).getText();
-      String to = ((MenuButton)scene.lookup("#actionPane #to")).getText();
-
-      List<Action> acts = new ArrayList<Action>();
-      
-      // TODO check all fields
-      int num = Integer.parseInt(((TextField) scene.lookup("#actionPane #field1")).getText());
-    
-      Action act = this.ifMoveInAction ? new Move(new BasicUnit(num), from, to, guiPlayer.getColor()) : new Attack(new BasicUnit(num), from, to, guiPlayer.getColor());
-      String result = guiPlayer.tryApplyAction(act);
-      if (result != null) {
-        updateHint(result);
-      }
-      else {
-        acts.add(act);
-        guiPlayer.addActionToSend(act);
-        updateCurrentTerritoryInfo();
-        updateHint("Action submitted!");
-      }
-    } // end try
-    catch (NumberFormatException e) {
-      updateHint("Assign numbers please");
-    }
-  }
+  }  
 
   public void initializeGame() throws IOException, ClassNotFoundException {
     setUsername(scene, guiPlayer.getColor());
@@ -246,6 +198,14 @@ public class GameController {
    */
   public void setUsername(Parent scene, String name) {
     ((Labeled) scene.lookup("#playerName")).textProperty().setValue(name);
+  }
+
+  /**
+   * Update food, gold, food
+   */
+  public void updateTopBar() {
+    // TODO
+    //((Label)scene.lookup("#playerFood")).setText();
   }
 
   /**
@@ -391,7 +351,7 @@ public class GameController {
     isLostOrWin();
   }
 
-  private void isLostOrWin() throws IOException, ClassNotFoundException{
+  public void isLostOrWin() throws IOException, ClassNotFoundException{
     if (guiPlayer.isLost()) {
       disableButtonsInPlacement();
       updateHint("Woops. You have lost.");
@@ -404,6 +364,14 @@ public class GameController {
       updateHint("Congratulations! You are the winner");
       disableButtonsInPlacement();
     }
+  }
+
+  @Override
+  public void initialize(URL location, ResourceBundle resources) {
+    placementPaneController.gameController = this;
+    placementPaneController.pane = (Pane)scene.lookup("#placementPane");
+    actionPaneController.gameController = this;
+    actionPaneController.pane = (Pane)scene.lookup("#actionpane");
   }
   
 }

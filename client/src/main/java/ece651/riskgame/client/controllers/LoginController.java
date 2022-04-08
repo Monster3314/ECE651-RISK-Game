@@ -76,12 +76,6 @@ public class LoginController {
 
         Parent gp = loader.load();
 
-        gameController.setScene(gp);
-
-
-        //URL cssResource = getClass().getResource("/ui/css/main.css");
-        //scene.getStylesheets().add(cssResource.toString());
-
         initialize();
 
         Room fisrt = new Room(guiPlayer, gameController, gp);
@@ -113,6 +107,8 @@ public class LoginController {
     private void loadControllers(FXMLLoader loader) {
         HashMap<Class<?>, Object> controllers = new HashMap<>();
         controllers.put(GameController.class, gameController);
+        controllers.put(PlacementPaneController.class, new PlacementPaneController());
+        controllers.put(ActionPaneController.class, new ActionPaneController());
         controllers.put(RoomPaneController.class, roomPaneController);
         loader.setControllerFactory((c) -> {
             return controllers.get(c);
