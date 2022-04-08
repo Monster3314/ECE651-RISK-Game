@@ -17,6 +17,7 @@ import ece651.riskgame.shared.Territory;
 import javafx.fxml.FXML;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -38,7 +39,7 @@ public class GameController {
 
   String username;
   GUIPlayer guiPlayer;
-  Scene scene;
+  Parent scene;
   Label hint;
 
   // flags
@@ -49,7 +50,7 @@ public class GameController {
     username = p.getColor();
   }
 
-  public void setScene(Scene s) {
+  public void setScene(Parent s) {
     scene = s;
   }
 
@@ -198,15 +199,15 @@ public class GameController {
   /**
    * Set username of the game
    */
-  public void setUsername(Scene scene, String name) {
+  public void setUsername(Parent scene, String name) {
     ((Labeled) scene.lookup("#playerName")).textProperty().setValue(name);
   }
 
   /**
    * Set available territories based on game ppl
    */
-  private void setAvailableTerritories(Scene scene, Set<String> names) {
-    Set<Node> nodes = scene.getRoot().lookupAll("Button");
+  private void setAvailableTerritories(Parent scene, Set<String> names) {
+    Set<Node> nodes = scene.lookupAll("Button");
     
     nodes.stream().filter(node -> (node.getId() != null))
       .filter(node -> ((Button) node).getId().toString().endsWith("Territory"))
