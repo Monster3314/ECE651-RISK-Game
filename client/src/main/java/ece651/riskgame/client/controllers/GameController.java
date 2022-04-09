@@ -122,13 +122,13 @@ public class GameController implements Initializable {
     ObservableList<Node> children = infoView.getChildren();
     children.clear();
     infoView.setAlignment(Pos.TOP_CENTER);
-
+    // territory name
     Label label = new Label(territoryName);
     label.setTextAlignment(TextAlignment.CENTER);
     label.setFont(new Font(20));
     label.setId("territoryName");
     children.add(label);
-
+    // territory units
     for (int i = 0; i < 7; i++) {
       String armyName = Unit.NAME[i];
       HBox hbox = new HBox();
@@ -142,7 +142,7 @@ public class GameController implements Initializable {
       text.setAlignment(Pos.CENTER_RIGHT);
       text.setFont(new Font(15));
       try {
-        int unitNum = guiPlayer.getGame().getBoard().getTerritory(territoryName).getUnitByLevel(i).getNum();
+        int unitNum = guiPlayer.getTerritory(territoryName).getUnitByLevel(i).getNum();
         text.setText(Integer.toString(unitNum));
       } catch (Exception e) {
       }
@@ -151,30 +151,42 @@ public class GameController implements Initializable {
       HBox.setHgrow(text, Priority.ALWAYS);
       children.add(hbox);
     }
-
+    // resource production
     Label title2 = new Label("Resource Production");
     title2.setTextAlignment(TextAlignment.CENTER);
     title2.setFont(new Font(20));
     children.add(title2);
-
+    
     for (String resourceName : new String[] { Resource.FOOD, Resource.GOLD }) {
       HBox hbox = new HBox();
       Label labelUnit = new Label(resourceName);
       labelUnit.setMaxWidth(Double.MAX_VALUE);
       labelUnit.setAlignment(Pos.CENTER);
       labelUnit.setFont(new Font(15));
-
+     
       Label text = new Label(Integer.toString(
-          guiPlayer.getGame().getBoard().getTerritory(territoryName).getProduction().getResourceNum(resourceName)));
+          guiPlayer.getTerritory(territoryName).getProduction().getResourceNum(resourceName)));
       text.setMaxWidth(Double.MAX_VALUE);
       text.setAlignment(Pos.CENTER);
       text.setFont(new Font(15));
       hbox.getChildren().addAll(labelUnit, text);
       HBox.setHgrow(labelUnit, Priority.ALWAYS);
       HBox.setHgrow(text, Priority.ALWAYS);
-      children.add(hbox);
+      children.add(hbox);            
     }
 
+    // territory size
+    Label titleSize = new Label("Territory Size(Food Consumption)");
+    titleSize.setTextAlignment(TextAlignment.CENTER);
+    titleSize.setFont(new Font(20));
+    children.add(titleSize);
+    Label size = new Label(Integer.toString(guiPlayer.getTerritory(territoryName).getSize()));
+    size.setTextAlignment(TextAlignment.CENTER);
+    size.setFont(new Font(15));
+    children.add(size);
+    
+
+    // neighbors
     // This should be removed in the future
     Label title3 = new Label("Neighbors");
     title3.setTextAlignment(TextAlignment.CENTER);
@@ -182,7 +194,7 @@ public class GameController implements Initializable {
     children.add(title3);
 
     for (Territory neighbor : guiPlayer.getGame().getBoard()
-        .getNeighbors(guiPlayer.getGame().getBoard().getTerritory(territoryName))) {
+        .getNeighbors(guiPlayer.getTerritory(territoryName))) {
       Label neigh = new Label(neighbor.getName());
       neigh.setTextAlignment(TextAlignment.CENTER);
       neigh.setFont(new Font(15));

@@ -101,11 +101,11 @@ public class PlacementPaneControllerTest {
     placementPaneController.submitPlacement(null);
 
     // make guiplayer.tryplace fail
-    when(guiPlayer.tryPlace(any())).thenReturn("wrong");
+    when(guiPlayer.tryPlace(any(), any())).thenReturn("wrong");
     placementPaneController.submitPlacement(null);
 
     // input negative number
-    when(guiPlayer.tryPlace(any())).thenThrow(IllegalArgumentException.class);
+    when(guiPlayer.tryPlace(any(), any())).thenThrow(IllegalArgumentException.class);
     placementPaneController.submitPlacement(null);
   }
 
