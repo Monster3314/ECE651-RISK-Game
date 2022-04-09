@@ -55,19 +55,18 @@ public class ActionPaneController {
       String to = ((MenuButton) pane.lookup("#to")).getText();
 
       List<Unit> units = new ArrayList<Unit>();
-      for (int i = 1; i <= 7; i++) {
-        try {
-          int num = Integer.parseInt(((TextField) pane.lookup("#field"+i)).getText());
-          Unit unit = new BasicUnit(num, i-1);
-          units.add(unit);
-          System.out.println(unit.getNum());
+      for (int i = 1; i <= 7; i++) {        
+        String input = ((TextField) pane.lookup("#field"+i)).getText();
+        if (input.trim().length() == 0) {
+          // spaces
+          continue;
         }
-        catch (NullPointerException e) {
-          // ignore it
+        int num = Integer.parseInt(input);
+        if (num < 0) {
+          throw new NumberFormatException();
         }
-        catch (NumberFormatException e) {
-          // ignore it
-        }
+        Unit unit = new BasicUnit(num, i-1);
+        units.add(unit);                 
       }
       if (units.isEmpty()) {
         throw new IllegalArgumentException("Type number to submit");
@@ -85,9 +84,12 @@ public class ActionPaneController {
       }
       gameController.updateTopBar();
     } // end try
+    catch (NumberFormatException e) {
+      gameController.updateHint("Type positive number only");
+    }
     catch (IllegalArgumentException e) {
       gameController.updateHint(e.getMessage());
-    }
+    }    
   }
 
 }
