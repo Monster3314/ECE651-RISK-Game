@@ -56,7 +56,7 @@ public abstract class Unit implements Serializable{
 
   @Override
   public String toString() {
-    return NAME[level];
+    return number + " " + NAME[level];
   }
 
   /**
