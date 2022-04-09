@@ -52,6 +52,7 @@ public class GameController implements Initializable {
   
   @FXML
   Parent scene;
+  @FXML
   Label hint;
 
   
