@@ -84,15 +84,15 @@ public class GameController implements Initializable {
       updateHint("Level up!");
       updateTopBar();
       guiPlayer.addActionToSend(lu);
-      disableLevelUp();
+      disableLevelUpButton();
     }
   }
 
-  public void disableLevelUp() {
+  public void disableLevelUpButton() {
     ((Button)scene.lookup("#levelUp")).setDisable(true);    
   }
 
-  public void activateLevelUp() {
+  public void activateLevelUpButton() {
     ((Button)scene.lookup("#levelUp")).setDisable(false);
   }
   
@@ -186,7 +186,7 @@ public class GameController implements Initializable {
   public void initializeGame() throws IOException, ClassNotFoundException {
     setUsername(scene, guiPlayer.getColor());
     setAvailableTerritories(scene, guiPlayer.getTerritoryNames()); 
-    disableButtonsButLogout();    
+    disableButtonsInPlacement();
     placementPaneController.setPlacementPaneLabels();
     setHint();
 
@@ -226,11 +226,18 @@ public class GameController implements Initializable {
   }
 
   /**
-   * Disable button in placement phase to avoid undefined actions
+   * Disable all buttons except for logout 
    */
   public void disableButtonsButLogout() {
     List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "moveButton", "attackButton", "upgradeButton", "levelUp"));
     btns.stream().forEach(s -> scene.lookup("#"+s).setDisable(true));
+  }
+
+  /**
+   * Disable buttons in placement phase
+   */
+  public void disableButtonsInPlacement() {
+    disableButtonsButLogout();
   }
   
   /**
@@ -269,16 +276,22 @@ public class GameController implements Initializable {
     activateButtonsAfterPlacement();
     set3ButtonsUnselected();
     set3ActionPanesInvisible();
-    updateTopBar();
-    activateLevelUp();
+    updateTopBar();    
   }
 
   /**
    * Active button after placement phase
    */
-  public void activateButtonsAfterPlacement() {
+  public void activateButtons() {
     List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "logout", "moveButton", "attackButton", "upgradeButton", "levelUp"));
     btns.stream().forEach(s -> scene.lookup("#"+s).setDisable(false));
+  }
+  
+  /**
+   * Active button after placement phase
+   */
+  public void activateButtonsAfterPlacement() {
+    activateButtons();
   }
 
   @FXML
@@ -340,8 +353,25 @@ public class GameController implements Initializable {
     set3ButtonsUnselected();
     updateCurrentTerritoryInfo();
     updateTopBar();
-    activateLevelUp();
+    activateLevelUpButton();
     // TODO update level
+    isLostOrWin();
+  }
+
+  public void reconnect() throws ClassNotFoundException, IOException {
+    disableButtonsButLogout();
+    gameIO.recvGame();
+    activateButtons();
+    // initialize in action phase
+    setUsername(scene, guiPlayer.getColor());
+    setAvailableTerritories(scene, guiPlayer.getTerritoryNames());
+    setHint();
+    // update informations
+    updateTopBar();
+    updateTerritoryColors();
+    set3ActionPanesInvisible();
+    set3ButtonsUnselected();
+    // check lose or win
     isLostOrWin();
   }
 
