@@ -35,24 +35,25 @@ public class UpgradePaneController {
     for (int i = 2; i <= 7; i++) {
       try {
         int num = Integer.parseInt(((TextField) pane.lookup("#field"+i)).getText());
-        System.out.println(num);
-        String result = gameController.guiPlayer.tryApplyAction(new UpgradeUnitAction(terr, i, i+1, num, gameController.guiPlayer.getColor()));
+        Action act = new UpgradeUnitAction(terr, i-1, i, num, gameController.guiPlayer.getColor());
+        String result = gameController.guiPlayer.tryApplyAction(act);
         if (result != null) {
           // very buggy now
           gameController.updateHint(result);
           System.out.println(result);
         }
-        gameController.updateHint("Submitted!");
-        System.out.println(result);
-        gameController.updateTopBar();
-        gameController.updateCurrentTerritoryInfo();
-        updateUpgradePane();
-      }
-      catch (NullPointerException e) {
-        // ignore it
+        else {
+          gameController.updateHint("Submitted!");
+          System.out.println("submitted");
+          gameController.guiPlayer.addActionToSend(act);
+          gameController.updateTopBar();
+          gameController.updateCurrentTerritoryInfo();
+          updateUpgradePane();
+        }
       }
       catch (NumberFormatException e) {
         // ignore for now
+        System.out.println("number format wrong");
       }
     }    
     

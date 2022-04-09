@@ -16,8 +16,8 @@ class MoveTest {
 
   @Test
   void test_constructor_getter_setter() {    
-    List<Unit> units = List.of(new BasicUnit(10));
-    Move move = new Move(units, "SD", "JS", null);
+    Unit units = new BasicUnit(10);
+    Move move = new Move(List.of(units), "SD", "JS", null);
     assertEquals("JS", move.getToTerritory());
     assertEquals(units, move.getUnit());
   }
