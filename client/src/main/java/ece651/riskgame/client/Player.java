@@ -1,9 +1,4 @@
 package ece651.riskgame.client;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -34,20 +29,36 @@ public abstract class Player {
   protected String color;
   protected GameInfo theGame;
   protected final Map<Class, ActionRuleChecker> actionCheckers;
-  public Player(String color, GameInfo game) {
 
+  /**
+   * Player Constructor
+   * @param color is the player's clan
+   * @param game is the model of the game
+   * @throws IllegalArgumentException when color or game is null, or color is not in the game 
+   */  
+  public Player(String color, GameInfo game) throws IllegalArgumentException {
+    if (color == null) {
+      throw new IllegalArgumentException("Color can not be null");
+    }
+    if (game == null) {
+      throw new IllegalArgumentException("Game can not be null");
+    }
+    if (!game.getClans().containsKey(color)) {
+      throw new IllegalArgumentException("Color is not in this game");
+    }
+    
     this.color = color;
     this.theGame = game;;
     this.actionCheckers = new HashMap<Class, ActionRuleChecker>();
     setupActionCheckers();
   }
-
+  
   protected void setupActionCheckers() {
     actionCheckers.put(Attack.class,
         new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null))));
     actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(null)));
   }
-
+  
   /**
    * try to apply a action on client side
    * @param toAct is the action you want to apply
