@@ -40,7 +40,7 @@ public class RiscApplication extends Application {
   public void start(Stage stage) throws IOException, ClassNotFoundException {
 
 
-    String ip = "vcm-24269.vm.duke.edu";
+    String ip = "0.0.0.0";
     int port = 1651;
     // connect to server
     Socket serverSocket = null;

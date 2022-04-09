@@ -26,9 +26,9 @@ public class serverRoom {
     }
 
     public void addNewPlayer(Socket player, String username) throws IOException {
-        sockets.put(player, null);
-        oosMap.put(player, new ObjectOutputStream(player.getOutputStream()));
-        oisMap.put(player, new ObjectInputStream(player.getInputStream()));
+        sockets.put(player, "");
+        //oosMap.put(player, new ObjectOutputStream(player.getOutputStream()));
+        //oisMap.put(player, new ObjectInputStream(player.getInputStream()));
         socketUsernameMap.put(player, username);
         number ++;
     }

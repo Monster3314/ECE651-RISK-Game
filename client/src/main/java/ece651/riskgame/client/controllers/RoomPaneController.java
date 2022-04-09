@@ -47,7 +47,7 @@ public class RoomPaneController {
 
     @FXML
     void game(ActionEvent event) throws IOException, ClassNotFoundException {
-        String ip = "vcm-24269.vm.duke.edu";
+        String ip = "0.0.0.0";
         int port = 1653;
         // connect to server
         Socket roomSocket = null;
@@ -63,7 +63,7 @@ public class RoomPaneController {
         System.out.println("Connection Estabilished");
 
         ObjectOutputStream oos = new ObjectOutputStream(roomSocket.getOutputStream());
-        ObjectInputStream ois = new ObjectInputStream(roomSocket.getInputStream());
+
         int roomnumber = -1;
         oos.writeObject(roomnumber);
         oos.flush();
@@ -73,6 +73,7 @@ public class RoomPaneController {
         oos.flush();
         oos.reset();
 
+        ObjectInputStream ois = new ObjectInputStream(roomSocket.getInputStream());
         GameIO gameIO = new GameIO(ois, oos);
         String color = gameIO.recvColor();
         GameInfo gi = gameIO.recvGame();

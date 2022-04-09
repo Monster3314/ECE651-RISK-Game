@@ -38,6 +38,7 @@ public class RiskGame implements Runnable{
     oisMap = roominfo.oisMap;
     online = roominfo.online;
     nameColorMap = roominfo.nameColorMap;
+    this.roominfo = roominfo;
   }
 
   
@@ -65,7 +66,8 @@ public class RiskGame implements Runnable{
       sockets.put(socket, color);
       online.put(color, true);
       nameColorMap.put(roominfo.socketUsernameMap.get(socket), color);
-      ObjectOutputStream oos = oosMap.get(socket);
+      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+      oosMap.put(socket, oos);
       oos.writeObject(color);
     }
     logger.flushBuffer();

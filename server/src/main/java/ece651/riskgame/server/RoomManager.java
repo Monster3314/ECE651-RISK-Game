@@ -11,9 +11,12 @@ public class RoomManager implements Runnable{
     private int port;
     private serverRoom latestRoom;
 
-    public RoomManager(int port) {
+    public RoomManager(int port) throws IOException {
         this.port = port;
         latestRoom = new serverRoom();
+        RiskGame game = new RiskGame(2, "new_territories.csv", "new_adj_list.csv", latestRoom);
+        Thread t = new Thread(game);
+        t.start();
     }
 
 
@@ -29,9 +32,11 @@ public class RoomManager implements Runnable{
                 if(roomnumber < 0) { //start a new room
                     if(latestRoom.getNumber() != 2) {
                         latestRoom.addNewPlayer(player, username);
+                        latestRoom.oisMap.put(player, ois);
                     } else {
                         latestRoom = new serverRoom();
                         latestRoom.addNewPlayer(player, username);
+                        latestRoom.oisMap.put(player, ois);
                         RiskGame game = new RiskGame(2, "new_territories.csv", "new_adj_list.csv", latestRoom);
                         Thread t = new Thread(game);
                         t.start();
