@@ -1,9 +1,6 @@
 package ece651.riskgame.shared;
 
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Implemented by World and GameInfo
@@ -28,27 +25,32 @@ public interface Actable {
 
     default Map<String, Integer> getUnitMoveCost(String src, String color) {
         Map<String, Integer> ret = new HashMap<>();
-        Territory t = getBoard().getTerritory(src);
+        Board board = getBoard();
+        Territory t = board.getTerritory(src);
         int cost = t.getSize();
-        if (!getBoard().containsTerritory(src) || !getTerritoryOwnership(src).equals(color)) {
+        if (!board.containsTerritory(src) || !getTerritoryOwnership(src).equals(color)) {
             throw new IllegalArgumentException("Source territory not found or not belonging to this clan.");
         }
         ret.put(src, cost);
-        TreeMap<Territory, Integer> treeMap = new TreeMap<>(Comparator.comparingInt(Territory::getSize));
-        for (Territory territory : getBoard().getNeighbors(t)) {
+        PriorityQueue<Map.Entry<String, Integer>> treeMap = new PriorityQueue<>(Comparator.comparingInt(entry -> board.getTerritory(entry.getKey()).getSize()));
+        HashMap<String, Integer> distance = new HashMap<>();
+        for (Territory territory : board.getNeighbors(t)) {
             if (getTerritoryOwnership(territory.getName()).equals(color)) {
-                treeMap.put(territory, cost + territory.getSize());
+                treeMap.add(Map.entry(territory.getName(), cost + territory.getSize()));
+                distance.put(territory.getName(), cost + territory.getSize());
             }
         }
         while (!treeMap.isEmpty()) {
-            Map.Entry<Territory, Integer> entry = treeMap.pollFirstEntry();
+            Map.Entry<String, Integer> entry = treeMap.poll();
             cost = entry.getValue();
-            ret.put(entry.getKey().getName(), cost);
-            for (Territory territory : getBoard().getNeighbors(entry.getKey())) {
+            ret.put(entry.getKey(), cost);
+            for (Territory territory : board.getNeighbors(board.getTerritory(entry.getKey()))) {
                 if (!ret.containsKey(territory.getName()) && getTerritoryOwnership(territory.getName()).equals(color)) {
-                    Integer value = treeMap.get(territory);
+                    Integer value = distance.get(territory.getName());
                     int newCost = cost + territory.getSize();
-                    treeMap.put(territory, value == null ? newCost : Math.min(newCost, value));
+                    int newValue = value == null ? newCost : Math.min(newCost, value);
+                    treeMap.add(Map.entry(territory.getName(), newValue));
+                    distance.put(territory.getName(), newValue);
                 }
             }
         }

@@ -328,6 +328,7 @@ public class RiskGame implements Runnable{
       waitForPlayers(playerNumber);
       initPlayers(); // assign color and territories for each player
       sendGameInfo(getCurrentGameInfo()); // send a initial board without unit number to client
+//      printMoveCost();
       assignUnits(30);
       sendGameInfo(getCurrentGameInfo());
       GameInfo gi = getCurrentGameInfo();
@@ -346,4 +347,12 @@ public class RiskGame implements Runnable{
 
   }
 
+//  private void printMoveCost() {
+//    for (Map.Entry<String, Clan> entry : world.getClans().entrySet()) {
+//      for (Territory territory : entry.getValue().getOccupies()) {
+//        System.out.println(territory.getName());
+//        System.out.println(world.getUnitMoveCost(territory.getName(), entry.getKey()));
+//      }
+//    }
+//  }
 }
