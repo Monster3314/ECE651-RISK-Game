@@ -19,7 +19,7 @@ public class SufficientUnitChecker extends ActionRuleChecker {
         if (territoryUnit == null) {
             return "No specified Unit found.";
         }
-        if (uua.getTargetLevel() > actable.getClans().get(uua.getColor()).getMaxTechLevel()) {
+        if (uua.getTargetLevel() > actable.getClans().get(uua.getColor()).getTechLevel()) {
             return "Your max tech level does not support this upgrade.";
         }
         if (uua.getNum() > territoryUnit.getNum()) {

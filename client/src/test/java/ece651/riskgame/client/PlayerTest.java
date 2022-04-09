@@ -3,7 +3,6 @@ package ece651.riskgame.client;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +12,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +21,7 @@ import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 
 public class PlayerTest {
@@ -44,6 +45,11 @@ public class PlayerTest {
 
   }
   @Test
+  public void test_adaptPlacements() {
+    GameInfo game = getDefaultGame();
+    TextPlayer redPlayer = new TextPlayer("Red", game);
+  }
+  @Test
   public void test_updateGame() {
     Map<String, Clan> validClans = mock(Map.class);
     when(validClans.containsKey("Red")).thenReturn(true);
@@ -64,18 +70,6 @@ public class PlayerTest {
     assertThrows(IllegalArgumentException.class, ()->p.updateGame(invalidGame));
   }
   @Test
-  public void test_getColor() {
-    GameInfo game = mock(GameInfo.class);
-    Map<String, Clan> clans = mock(Map.class);
-    when(clans.containsKey("Red")).thenReturn(true);
-    when(clans.containsKey("Blue")).thenReturn(true);
-    when(game.getClans()).thenReturn(clans);
-    TextPlayer p = new TextPlayer("Red", game);
-    assertEquals("Red", p.getColor());
-    p = new TextPlayer("Blue", game);
-    assertEquals("Blue", p.getColor());
-  }
-  @Test
   public void test_getters() {
     GameInfo game = mock(GameInfo.class);
     Map<String, Clan> clans = mock(Map.class);
@@ -83,22 +77,7 @@ public class PlayerTest {
     when(clans.containsKey("Blue")).thenReturn(true);
     when(game.getClans()).thenReturn(clans);
     TextPlayer p = new TextPlayer("Red", game);
-    try {
-      p.getOccupies();
-    } catch(Exception e) {
-    }
-    try {
-      p.getTechLevel();
-    } catch(Exception e) {
-    }
-    try {
-      p.getFood();
-    } catch(Exception e) {
-    }
-    try {
-      p.getGold();
-    } catch(Exception e) {
-    }
+    
     try {
       p.isGameOver();
     } catch(Exception e) {
@@ -106,11 +85,10 @@ public class PlayerTest {
     try {
       p.isLost();
     } catch(Exception e) {
-    }
-     
-      
-      
+    }    
   }
+
+  
   @Test
   public void test_getEnemyTerritoryNames() {
     GameInfo game = getDefaultGame();
@@ -131,6 +109,39 @@ public class PlayerTest {
     assertEquals(expectedTerritoryNames, redPlayer.getTerritoryNames());
     assertEquals(expectedTerritoryNames, bluePlayer.getTerritoryNames());
   }
+  @Test
+  public void test_getInfo() {
+    GameInfo game = getDefaultGame();
+    TextPlayer redPlayer = new TextPlayer("Red", game);
+    TextPlayer bluePlayer = new TextPlayer("Blue", game);
+
+    assertEquals("Red", redPlayer.getColor());
+    assertEquals("Blue", bluePlayer.getColor());
+    
+    assertEquals(1, redPlayer.getTechLevel());
+    assertEquals(Clan.INITIAL_FOOD, redPlayer.getFood());
+    assertEquals(Clan.INITIAL_GOLD, redPlayer.getGold());
+    assertEquals(new HashSet<String>(Arrays.asList("Durham", "Cary")), redPlayer.getOccupies().stream().map(t -> t.getName()).collect(Collectors.toSet()));
+    
+    assertEquals(1, bluePlayer.getTechLevel());    
+    assertEquals(Clan.INITIAL_FOOD, bluePlayer.getFood());
+    assertEquals(Clan.INITIAL_GOLD, bluePlayer.getGold());
+    assertEquals(new HashSet<String>(Arrays.asList("Raleigh", "Chapel Hill")), bluePlayer.getOccupies().stream().map(t -> t.getName()).collect(Collectors.toSet()));
+
+    redPlayer.updateGame(getAnotherGame());
+    bluePlayer.updateGame(getAnotherGame());
+
+    assertEquals(3, redPlayer.getTechLevel());
+    assertEquals(100, redPlayer.getFood());
+    assertEquals(200, redPlayer.getGold());
+    assertEquals(new HashSet<String>(Arrays.asList("Durham", "Raleigh")), redPlayer.getOccupies().stream().map(t -> t.getName()).collect(Collectors.toSet()));
+    
+    assertEquals(6, bluePlayer.getTechLevel());    
+    assertEquals(0, bluePlayer.getFood());
+    assertEquals(0, bluePlayer.getGold());
+    assertEquals(new HashSet<String>(Arrays.asList("Cary", "Chapel Hill")), bluePlayer.getOccupies().stream().map(t -> t.getName()).collect(Collectors.toSet()));
+  }
+
   protected GameInfo getDefaultGame() {
     Board b = new Board();
     Map<String, Clan> clans = new HashMap<String, Clan>();
@@ -160,12 +171,12 @@ public class PlayerTest {
     Board b = new Board();
     Map<String, Clan> clans = new HashMap<String, Clan>();
     GameInfo game = new GameInfo(b, clans);
-    Territory t1 = new BasicTerritory("Jiangsu");
-    Territory t2 = new BasicTerritory("Anhui");
-    Territory t3 = new BasicTerritory("Shanghai");
-    Territory t4 = new BasicTerritory("Zhejiang");
-    Clan c1 = new Clan(new LinkedList<Territory>(Arrays.asList(t1, t3)));
-    Clan c2 = new Clan(new LinkedList<Territory>(Arrays.asList(t2, t4)));
+    Territory t1 = new BasicTerritory("Durham");
+    Territory t2 = new BasicTerritory("Raleigh");
+    Territory t3 = new BasicTerritory("Cary");
+    Territory t4 = new BasicTerritory("Chapel Hill");
+    Clan c1 = new Clan(new LinkedList<Territory>(Arrays.asList(t1, t2)), 3, new Resource(new int[] {100, 200}));
+    Clan c2 = new Clan(new LinkedList<Territory>(Arrays.asList(t3, t4)), 6, new Resource(new int[] {0, 0}));
     clans.put("Red", c1);
     clans.put("Blue", c2);
     t1.addUnit(new BasicUnit(4));

@@ -8,7 +8,8 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -56,9 +57,9 @@ public class PlacementPaneControllerTest {
 
   @Test
   public void testSetPlacementPaneLabels() throws ClassNotFoundException, IOException {
-    List<Territory> list = new ArrayList<> ();
-    list.add(new BasicTerritory("shitland"));
-    when(guiPlayer.getOccupies()).thenReturn(list);
+    Set<Territory> set = new HashSet<> ();
+    set.add(new BasicTerritory("shitland"));
+    when(guiPlayer.getOccupies()).thenReturn(set);
     Label label = new Label();
     label.setId("label1");
     Label title = new Label("titlee");

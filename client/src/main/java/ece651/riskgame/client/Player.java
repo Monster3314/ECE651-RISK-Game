@@ -112,7 +112,7 @@ public abstract class Player {
     //adapting from list of moves to map(territory string to list of placed units)
   public Map<String, List<Unit>> adaptPlacements(List<PlaceAction> placements) {
     Map<String, List<Unit>> serverPlacements = new HashMap<>();
-    List<Territory> occupies = getOccupies();
+    Set <Territory> occupies = getOccupies();
     for (Territory occupy : occupies) {
       serverPlacements.put(occupy.getName(), new ArrayList<Unit>(Arrays.asList(new BasicUnit(0))));
     }
@@ -128,8 +128,8 @@ public abstract class Player {
    * this function is used to adapt a list of placements(move) to the map which maps territory name to a list of units  
    * @return a list of territory which is this player's occupies  
    */  
-  public List<Territory> getOccupies() {
-    return theGame.getClans().get(color).getOccupies();
+  public Set<Territory> getOccupies() {
+    return new HashSet(theGame.getClans().get(color).getOccupies());
   }
 
   /**
@@ -181,7 +181,7 @@ public abstract class Player {
    * @return technology level 
    */
   public Integer getTechLevel() {
-    return theGame.getClans().get(color).getMaxTechLevel();
+    return theGame.getClans().get(color).getTechLevel();
   }
 
   /**
