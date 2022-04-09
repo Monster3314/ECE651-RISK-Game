@@ -31,7 +31,7 @@
       </Label>
       <Label fx:id="playerName" layoutX="14.0" layoutY="4.0" prefHeight="31.0" prefWidth="110.0" text="Name: Zhiwei Zhou" textFill="WHITE" style="-fx-font-size:20;" alignment="CENTER"/>
       <Label fx:id="playerFood" layoutX="137.0" layoutY="4.0" prefHeight="31.0" prefWidth="72.0" text="Food: 0" textFill="WHITE" />
-      <Button fx:id="logout" layoutX="1025.0" layoutY="6.0" mnemonicParsing="false" opacity="0.2" prefHeight="18.0" prefWidth="93.0" text="logout" textFill="TRANSPARENT" >
+      <Button fx:id="logout" layoutX="1025.0" layoutY="6.0" mnemonicParsing="false" opacity="0.2" prefHeight="18.0" prefWidth="93.0" text="logout" textFill="TRANSPARENT" onMouseClicked="#logout">
          <font>
             <Font size="10.0" />
          </font>
@@ -121,7 +121,7 @@
          </effect></Button>
       <VBox fx:id="infoView" layoutX="945.0" layoutY="228.0" prefHeight="405.0" prefWidth="183.0" />
       <fx:include source="placementPane.fxml" layoutX="37.0" layoutY="184.0" fx:id="placementPane" />
-      <fx:include source="actionPane.fxml" layoutX="37.0" layoutY="184.0" fx:id="actionPane" visible="false"/>
+      <fx:include source="ActionPane.fxml" layoutX="37.0" layoutY="184.0" fx:id="actionPane" visible="false"/>
       <fx:include source="upgradePane.fxml" layoutX="37.0" layoutY="184.0" fx:id="upgradePane" visible="false"/>
       <Button layoutX="331.0" layoutY="4.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" style="-fx-background-color: #9ea1a2;" text="Level UP!" id="levelUp" onMouseClicked="#levelUp">
          <effect>

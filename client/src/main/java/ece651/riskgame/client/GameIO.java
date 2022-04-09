@@ -14,6 +14,7 @@ import ece651.riskgame.shared.Unit;
 public class GameIO {
   private ObjectInputStream input;
   private ObjectOutputStream output;
+  private Socket server;
 
   public GameIO(ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
     //this.input = new ObjectInputStream(server.getInputStream());
@@ -23,6 +24,7 @@ public class GameIO {
   }
 
   public GameIO(Socket server) throws IOException {
+    this.server = server;
     this.input = new ObjectInputStream(server.getInputStream());
     this.output = new ObjectOutputStream(server.getOutputStream());
   }
@@ -81,6 +83,7 @@ public class GameIO {
    * close objectInputStream and objectOutputStream  
    */
   public void close() throws IOException{
+    //server.close();
     input.close();
     output.close();
   }
