@@ -295,6 +295,21 @@ public class GameControllerTest {
   }
 
   @Test
+  public void test_displayGame() {
+    mockPrepare();
+    doNothing().when(gameController).disableButtonsButLogout();
+    doNothing().when(gameController).activateButtons();
+    doNothing().when(gameController).setUsername(any(), any());
+    doNothing().when(gameController).setAvailableTerritories(any(), any());
+    doNothing().when(gameController).setHint();
+    doNothing().when(gameController).updateTopBar();
+    doNothing().when(gameController).updateTerritoryColors();
+    doNothing().when(gameController).set3ActionPanesInvisible();
+    doNothing().when(gameController).set3ButtonsUnselected();
+    gameController.displayGame();
+  }
+  
+  @Test
   public void test_reconnect() throws ClassNotFoundException, IOException {
     mockPrepare();
     doNothing().when(gameController).disableButtonsButLogout();

@@ -369,21 +369,25 @@ public class GameController implements Initializable {
     isLostOrWin();
   }
 
-  public void reconnect() throws ClassNotFoundException, IOException {
+  /**
+   * Display color and game info from 
+   */
+  public void displayGame() {
     disableButtonsButLogout();
-    gameIO.recvGame();
-    activateButtons();
-    // initialize in action phase
     setUsername(scene, guiPlayer.getColor());
     setAvailableTerritories(scene, guiPlayer.getTerritoryNames());
     setHint();
-    placementPaneController.setPlacementPaneLabels();
-    upgradePaneController.setUpgradePane();    
-    // update informations
+    upgradePaneController.setUpgradePane();
+    // update/display information
     updateTopBar();
     updateTerritoryColors();
     set3ActionPanesInvisible();
     set3ButtonsUnselected();
+  }
+  
+  public void reconnect() throws ClassNotFoundException, IOException {    
+    gameIO.recvGame();
+    activateButtons();    
     // check lose or win
     isLostOrWin();
   }
