@@ -194,6 +194,8 @@ public class GameController implements Initializable {
    * Update food, gold, food
    */
   public void updateTopBar() {
+    System.out.println("topbar update");
+    System.out.println(guiPlayer.getFood());
     ((Label)scene.lookup("#playerFood")).setText("Food: "+Integer.toString(guiPlayer.getFood()));
     ((Label)scene.lookup("#playerGold")).setText("Gold: "+Integer.toString(guiPlayer.getGold()));
     ((Label)scene.lookup("#playerLevel")).setText("Level: "+Integer.toString(guiPlayer.getTechLevel()));    
