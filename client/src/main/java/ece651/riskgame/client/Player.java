@@ -122,7 +122,25 @@ public abstract class Player {
     return serverPlacements;
   }
   
-  
+
+  /**
+   * Check if player occupies a certain territory
+   * @param territoryName is the name of territory to check
+   * @return true if player occupy this territory, otherwise false
+   * @throws IllegalArgumentException when the territory does not exist
+   */
+  public boolean occupyTerritory(String territoryName) throws IllegalArgumentException {
+    return getOccupies().contains(getTerritory(territoryName));
+  }
+  /**
+   * Get Territory according to its name
+   * @param territoryName is the name to query
+   * @return the territory you query
+   * @throws IllegalArgumentException if no such territory name
+   */
+  public Territory getTerritory(String territoryName) throws IllegalArgumentException{
+    return theGame.getBoard().getTerritory(territoryName);    
+  }
   /**
    * helper function used to get the player's occupies outside this class
    * this function is used to adapt a list of placements(move) to the map which maps territory name to a list of units  

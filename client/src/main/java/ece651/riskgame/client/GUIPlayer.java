@@ -26,31 +26,41 @@ public class GUIPlayer extends Player{
     actionsToSend = new ArrayList<>();
   }
 
-  public String tryPlace(Map<String, Integer> placements) {
-    //TODO:get a list of placeActions instead of map
-    //Adapter pattern
-    List<PlaceAction> placeActions= new ArrayList<>();
-    for (Map.Entry<String, Integer> placement: placements.entrySet()) {
-      placeActions.add(new PlaceAction(new BasicUnit(placement.getValue()), placement.getKey()));
+  //TODO: different levels of units to place
+  //TODO: Troop instead of List<Unit>
+  /**
+   * check if the placement is valid and apply
+   * if valid, apply and return null
+   * if invalid, return error message
+   * @param placements is the placement player specified through GUI
+   * @param toAllocate is the allocated units to place
+   */
+  public String tryPlace(Map<String, List<Unit>> placements, List<Unit> toAllocate) {
+    Integer numberToPlace = 0;
+    Integer numberToAllocate = 0;
+    for (Map.Entry<String, List<Unit>> placement: placements.entrySet()) {
+      if (!occupyTerritory(placement.getKey())) {
+        return "You can only place units on your occupies.";
+      }
+      else {
+        for (Unit unitToPlace: placement.getValue()) {
+          numberToPlace += unitToPlace.getNum();
+        }
+      }
     }
-    //TODO:check placements validity and return errorMsg
-    for (PlaceAction placement: placeActions) {
-      placement.apply(theGame);
+    for (Unit unitToAllocate: toAllocate) {
+      numberToAllocate += unitToAllocate.getNum();
+    }
+    if (numberToPlace != numberToAllocate) {
+      return "Number of units to place does not match.";
+    }
+    //TODO:placeAction to satisfy atomicity
+    //apply
+    for (Map.Entry<String, List<Unit>> placement: placements.entrySet()) {
+      getTerritory(placement.getKey()).addUnitList(placement.getValue());
     }
     return null;
   }
-    
-  public Map<String, List<Unit>> adaptPlacements(Map<String, Integer> placements){
-    //TODO:Send a list of placements instead of map
-    //Adapter pattern
-    Map<String, List<Unit>> adaptedPlacements = new HashMap<>();
-    for (Map.Entry<String, Integer> placement: placements.entrySet()) {
-      List<Unit> toPlace = new ArrayList<>(Arrays.asList(new BasicUnit(placement.getValue())));
-      adaptedPlacements.put(placement.getKey(), toPlace);
-    }
-    return adaptedPlacements;
-  }
-
   public List<Action> getActionsToSend() {
     return actionsToSend;
   }
