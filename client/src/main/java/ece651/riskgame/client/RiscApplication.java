@@ -4,7 +4,10 @@
 package ece651.riskgame.client;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import ece651.riskgame.client.controllers.GameController;
