@@ -5,65 +5,33 @@
 <?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.effect.DropShadow?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="298.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ece651.riskgame.client.controllers.UpgradePaneController">
+
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="298.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <MenuButton layoutY="1.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="159.0" style="-fx-background-color: #b9c5c3#b9c5c3;" text="Territory" fx:id="territory">
-        <items></items>
-         <effect>
-            <DropShadow />
-         </effect>
+      <MenuButton layoutX="4.0" layoutY="21.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="MenuButton">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
       </MenuButton>
-      <Button layoutX="4.0" layoutY="265.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="Submit" onMouseClicked="#submitAction">
-         <effect>
-            <DropShadow />
-         </effect></Button>
-      <GridPane layoutX="2.0" layoutY="31.0" prefHeight="226.0" prefWidth="155.0">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="40.0" />
-          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="40.0" />
-        </columnConstraints>
-        <rowConstraints>
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Label text="Level" textFill="WHITE" />
-            <Label text="Vale Knights" textFill="WHITE" GridPane.rowIndex="1" />
-            <Label text="North Army" textFill="WHITE" GridPane.rowIndex="2" />
-            <Label text="Second Sons" textFill="WHITE" GridPane.rowIndex="3" />
-            <Label text="Iron Fleet" textFill="WHITE" GridPane.rowIndex="4" />
-            <Label text="Unsullied" textFill="WHITE" GridPane.rowIndex="5" />
-            <Label text="Golden Company" textFill="WHITE" GridPane.rowIndex="6" />
-            <Label text="Dead Army" textFill="WHITE" GridPane.rowIndex="7" />
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" id="field2"/>
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" id="field3"/>
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="4" id="field4"/>
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="5" id="field5"/>
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="6" id="field6"/>
-            <TextField GridPane.columnIndex="1" GridPane.rowIndex="7" id="field7"/>
-            <Label text="Cost" textFill="WHITE" GridPane.columnIndex="2" />
-            <Label text="Num" textFill="WHITE" GridPane.columnIndex="1" />
-            <Label text="0" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-            <Label text="3" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2" />
-            <Label text="8" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="3" />
-            <Label text="19" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="4" />
-            <Label text="25" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="5" />
-            <Label text="35" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="6" />
-            <Label text="50" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="7" />
-         </children>
-      </GridPane>
+      <Label layoutX="9.0" layoutY="68.0" prefHeight="38.0" prefWidth="59.0" text="From" />
+      <Label layoutX="9.0" layoutY="130.0" prefHeight="38.0" prefWidth="52.0" text="To" />
+      <MenuButton layoutX="56.0" layoutY="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="MenuButton">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <MenuButton layoutX="56.0" layoutY="137.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="MenuButton">
+        <items>
+          <MenuItem mnemonicParsing="false" text="Action 1" />
+          <MenuItem mnemonicParsing="false" text="Action 2" />
+        </items>
+      </MenuButton>
+      <Label layoutX="9.0" layoutY="202.0" prefHeight="25.0" prefWidth="42.0" text="Num" />
+      <TextField layoutX="56.0" layoutY="202.0" prefHeight="19.0" prefWidth="92.0" />
+      <Button layoutX="4.0" layoutY="255.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="Button" />
    </children>
 </Pane>

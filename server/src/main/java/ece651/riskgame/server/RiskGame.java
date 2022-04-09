@@ -87,7 +87,7 @@ public class RiskGame implements Runnable{
   /**
    * Get the GameInfo of current round/initialization.
    */
-  private GameInfo getCurrentGameInfo() {
+  public GameInfo getCurrentGameInfo() {
     return world.getGameInfo();
   }
 
@@ -337,6 +337,7 @@ public class RiskGame implements Runnable{
         gi = getCurrentGameInfo();
         sendGameInfo(gi);
       }
+      roominfo.close_status = true;
       closeSockets();
     } catch (Exception ignored) {
       ignored.printStackTrace();

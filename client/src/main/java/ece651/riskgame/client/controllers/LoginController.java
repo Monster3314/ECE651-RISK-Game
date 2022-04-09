@@ -23,7 +23,9 @@ import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URL;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class LoginController {
@@ -49,10 +51,11 @@ public class LoginController {
         this.loginPane = loginPane;
     }
 
-    public void setSocket(Socket serverSocket) throws IOException {
+    public void setSocket(Socket serverSocket) throws IOException, ClassNotFoundException {
         this.serverSocket = serverSocket;
         this.oos = new ObjectOutputStream(serverSocket.getOutputStream());
         this.ois = new ObjectInputStream(serverSocket.getInputStream());
+        String s = (String) ois.readObject();
     }
 
     @FXML
@@ -67,11 +70,34 @@ public class LoginController {
 
         String result = (String) ois.readObject();
         if(result.equals("yes")) {
-            serverSocket.close();
 
-            Room first = new Room();
+            @SuppressWarnings("unchecked")
+            List<Integer> roomNums = (ArrayList<Integer>) ois.readObject();
+            @SuppressWarnings("unchecked")
+            List<GameInfo> gameInfos = (ArrayList<GameInfo>) ois.readObject();
+            @SuppressWarnings("unchecked")
+            List<String> colorInfo = (ArrayList<String>) ois.readObject();
+
+            serverSocket.close();
             Map<Integer, Room> rooms = new HashMap<>();
-            rooms.put(1, first);
+
+            for(int i = 0; i < roomNums.size(); i++) {
+                GUIPlayer guiPlayer = new GUIPlayer(colorInfo.get(i), gameInfos.get(i));
+                GameController gameController = new GameController(guiPlayer);
+
+                URL xmlResource = getClass().getResource("/ui/main.fxml");
+
+                FXMLLoader loader = new FXMLLoader(xmlResource);
+                loadControllers(loader, gameController);
+
+                Parent gp = loader.load();
+
+                gameController.initializeGame();
+
+                Room room = new Room(guiPlayer, gameController, gp);
+
+                rooms.put(roomNums.get(i), room);
+            }
 
             roomPaneController = new RoomPaneController(loginPane, rooms, username.getText());
             URL roomXML = getClass().getResource("/ui/roomPane.fxml");
@@ -121,6 +147,17 @@ public class LoginController {
     private void loadControllers(FXMLLoader loader) {
         HashMap<Class<?>, Object> controllers = new HashMap<>();
         controllers.put(RoomPaneController.class, roomPaneController);
+        loader.setControllerFactory((c) -> {
+            return controllers.get(c);
+        });
+    }
+
+    private void loadControllers(FXMLLoader loader, GameController gameController) {
+        HashMap<Class<?>, Object> controllers = new HashMap<>();
+        controllers.put(GameController.class, gameController);
+        controllers.put(PlacementPaneController.class, new PlacementPaneController());
+        controllers.put(ActionPaneController.class, new ActionPaneController());
+        controllers.put(UpgradePaneController.class, new UpgradePaneController());
         loader.setControllerFactory((c) -> {
             return controllers.get(c);
         });
