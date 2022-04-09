@@ -39,9 +39,9 @@ public class LoginController {
     private UserInit userInit;
     private RoomPaneController roomPaneController;
     private Parent loginPane;
-    private Socket serverSocket;
-    private ObjectOutputStream oos;
-    private ObjectInputStream ois;
+    //private Socket serverSocket;
+    //private ObjectOutputStream oos;
+    //private ObjectInputStream ois;
 
     public LoginController(UserInit userInit) {
         this.userInit = userInit;
@@ -51,23 +51,43 @@ public class LoginController {
         this.loginPane = loginPane;
     }
 
+    /*
     public void setSocket(Socket serverSocket) throws IOException, ClassNotFoundException {
         this.serverSocket = serverSocket;
         this.oos = new ObjectOutputStream(serverSocket.getOutputStream());
         this.ois = new ObjectInputStream(serverSocket.getInputStream());
         String s = (String) ois.readObject();
     }
+    */
 
     @FXML
     void login(ActionEvent event) throws IOException, ClassNotFoundException {
+        String ip = "0.0.0.0";
+        int port = 1651;
+        // connect to server
+        Socket serverSocket = null;
+        try {
+            serverSocket = new Socket(ip, port);
+        } catch (UnknownHostException e) {
+            System.err.println("Don't know about host: " + ip);
+            System.exit(1);
+        } catch (ConnectException e) {
+            System.err.println("Can not connect to server. Please contact 984-377-9836.");
+            System.exit(1);
+        }
+        System.out.println("Connection Estabilished");
+
         userInit.setIs_login(true);
         userInit.setUsername(username.getText());
         userInit.setPassword(password.getText());
+
+        ObjectOutputStream oos = new ObjectOutputStream(serverSocket.getOutputStream());
 
         oos.writeObject(userInit);
         oos.flush();
         oos.reset();
 
+        ObjectInputStream ois = new ObjectInputStream(serverSocket.getInputStream());
         String result = (String) ois.readObject();
         if(result.equals("yes")) {
 
@@ -109,37 +129,37 @@ public class LoginController {
             loginPane.getScene().setRoot(roomPane);
         }
 
-        /*
-        GameIO gameIO = new GameIO(serverSocket);
-        String color = gameIO.recvColor();
-        GameInfo gi = gameIO.recvGame();
-        GUIPlayer guiPlayer = new GUIPlayer(color, gi);
-
-        gameController = new GameController(guiPlayer, gameIO);
-
-        URL xmlResource = getClass().getResource("/ui/main.fxml");
-
-        FXMLLoader loader = new FXMLLoader(xmlResource);
-        loadControllers(loader);
-
-        Parent gp = loader.load();
-
-        initialize();
-
-        */
-
     }
 
     @FXML
     void register(ActionEvent event) throws IOException, ClassNotFoundException {
+
+        String ip = "0.0.0.0";
+        int port = 1651;
+        // connect to server
+        Socket serverSocket = null;
+        try {
+            serverSocket = new Socket(ip, port);
+        } catch (UnknownHostException e) {
+            System.err.println("Don't know about host: " + ip);
+            System.exit(1);
+        } catch (ConnectException e) {
+            System.err.println("Can not connect to server. Please contact 984-377-9836.");
+            System.exit(1);
+        }
+        System.out.println("Connection Estabilished");
+
+
         userInit.setIs_login(false);
         userInit.setUsername(username.getText());
         userInit.setPassword(password.getText());
 
+        ObjectOutputStream oos = new ObjectOutputStream(serverSocket.getOutputStream());
         oos.flush();
         oos.reset();
         oos.writeObject(userInit);
 
+        ObjectInputStream ois = new ObjectInputStream(serverSocket.getInputStream());
         String result = (String) ois.readObject();
         System.out.println(result);
     }

@@ -49,6 +49,7 @@ public class GameController implements Initializable {
   String username;
   GUIPlayer guiPlayer;
   GameIO gameIO;
+  Parent roomPane;
 
   @FXML
   Parent scene;
@@ -68,6 +69,10 @@ public class GameController implements Initializable {
 
   public void setGameIO(GameIO gameIO) {
     this.gameIO = gameIO;
+  }
+
+  public void setRoomPane(Parent roomPane) {
+    this.roomPane = roomPane;
   }
 
   public void setScene(Parent s) {
@@ -208,7 +213,6 @@ public class GameController implements Initializable {
    */
   public void setUsername(Parent scene, String name) {
     ((Labeled) scene.lookup("#playerName")).setText(name);
-    ;
   }
 
   /**
@@ -377,6 +381,7 @@ public class GameController implements Initializable {
     setUsername(scene, guiPlayer.getColor());
     setAvailableTerritories(scene, guiPlayer.getTerritoryNames());
     setHint();
+
     upgradePaneController.setUpgradePane();
     // update/display information
     updateTopBar();
@@ -414,6 +419,15 @@ public class GameController implements Initializable {
     actionPaneController.pane = (Pane) scene.lookup("#actionPane");
     upgradePaneController.gameController = this;
     upgradePaneController.pane = (Pane) scene.lookup("#upgradePane");
+  }
+
+  @FXML
+  public void logout() throws IOException {
+    if(gameIO == null) scene.getScene().setRoot(roomPane);
+    else {
+      //gameIO.close();
+      scene.getScene().setRoot(roomPane);
+    }
   }
 
 }

@@ -60,60 +60,56 @@ public class Login implements Runnable{
         Socket ownplayer = player;
         try {
             ObjectOutputStream oos = new ObjectOutputStream(ownplayer.getOutputStream());
-            String s = "test";
-            oos.writeObject(s);
+            //String s = "test";
+            //oos.writeObject(s);
             ObjectInputStream ois = new ObjectInputStream(ownplayer.getInputStream());
+            UserInit userinfo = (UserInit) ois.readObject();
+            System.out.println(userinfo.getUsername());
+            if(userinfo.isIs_login()) {
+                if(userTable.containsKey(userinfo.getUsername())) {
+                    if(userTable.get(userinfo.getUsername()).equals(userinfo.getPassword())) {
+                        oos.writeObject("yes");
 
-            while(true) {
-                UserInit userinfo = (UserInit) ois.readObject();
-                System.out.println(userinfo.getUsername());
-                if(userinfo.isIs_login()) {
-                    if(userTable.containsKey(userinfo.getUsername())) {
-                        if(userTable.get(userinfo.getUsername()).equals(userinfo.getPassword())) {
-                            oos.writeObject("yes");
+                        List<Integer> roomNums = new ArrayList<>();
+                        List<GameInfo> gameInfos = new ArrayList<>();
+                        List<String> colorInfo = new ArrayList<>();
 
-                            List<Integer> roomNums = new ArrayList<>();
-                            List<GameInfo> gameInfos = new ArrayList<>();
-                            List<String> colorInfo = new ArrayList<>();
-
-                            for(Map.Entry<Integer, serverRoom> entry : gameRooms.entrySet()) {
-                                serverRoom temp = entry.getValue();
-                                if(temp.close_status) {
-                                    gameRooms.remove(entry.getKey());
-                                }
-                                for(Map.Entry<Socket, String> ss : temp.socketUsernameMap.entrySet()) {
-                                    if(ss.getValue().equals(userinfo.getUsername())) {
-                                         roomNums.add(entry.getKey());
-                                         gameInfos.add(temp.game.getCurrentGameInfo());
-                                         colorInfo.add(temp.nameColorMap.get(userinfo.getUsername()));
-                                    }
+                        for(Map.Entry<Integer, serverRoom> entry : gameRooms.entrySet()) {
+                            serverRoom temp = entry.getValue();
+                            if(temp.close_status) {
+                                gameRooms.remove(entry.getKey());
+                            }
+                            for(Map.Entry<Socket, String> ss : temp.socketUsernameMap.entrySet()) {
+                                if(ss.getValue().equals(userinfo.getUsername())) {
+                                     roomNums.add(entry.getKey());
+                                     gameInfos.add(temp.game.getCurrentGameInfo());
+                                     colorInfo.add(temp.nameColorMap.get(userinfo.getUsername()));
                                 }
                             }
-
-                            oos.flush();
-                            oos.reset();
-                            oos.writeObject(roomNums);
-                            oos.flush();
-                            oos.reset();
-                            oos.writeObject(gameInfos);
-                            oos.flush();
-                            oos.reset();
-                            oos.writeObject(colorInfo);
-                            break;
-                        } else {
-                            oos.writeObject("no");
                         }
+
+                        oos.flush();
+                        oos.reset();
+                        oos.writeObject(roomNums);
+                        oos.flush();
+                        oos.reset();
+                        oos.writeObject(gameInfos);
+                        oos.flush();
+                        oos.reset();
+                        oos.writeObject(colorInfo);
                     } else {
                         oos.writeObject("no");
                     }
-                } else {  //user register
-                    userTable.put(userinfo.getUsername(), userinfo.getPassword());
-                    wr.write(userinfo.getUsername() + "," + userinfo.getPassword() + "\n");
+                } else {
                     oos.writeObject("no");
                 }
-                oos.flush();
-                oos.reset();
+            } else {  //user register
+                userTable.put(userinfo.getUsername(), userinfo.getPassword());
+                wr.write(userinfo.getUsername() + "," + userinfo.getPassword() + "\n");
+                oos.writeObject("no");
             }
+            oos.flush();
+            oos.reset();
 
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
