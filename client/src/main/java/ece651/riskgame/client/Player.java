@@ -1,4 +1,5 @@
 package ece651.riskgame.client;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -21,9 +22,13 @@ import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.MovePathChecker;
 import ece651.riskgame.shared.PlaceAction;
 import ece651.riskgame.shared.Resource;
+import ece651.riskgame.shared.SufficientResourceChecker;
+import ece651.riskgame.shared.SufficientUnitChecker;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 import ece651.riskgame.shared.UnitsRuleChecker;
+import ece651.riskgame.shared.UpgradeTechAction;
+import ece651.riskgame.shared.UpgradeUnitAction;
 
 public abstract class Player {
   protected String color;
@@ -57,6 +62,8 @@ public abstract class Player {
     actionCheckers.put(Attack.class,
         new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null))));
     actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(null)));
+    actionCheckers.put(UpgradeUnitAction.class, new SufficientUnitChecker(new SufficientResourceChecker(null)));
+    actionCheckers.put(UpgradeTechAction.class, new  SufficientResourceChecker(null));
   }
   
   /**

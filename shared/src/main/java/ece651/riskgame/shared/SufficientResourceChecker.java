@@ -10,7 +10,8 @@ public class SufficientResourceChecker extends ActionRuleChecker {
 
     @Override
     protected String checkMyRule(Actable actable, Action action) {
-        if (action instanceof MigrationAction ma) {
+        if (action instanceof MigrationAction) {
+          MigrationAction ma = (MigrationAction) action;
             int unitCost = 1;
             if (action.getClass() == Move.class) {
                 unitCost = actable.getUnitMoveCost(ma.getFromTerritory(), ma.color).get(ma.toTerritory);

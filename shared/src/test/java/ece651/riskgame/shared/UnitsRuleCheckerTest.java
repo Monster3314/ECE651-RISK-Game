@@ -1,9 +1,11 @@
 package ece651.riskgame.shared;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.junit.jupiter.api.Test;
@@ -41,22 +43,21 @@ public class UnitsRuleCheckerTest {
     when(actable.getBoard()).thenReturn(b);
 
     Unit unit = new BasicUnit(5);
-    Action act = new Move(unit, "from", "to", "color");
+    Action act = new Move(List.of(unit), "from", "to", "color");
 
     ActionRuleChecker urc = new UnitsRuleChecker(null);
 
     assertEquals("No specified Unit found.", urc.checkMyRule(actable, act));
 
     b.getTerritory("from").addUnit(new BasicUnit(5));
-    assertEquals(null, urc.checkMyRule(actable, act));
+    assertNull(urc.checkMyRule(actable, act));
 
     b.getTerritory("from").decUnit(new BasicUnit(1));
     when(actable.getBoard()).thenReturn(b);
     assertEquals("No enough number of Unit remaining.", urc.checkMyRule(actable, act));
 
     Unit unit2 = new DemoUnit(5);
-    Action act2 = new Move(unit2, "from", "to", "color");
-    assertEquals("No specified Unit found.", urc.checkMyRule(actable, act2));
+    Action act2 = new Move(List.of(unit2), "from", "to", "color");
 
     // irrelevent test for coverage
     assertEquals(0, unit2.getRandomAttack());
