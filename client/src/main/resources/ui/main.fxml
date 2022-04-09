@@ -29,18 +29,9 @@
             <Font size="18.0" />
          </font>
       </Label>
-      <MenuButton fx:id="switchRoom" layoutX="889.0" layoutY="6.0" mnemonicParsing="false" opacity="0.2" prefHeight="18.0" prefWidth="93.0" text="switchRoom" textFill="TRANSPARENT">
-        <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
-        </items>
-         <font>
-            <Font size="9.0" />
-         </font>
-      </MenuButton>
       <Label fx:id="playerName" layoutX="14.0" layoutY="4.0" prefHeight="31.0" prefWidth="110.0" text="Name: Zhiwei Zhou" textFill="WHITE" style="-fx-font-size:20;" alignment="CENTER"/>
       <Label fx:id="playerFood" layoutX="137.0" layoutY="4.0" prefHeight="31.0" prefWidth="72.0" text="Food: 0" textFill="WHITE" />
-      <Button fx:id="logout" layoutX="1025.0" layoutY="6.0" mnemonicParsing="false" opacity="0.2" prefHeight="18.0" prefWidth="93.0" text="logout" textFill="TRANSPARENT">
+      <Button fx:id="logout" layoutX="1025.0" layoutY="6.0" mnemonicParsing="false" opacity="0.2" prefHeight="18.0" prefWidth="93.0" text="logout" textFill="TRANSPARENT" >
          <font>
             <Font size="10.0" />
          </font>
@@ -48,11 +39,6 @@
       <Button layoutX="347.0" layoutY="217.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="74.0" rotate="-41.2" text="North" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="NorthTerritory">
          <font>
             <Font size="18.0" />
-         </font>
-      </Button>
-      <Button fx:id="newRoom" layoutX="746.0" layoutY="6.0" mnemonicParsing="false" opacity="0.2" prefHeight="18.0" prefWidth="100.0" text="newRoom" textFill="TRANSPARENT">
-         <font>
-            <Font size="9.0" />
          </font>
       </Button>
       <Label fx:id="playerGold" layoutX="207.0" layoutY="4.0" prefHeight="31.0" prefWidth="72.0" text="Gold: 0" textFill="WHITE" />
