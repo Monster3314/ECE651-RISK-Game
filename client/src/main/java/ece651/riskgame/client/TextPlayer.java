@@ -67,7 +67,7 @@ public class TextPlayer extends Player{
    */
   @Override
   public void updateGame(GameInfo latestGame) {
-    theGame = latestGame;
+    super.updateGame(latestGame);
     view = new GameTextView(theGame);
   }
 

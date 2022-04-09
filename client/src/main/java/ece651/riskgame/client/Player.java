@@ -100,6 +100,12 @@ public abstract class Player {
    * updateGame will receive the latest game from the server and update the game on client side
    */
   public void updateGame(GameInfo latestGame) {
+    if (latestGame == null) {
+      throw new IllegalArgumentException("LatestGame can not be null");
+    }
+    if (!latestGame.getClans().containsKey(color)) {
+      throw new IllegalArgumentException("Color is not in latest game");
+    }
     theGame = latestGame;
     
   }
