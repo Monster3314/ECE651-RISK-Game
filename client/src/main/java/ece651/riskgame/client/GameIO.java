@@ -15,6 +15,13 @@ public class GameIO {
   private ObjectInputStream input;
   private ObjectOutputStream output;
 
+  public GameIO(ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
+    //this.input = new ObjectInputStream(server.getInputStream());
+    //this.output = new ObjectOutputStream(server.getOutputStream());
+    input = ois;
+    output = oos;
+  }
+
   public GameIO(Socket server) throws IOException {
     this.input = new ObjectInputStream(server.getInputStream());
     this.output = new ObjectOutputStream(server.getOutputStream());

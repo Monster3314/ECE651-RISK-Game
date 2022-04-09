@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Map;
 
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestMethodOrder;
@@ -23,6 +24,7 @@ import ece651.riskgame.shared.Clan;
 
 @TestMethodOrder(MethodOrderer.Alphanumeric.class)
 class AppTest {
+  @Disabled
   @Test
   public void test_main_IOException() throws IOException, InterruptedException {
     App.main(new String[] { "0" });

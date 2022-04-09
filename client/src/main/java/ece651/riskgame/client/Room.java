@@ -11,6 +11,10 @@ public class Room {
     private GameController gameController;
     private Parent gamePane;
 
+    public Room() {
+
+    }
+
     public Room(GUIPlayer guiPlayer, GameController gameController, Parent gamePane) {
         this.guiPlayer = guiPlayer;
         this.gameController = gameController;

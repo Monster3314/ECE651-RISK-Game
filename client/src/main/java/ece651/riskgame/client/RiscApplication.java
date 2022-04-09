@@ -4,7 +4,10 @@
 package ece651.riskgame.client;
 
 import java.io.IOException;
+import java.net.ConnectException;
+import java.net.Socket;
 import java.net.URL;
+import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import ece651.riskgame.client.controllers.GameController;
@@ -33,8 +36,8 @@ public class RiscApplication extends Application {
   @Override
   public void start(Stage stage) throws IOException, ClassNotFoundException {
 
-    /*
-    String ip = "vcm-25372.vm.duke.edu";
+
+    String ip = "0.0.0.0";
     int port = 1651;
     // connect to server
     Socket serverSocket = null;
@@ -48,7 +51,7 @@ public class RiscApplication extends Application {
       System.exit(1);
     }
     System.out.println("Connection Estabilished");
-    */
+
 
     loginController = new LoginController(new UserInit());
 
@@ -59,6 +62,7 @@ public class RiscApplication extends Application {
     Parent loginPane = loginLoader.load();
 
     loginController.setLoginPane(loginPane);
+    loginController.setSocket(serverSocket);
     Scene scene = new Scene(loginPane, 1138, 823);
     stage.setScene(scene);
     stage.show();

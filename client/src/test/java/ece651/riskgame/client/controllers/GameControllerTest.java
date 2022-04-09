@@ -65,7 +65,7 @@ public class GameControllerTest {
   private ActionPaneController actionPaneController;
   private PlacementPaneController placementPaneController;
   private UpgradePaneController upgradePaneController;
-  
+
   private void mockPrepare() {
     gameIO = mock(GameIO.class);
     guiPlayer = mock(GUIPlayer.class);
@@ -137,7 +137,7 @@ public class GameControllerTest {
     MouseEvent me = mock(MouseEvent.class);
     when(me.getSource()).thenReturn(new Button("durham"));
     doNothing().when(gameController).updateTerritoryInfo(any());
-    gameController.showTerritoryInfo(me);    
+    gameController.showTerritoryInfo(me);
   }
 
   @Test
@@ -162,7 +162,7 @@ public class GameControllerTest {
 
     List<Territory> neighbors = List.of(new BasicTerritory("Durham"));
     when(borad.getNeighbors(any())).thenReturn(neighbors);
-    
+
     gameController.updateTerritoryInfo("UNC");
   }
 
@@ -292,7 +292,7 @@ public class GameControllerTest {
     when(guiPlayer.isLost()).thenReturn(false);
     when(guiPlayer.isGameOver()).thenReturn(false);
     gameController.isLostOrWin();
-    
+
     // win
     when(guiPlayer.isGameOver()).thenReturn(true);
     gameController.isLostOrWin();
