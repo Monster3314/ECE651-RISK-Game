@@ -21,7 +21,7 @@ public class Clan implements Serializable {
     public Clan(List<Territory> occupies) {
       this.occupies = occupies;
       this.maxTechLevel = 1;
-      this.resource = new Resource(new int[] {0, 0});
+      this.resource = new Resource(new int[] {40, 100});
     }
 
     public Clan(int maxTechLevel, Resource resource) {

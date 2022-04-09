@@ -35,7 +35,7 @@ public class UpgradePaneController {
     for (int i = 2; i <= 7; i++) {
       try {
         int num = Integer.parseInt(((TextField) pane.lookup("#field"+i)).getText());
-        Action act = new UpgradeUnitAction(terr, i-1, i, num, gameController.guiPlayer.getColor());
+        Action act = new UpgradeUnitAction(terr, i-2, i-1, num, gameController.guiPlayer.getColor());
         String result = gameController.guiPlayer.tryApplyAction(act);
         if (result != null) {
           // very buggy now
