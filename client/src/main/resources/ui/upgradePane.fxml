@@ -8,30 +8,24 @@
 <?import javafx.scene.layout.Pane?>
 
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="298.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1">
+<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="298.0" prefWidth="160.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ece651.riskgame.client.controllers.UpgradePaneController">
    <children>
-      <MenuButton layoutX="4.0" layoutY="21.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="MenuButton">
+      <MenuButton layoutX="4.0" layoutY="21.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="Territory" id="territory">
         <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
         </items>
       </MenuButton>
       <Label layoutX="9.0" layoutY="68.0" prefHeight="38.0" prefWidth="59.0" text="From" />
       <Label layoutX="9.0" layoutY="130.0" prefHeight="38.0" prefWidth="52.0" text="To" />
-      <MenuButton layoutX="56.0" layoutY="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="MenuButton">
+      <MenuButton layoutX="56.0" layoutY="75.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="From" fx:id="from">
         <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
         </items>
       </MenuButton>
-      <MenuButton layoutX="56.0" layoutY="137.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="MenuButton">
+      <MenuButton layoutX="56.0" layoutY="137.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="92.0" text="To" id="to">
         <items>
-          <MenuItem mnemonicParsing="false" text="Action 1" />
-          <MenuItem mnemonicParsing="false" text="Action 2" />
         </items>
       </MenuButton>
       <Label layoutX="9.0" layoutY="202.0" prefHeight="25.0" prefWidth="42.0" text="Num" />
-      <TextField layoutX="56.0" layoutY="202.0" prefHeight="19.0" prefWidth="92.0" />
-      <Button layoutX="4.0" layoutY="255.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="Button" />
+      <TextField layoutX="56.0" layoutY="202.0" prefHeight="19.0" prefWidth="92.0" fx:id="number"/>
+      <Button layoutX="4.0" layoutY="255.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="153.0" text="Submit" onMouseClicked="#submitAction"/>
    </children>
 </Pane>
