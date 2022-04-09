@@ -1,6 +1,8 @@
 package ece651.riskgame.shared;
 
-public class UpgradeTechAction implements Action {
+import java.io.Serializable;
+
+public class UpgradeTechAction implements Action, Serializable {
     private final String color;
 
     public UpgradeTechAction(String color) {
