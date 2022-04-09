@@ -46,7 +46,17 @@ public class RoomPaneController {
     }
 
     @FXML
-    void game(ActionEvent event) throws IOException, ClassNotFoundException {
+    void seeSnap(ActionEvent event) {
+
+    }
+
+    @FXML
+    void connect(ActionEvent event) {
+
+    }
+
+    @FXML
+    void newgame(ActionEvent event) throws IOException, ClassNotFoundException {
         String ip = "0.0.0.0";
         int port = 1653;
         // connect to server
