@@ -14,6 +14,8 @@ public class serverRoom {
     Map<String, String> nameColorMap;
     Map<String, Boolean> online;
     Map<Socket, String> socketUsernameMap;
+    boolean close_status = false;
+    RiskGame game;
     private int number = 0;
 
     public serverRoom() {
@@ -23,6 +25,10 @@ public class serverRoom {
         this.nameColorMap = new ConcurrentHashMap<>();
         this.online = new ConcurrentHashMap<>();
         this.socketUsernameMap = new ConcurrentHashMap<>();
+    }
+
+    public void setRiskgame(RiskGame game) {
+        this.game = game;
     }
 
     public void addNewPlayer(Socket player, String username) throws IOException {

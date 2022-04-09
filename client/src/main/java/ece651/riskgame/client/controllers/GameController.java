@@ -61,6 +61,15 @@ public class GameController implements Initializable {
     username = p.getColor();
   }
 
+  public GameController(GUIPlayer p) {
+    guiPlayer = p;
+    username = p.getColor();
+  }
+
+  public void setGameIO(GameIO gameIO) {
+    this.gameIO = gameIO;
+  }
+
   public void setScene(Parent s) {
     scene = s;
   }

@@ -5,14 +5,20 @@ package ece651.riskgame.server;
 
 
 import java.io.IOException;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class App {
   RoomManager roomManager;
   Login login;
+  Map<Integer, serverRoom> gameRooms;
 
   public App() throws IOException {
     roomManager = new RoomManager(1653);
     login = new Login("userTable.txt");
+    gameRooms = new ConcurrentHashMap<>();
+    roomManager.setGameRooms(gameRooms);
+    login.setGameRooms(gameRooms);
   }
 
   public static void main(String[] args) {
