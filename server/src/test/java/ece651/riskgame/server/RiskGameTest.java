@@ -295,8 +295,8 @@ public class RiskGameTest {
     oos.writeObject(assignResults);
 
     List<Action> actions = new ArrayList<>();
-    actions.add(new Move(new BasicUnit(2), "Shanghai", "Jiangsu", "Red"));
-    actions.add(new Attack(new BasicUnit(3), "Jiangsu", "Zhejiang", "Red"));
+    actions.add(new Move((List<Unit>) new BasicUnit(2), "Shanghai", "Jiangsu", "Red"));
+    actions.add(new Attack((List<Unit>) new BasicUnit(3), "Jiangsu", "Zhejiang", "Red"));
     oos.writeObject(actions);
 
     s1.close();
@@ -319,14 +319,14 @@ public class RiskGameTest {
 
     // do the move
     List<Move> moves0 = new ArrayList<Move>();
-    moves0.add(new Move(new BasicUnit(2), "Shanghai", "Shandong", "red"));
+    moves0.add(new Move((List<Unit>) new BasicUnit(2), "Shanghai", "Shandong", "Red"));
 
     Whitebox.invokeMethod(riskGame, "doMoveAction", moves0);
     assertEquals(5, board.getTerritory("Shanghai").getUnits().get(0).getNum());
     assertEquals(5, board.getTerritory("Shandong").getUnits().get(0).getNum());
 
     List<Move> moves1 = new ArrayList<Move>();
-    moves1.add(new Move(new BasicUnit(2), "Shanghai", "Jiangsu", "red"));
+    moves1.add(new Move((List<Unit>) new BasicUnit(2), "Shanghai", "Jiangsu", "Red"));
 
     Whitebox.invokeMethod(riskGame, "doMoveAction", moves1);
     assertEquals(3, board.getTerritory("Shanghai").getUnits().get(0).getNum());
@@ -351,15 +351,15 @@ public class RiskGameTest {
 
     // do the move
     List<Attack> attacks0 = new ArrayList<Attack>();
-    attacks0.add(new Attack(Mockito.spy(new BasicUnit(3)), "Shanghai", "Shandong", "red"));
-    attacks0.add(new Attack(Mockito.spy(new BasicUnit(3)), "Shanghai", "Jiangsu", "red"));
+    attacks0.add(new Attack(Mockito.spy((List<Unit>) new BasicUnit(3)), "Shanghai", "Shandong", "Red"));
+    attacks0.add(new Attack(Mockito.spy((List<Unit>) new BasicUnit(3)), "Shanghai", "Jiangsu", "Red"));
 
     Whitebox.invokeMethod(riskGame, "doAttackAction", attacks0);
     assertEquals(5, board.getTerritory("Shanghai").getUnits().get(0).getNum());
     assertEquals(5, board.getTerritory("Shandong").getUnits().get(0).getNum());
 
     List<Attack> attacks1 = new ArrayList<Attack>();
-    attacks1.add(new Attack(Mockito.spy(new BasicUnit(2)), "Shandong", "Jiangsu", "blue"));
+    attacks1.add(new Attack(Mockito.spy((List<Unit>) new BasicUnit(2)), "Shandong", "Jiangsu", "Blue"));
 
     Whitebox.invokeMethod(riskGame, "doAttackAction", attacks1);
     assertEquals(3, board.getTerritory("Shandong").getUnits().get(0).getNum());
@@ -447,7 +447,7 @@ public class RiskGameTest {
     System.out.println("game start");
     // send actions, round 1
     List<Action> actions1 = new ArrayList<Action>();
-    actions1.add(new Move(new BasicUnit(5), "Jiangsu", "Shanghai", "red"));
+    actions1.add(new Move((List<Unit>) new BasicUnit(5), "Jiangsu", "Shanghai", "Red"));
     oos1.writeObject(actions1);
     List<Action> actions2 = new ArrayList<Action>();
     oos2.writeObject(actions2);

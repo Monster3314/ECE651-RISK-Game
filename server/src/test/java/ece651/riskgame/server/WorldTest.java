@@ -29,7 +29,7 @@ public class WorldTest {
     b.get(0).addUnit(new BasicUnit(5));
     b.get(1).addUnit(new BasicUnit());
     assertEquals(b.get(0).getUnits().get(0).getNum(), 5);
-    Move m = new Move(new BasicUnit(3), b.get(0).getName(), b.get(1).getName(), "Red");
+    Move m = new Move(List.of(new BasicUnit(3)), b.get(0).getName(), b.get(1).getName(), "Red");
     //TODO: change move
 //    w.acceptAction(m);
 //    assertEquals(b.get(0).getUnits().get(0).getNum(), 2);
@@ -42,11 +42,11 @@ public class WorldTest {
     World w = new World(2);
     w.addClan();
     w.addClan();
-    Move m1 = new Move(new BasicUnit(), "Shanghai", "Jiangsu", "red");
-    Move m2 = new Move(new BasicUnit(), "Shandong", "Fujian", "blue");
-    Move m3 = new Move(new BasicUnit(), "Anhui", "Jiangsu", "blue");
-    Move m4 = new Move(new BasicUnit(), "Anhui", "Jiangsu", "red");
-    Move m5 = new Move(new BasicUnit(), "Anhui", "Anhui", "blue");
+    Move m1 = new Move(List.of(new BasicUnit()), "Shanghai", "Jiangsu", "Red");
+    Move m2 = new Move(List.of(new BasicUnit()), "Shandong", "Fujian", "Blue");
+    Move m3 = new Move(List.of(new BasicUnit()), "Anhui", "Jiangsu", "Blue");
+    Move m4 = new Move(List.of(new BasicUnit()), "Anhui", "Jiangsu", "Red");
+    Move m5 = new Move(List.of(new BasicUnit()), "Anhui", "Anhui", "Blue");
     assertNull(actionRuleChecker.checkAction(w, m1));
     assertNotNull(actionRuleChecker.checkAction(w, m2));
     assertNotNull(actionRuleChecker.checkAction(w, m3));

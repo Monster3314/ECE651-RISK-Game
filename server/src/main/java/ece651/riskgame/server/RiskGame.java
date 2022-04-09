@@ -21,8 +21,10 @@ public class RiskGame {
    */
   private World world;
   private int playerNumber;
-  private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(null));
-  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
+  private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(new SufficientResourceChecker(null)));
+  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(new SufficientResourceChecker(null))));
+  private ActionRuleChecker upgradeUnitChecker = new SufficientUnitChecker(new SufficientResourceChecker(null));
+  private ActionRuleChecker upgradeTechChecker = new SufficientResourceChecker(null);
 
   private Logger logger = Logger.getInstance();
 
@@ -172,10 +174,14 @@ public class RiskGame {
 
     List<Action> movesAndUpgradeUnits = new ArrayList<>();
     List<Attack> attacks = new ArrayList<>();
+    List<UpgradeTechAction> upgradeTechActions = new ArrayList<>();
 
     for (Action a : Actions) {
       if (a.getClass() == Attack.class) {
         attacks.add((Attack) a);
+      }
+      else if (a.getClass() == UpgradeTechAction.class) {
+        upgradeTechActions.add((UpgradeTechAction) a);
       }
       else { // for coverage
         movesAndUpgradeUnits.add(a);
@@ -184,9 +190,21 @@ public class RiskGame {
 
     doMoveAndUpgradeUnitAction(movesAndUpgradeUnits);
     doAttackAction(attacks);
+    doUpgradeLevelAction(upgradeTechActions);
 
     // TODO: Send to players before flushing
     logger.flushBuffer();
+  }
+
+  private void doUpgradeLevelAction(List<UpgradeTechAction> upgradeTechActions) {
+    for (UpgradeTechAction action : upgradeTechActions) {
+      String checkResult = upgradeTechChecker.checkAction(world, action);
+      if (checkResult != null) {
+        // TODO: log
+        return;
+      }
+      world.acceptAction(action);
+    }
   }
 
   private void doMoveAndUpgradeUnitAction(List<Action> movesAndUpgradeUnits) {
@@ -201,6 +219,11 @@ public class RiskGame {
   }
 
   private void doUpgradeUnitAction(UpgradeUnitAction a) {
+    String checkResult = upgradeUnitChecker.checkAction(world, a);
+    if (checkResult != null) {
+      // TODO: log
+      return;
+    }
     world.acceptAction(a);
   }
 
