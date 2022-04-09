@@ -19,6 +19,7 @@ public class UpgradeTechAction implements Action {
 
     @Override
     public void clientApply(Actable game) {
-
+        Clan clan = game.getClans().get(color);
+        clan.getResource().costGold(Clan.COST[clan.getMaxTechLevel()]);
     }
 }

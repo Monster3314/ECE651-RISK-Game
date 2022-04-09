@@ -41,7 +41,7 @@ public class UpgradeUnitAction implements Action, Serializable {
     public void apply(Actable world) {
         int cost = Unit.getLevelUpCost(baseLevel, targetLevel) * num;
         Clan clan = world.getClans().get(color);
-        clan.getResource().costFood(cost);
+        clan.getResource().costGold(cost);
         Territory territory = world.getBoard().getTerritory(territoryName);
         Unit baseUnit = new BasicUnit(num, baseLevel);
         Unit targetUnit = new BasicUnit(num, targetLevel);
