@@ -1,6 +1,7 @@
 package ece651.riskgame.client.controllers;
 
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -52,23 +53,36 @@ public class UpgradePaneControllerTest {
     upgradePaneController.updateUpgradePane();
     verify(gameController).updateMenuButton(any(), any());
   }
-  
+
   @Test
   public void test_submitAction() throws IOException, ClassNotFoundException {
-    MenuButton from = new MenuButton("US");
-    from.setId("territory");
+    MenuButton terr = new MenuButton("Territory");
+    terr.setId("territory");
+    MenuButton from = new MenuButton("From");
+    from.setId("from");
+    MenuButton to = new MenuButton("To");
+    to.setId("to");
     TextField f1 = new TextField("1");
-    f1.setId("field2");
-    pane.getChildren().addAll(from, f1);
-    upgradePaneController.submitAction();
+    f1.setId("number");
+    pane.getChildren().addAll(terr, from,to,  f1);
 
-    // non-number
-    f1.setText("wwe");
+    // level not match
     upgradePaneController.submitAction();
+    verify(gameController).updateHint(any());
+    
+    // match level
+    from.setText("North Army");
+    to.setText("Golden Company");
+    upgradePaneController.submitAction();
+    verify(gameController).updateTopBar();
+    verify(gameController, times(2)).updateHint(any());
+
+    // not pass rule checker
+    doReturn("no").when(gameController.guiPlayer).tryApplyAction(any());
 
     // fail
     when(guiPlayer.tryApplyAction(any())).thenReturn("fail");
     f1.setText("1");
-    upgradePaneController.submitAction();
+    //upgradePaneController.submitAction();
   }
 }

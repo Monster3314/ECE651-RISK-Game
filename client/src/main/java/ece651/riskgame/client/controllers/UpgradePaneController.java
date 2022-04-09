@@ -1,17 +1,14 @@
 package ece651.riskgame.client.controllers;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import ece651.riskgame.shared.Action;
-import ece651.riskgame.shared.BasicUnit;
-import ece651.riskgame.shared.Unit;
 import ece651.riskgame.shared.UpgradeUnitAction;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
-import javafx.scene.control.TextField;
+import javafx.scene.control.MenuItem;
 import javafx.scene.layout.Pane;
 
 public class UpgradePaneController {
@@ -20,45 +17,72 @@ public class UpgradePaneController {
 
   GameController gameController;
 
+  final List<String> unitLevelNames = List.of("Vale Knights", "North Army", "Second Sons", "Iron Fleet", "Unsullied",
+      "Golden Company", "Dead Army");
+
   /**
    * Method to update upgrade pane territories
    */
   public void updateUpgradePane() throws ClassNotFoundException, IOException {
     MenuButton territories = (MenuButton) pane.lookup("#territory");
-    gameController.updateMenuButton(territories, gameController.guiPlayer.getOccupies().stream().map(t -> gameController.createMenuItem(t.getName(), territories)).collect(Collectors.toList()));    
+    gameController.updateMenuButton(territories, gameController.guiPlayer.getOccupies().stream()
+        .map(t -> gameController.createMenuItem(t.getName(), territories)).collect(Collectors.toList()));
   }
-  
+
+  /**
+   * Method to set menu items for upgrade territory
+   */
+  public void setUpgradePane() {
+    MenuButton from = (MenuButton) pane.lookup("#from");
+    MenuButton to = (MenuButton) pane.lookup("#to");
+    createMenuItems(from, unitLevelNames);
+    createMenuItems(to, unitLevelNames);
+  }
+
+  private void createMenuItems(MenuButton mb, List<String> names) {
+    for (String name : names) {
+      MenuItem mi = new MenuItem(name);
+      mb.getItems().add(mi);
+      mi.setOnAction(a -> {
+        mb.setText(name);
+      });
+    }
+  }
+
   @FXML
   public void submitAction() throws IOException, ClassNotFoundException {
-    String terr = ((MenuButton) pane.lookup("#territory")).getText();    
-    // TODO change viewer later, upgrade 1 group at a time
-    for (int i = 2; i <= 7; i++) {
-      try {
-        int num = Integer.parseInt(((TextField) pane.lookup("#field"+i)).getText());
-        Action act = new UpgradeUnitAction(terr, i-2, i-1, num, gameController.guiPlayer.getColor());
-        String result = gameController.guiPlayer.tryApplyAction(act);
-        if (result != null) {
-          // very buggy now
-          gameController.updateHint(result);
-          System.out.println(result);
-        }
-        else {
-          gameController.updateHint("Submitted!");
-          System.out.println("submitted");
-          gameController.guiPlayer.addActionToSend(act);
-          gameController.updateTopBar();
-          gameController.updateCurrentTerritoryInfo();
-          updateUpgradePane();
-        }
-      }
-      catch (NumberFormatException e) {
-        // ignore for now
-        System.out.println("number format wrong");
-      }
-      catch (NullPointerException e) {
-        System.out.println("Null Pointer found");
-      }
-    }    
+    String terr = ((MenuButton) pane.lookup("#territory")).getText();
+    String from = ((MenuButton) pane.lookup("#from")).getText();
+    String to = ((MenuButton) pane.lookup("#to")).getText();
+    String numInput = ((MenuButton) pane.lookup("number")).getText();
     
+    try {
+      int fromL = unitLevelNames.indexOf(from);
+      int toL = unitLevelNames.indexOf(to);
+      int num = Integer.parseInt(numInput);
+      if (fromL == -1 || toL == -1 || fromL >= toL) {
+        throw new IndexOutOfBoundsException();
+      }
+      if (num < 0) {
+        throw new NumberFormatException();
+      }
+      Action act = new UpgradeUnitAction(terr, fromL, toL, num, gameController.guiPlayer.getColor());
+      String result = gameController.guiPlayer.tryApplyAction(act);
+      if (result == null) {
+        gameController.guiPlayer.addActionToSend(act);
+        gameController.updateHint("Upgrade successfully");
+        gameController.updateCurrentTerritoryInfo();
+        gameController.updateTopBar();
+      }
+      else {
+        gameController.updateHint(result);
+      }            
+    } catch (IndexOutOfBoundsException e) {
+      gameController.updateHint("Select valid unit level");
+    }catch (NumberFormatException e) {
+      gameController.updateHint("Type positive number");
+    }
+    
+
   }
 }
