@@ -66,23 +66,47 @@ public class ActionPaneControllerTest {
     from.setId("from");
     MenuButton to = new MenuButton("China");
     to.setId("to");
-    TextField f1 = new TextField("");
-    f1.setId("field1");
-    pane.getChildren().addAll(from, to, f1);
+    pane.getChildren().addAll(from, to);
+    for (int i = 1;i <=7; i++) {
+      TextField f = new TextField(""+i);
+      f.setId("field"+i);
+      pane.getChildren().add(f);
+    }    
     actionPaneController.submitAction();
     
-    f1.setText("3");
-    actionPaneController.moveMode();
-    actionPaneController.submitAction();
-
     actionPaneController.attackMode();
     actionPaneController.submitAction();
-    
+
+    // not pass rule checker
     when(gameController.guiPlayer.tryApplyAction(any())).thenReturn("wrong");
     actionPaneController.submitAction();
 
-    // find no unit
-    f1.setId("1");
+    // nothing to commit
+    pane.getChildren().clear();
+    MenuButton from1 = new MenuButton("US");
+    from1.setId("from");
+    MenuButton to1 = new MenuButton("China");
+    to1.setId("to");
+    pane.getChildren().addAll(from1, to1);
+    for (int i = 1;i <=7; i++) {
+      TextField f = new TextField("");
+      f.setId("field"+i);
+      pane.getChildren().add(f);
+    }    
+    actionPaneController.submitAction();
+
+    // negative number
+    pane.getChildren().clear();
+    MenuButton from2 = new MenuButton("US");
+    from2.setId("from");
+    MenuButton to2 = new MenuButton("China");
+    to2.setId("to");
+    pane.getChildren().addAll(from2, to2);
+    for (int i = 1;i <=7; i++) {
+      TextField f = new TextField("-"+i);
+      f.setId("field"+i);
+      pane.getChildren().add(f);
+    }
     actionPaneController.submitAction();
   }
 

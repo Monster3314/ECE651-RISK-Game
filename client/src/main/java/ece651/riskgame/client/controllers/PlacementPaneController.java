@@ -64,6 +64,8 @@ public class PlacementPaneController {
       gameController.updateHint("IOException occurs during connection to server...");
     } catch (NumberFormatException e) {
       gameController.updateHint("Please type number to place");
+    } catch (IllegalArgumentException e) {
+      gameController.updateHint(e.getMessage());
     }
   }
 
