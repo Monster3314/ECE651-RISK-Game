@@ -33,7 +33,7 @@ public class SufficientResourceChecker extends ActionRuleChecker {
             }
             else {
                 UpgradeTechAction uta = (UpgradeTechAction) action;
-                cost = Clan.COST[actable.getClans().get(uta.getColor()).getMaxTechLevel()];
+                cost = Clan.COST[actable.getClans().get(uta.getColor()).getTechLevel()];
                 color = uta.getColor();
             }
             if (actable.getClans().get(color).getResource().getResourceNum(Resource.GOLD) >= cost) {
