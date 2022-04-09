@@ -26,7 +26,7 @@ import ece651.riskgame.shared.Unit;
  */
 public class TextPlayer extends Player{
   private GameTextView view;
-  final BufferedReader inputReader;
+  private BufferedReader inputReader;
   final PrintStream out;
 
   final ArrayList<String> actionChoices;
@@ -40,8 +40,6 @@ public class TextPlayer extends Player{
    */
   public TextPlayer(String color, GameInfo game) {
     this(color, game, new BufferedReader(new InputStreamReader(System.in)), System.out);
-
-
   }
   
   /**
@@ -61,6 +59,13 @@ public class TextPlayer extends Player{
     this.actionReadingFns = new HashMap<String, Supplier<Action>>();
     setupActionList();
     setupActionReadingMap();
+  }
+  /**
+   * setter for input
+   * @param newInput is the new buffered reader
+   */
+  public void setInputReader(BufferedReader newInput) {
+    inputReader = newInput;
   }
   /**
    * update current game and view 
@@ -123,21 +128,16 @@ public class TextPlayer extends Player{
    * @throws IOException is caught because lambda doesn't support
    * @return a valid move action specified by the user
    */
-  public Move readMove() {
-    while (true)  {
-      try {
-        Territory src = readTerritory("Which territory do you want to move unit from?");
-        //TODO:unit to list of units
-        Territory dst = readTerritory("Which territory do you want to move unit to?");
-        List<Unit> unitsToMove = readUnits(src.getUnits(), "How many units do you want to move?");
-        //List<Unit> unitsToMove = readUnits(src, "How many units do you want to move?");
-        
-        return new Move(unitsToMove, src.getName(), dst.getName(), this.color);
-
+  public Move readMoveAction() {
+    try {
+      Territory src = readTerritory("Which territory do you want to move unit from?");
+      Territory dst = readTerritory("Which territory do you want to move unit to?");
+      List<Unit> unitsToMove = readUnits(src.getUnits(), "How many units do you want to move?");  
+      return new Move(unitsToMove, src.getName(), dst.getName(), this.color);
       } catch (IOException e) {
-        //out.println();
+        printErrorMsg(e.getMessage());
+        return null;
       }
-    }
   }
   
   /**
@@ -145,18 +145,18 @@ public class TextPlayer extends Player{
    * @throws IOException caught because lambda doesn't support
    * @return a valid attack action specified by the user
    */
-  public Attack readAttack() {
-    while (true){
-      try {
-        Territory src = readTerritory("Which territory do you want to attack from?");
-        Territory dst = readTerritory("Which territory do you want to attack?");
-        //TODO:unit to list of units
-        List<Unit> unitsToAttack = readUnits(src.getUnits(), "How many units do you want to dispatch?");
-        //List<Unit> unitsToAttack = readUnits(src, "How many units do you want to dispatch?");
+  public Attack readAttackAction() {
+    try {
+      Territory src = readTerritory("Which territory do you want to attack from?");
+      Territory dst = readTerritory("Which territory do you want to attack?");
+      //TODO:unit to list of units
+      List<Unit> unitsToAttack = readUnits(src.getUnits(), "How many units do you want to dispatch?");
+      //List<Unit> unitsToAttack = readUnits(src, "How many units do you want to dispatch?");
 
-        return new Attack(unitsToAttack, src.getName(), dst.getName(), color);
-      } catch (IOException e) {
-      }
+      return new Attack(unitsToAttack, src.getName(), dst.getName(), color);
+    } catch (IOException e) {
+      printErrorMsg(e.getMessage());
+      return null;
     }
   }  
 
@@ -217,7 +217,7 @@ public class TextPlayer extends Player{
       printPromptMsg(prompt);
       s = inputReader.readLine();
       if (s == null) {
-        throw new EOFException("EOF");
+        throw new EOFException("");
       }
       try {
         return b.getTerritory(s);
@@ -265,15 +265,6 @@ public class TextPlayer extends Player{
     printInfo(view.displayGame());
   }
   /**
-   * doSpectationPhase is used when player choose to speculate the game
-   */
-  public void doSpectationPhase() throws IOException{
-    while(!isGameOver()) {
-      doOneSpectation();
-      printWaitingMsg();
-    }
-  }
-  /**
    * print game result and close I/O after game over
    * @throws IOException when failed to close I/O  
    * @throws IllegalStateException when game is not over  
@@ -301,13 +292,23 @@ public class TextPlayer extends Player{
    * fetch post peath choice from input 
    * @return Q or S based, which represents Quit or Spectate
    * @throws IOException when nothing fetched from input
+   * @throws IllegalStateException when called but player is not dead yet
    */
   //TODO:multiple post death choices
-  public String getPostDeathChoice() throws IOException{
+  public String getPostDeathChoice() throws IOException, IllegalStateException{
+    if (!isLost()) {
+      throw new IllegalStateException("Player is not dead yet.");
+    }
+    if (isGameOver()) {
+      throw new IllegalStateException("Game is over.");
+    }
     while (true) {
       printPromptMsg(getDeathChoicesPrompt());
       String choice = inputReader.readLine();
-      if (choice.equals("S") || choice.equals("Q")) {
+      if (choice == null) {
+        throw new EOFException("EOF");
+      }
+      else if (choice.equals("S") || choice.equals("Q")) {
         return choice;
       }
       else {
@@ -330,8 +331,8 @@ public class TextPlayer extends Player{
    */
   //TODO:Lambda can't throw any Exception, so we catch all possible exceptions
   protected void setupActionReadingMap() {
-    actionReadingFns.put("M", () -> readMove());
-    actionReadingFns.put("A", () -> readAttack());
+    actionReadingFns.put("M", () -> readMoveAction());
+    actionReadingFns.put("A", () -> readAttackAction());
     actionReadingFns.put("D", () -> {
       return null;
     });
