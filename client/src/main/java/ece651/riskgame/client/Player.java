@@ -34,14 +34,30 @@ public abstract class Player {
   protected String color;
   protected GameInfo theGame;
   protected final Map<Class, ActionRuleChecker> actionCheckers;
-  public Player(String color, GameInfo game) {
 
+  /**
+   * Player Constructor
+   * @param color is the player's clan
+   * @param game is the model of the game
+   * @throws IllegalArgumentException when color or game is null, or color is not in the game 
+   */  
+  public Player(String color, GameInfo game) throws IllegalArgumentException {
+    if (color == null) {
+      throw new IllegalArgumentException("Color can not be null");
+    }
+    if (game == null) {
+      throw new IllegalArgumentException("Game can not be null");
+    }
+    if (!game.getClans().containsKey(color)) {
+      throw new IllegalArgumentException("Color is not in this game");
+    }
+    
     this.color = color;
     this.theGame = game;;
     this.actionCheckers = new HashMap<Class, ActionRuleChecker>();
     setupActionCheckers();
   }
-
+  
   protected void setupActionCheckers() {
     actionCheckers.put(Attack.class,
         new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null))));
@@ -49,7 +65,7 @@ public abstract class Player {
     actionCheckers.put(UpgradeUnitAction.class, new SufficientUnitChecker(new SufficientResourceChecker(null)));
     actionCheckers.put(UpgradeTechAction.class, new  SufficientResourceChecker(null));
   }
-
+  
   /**
    * try to apply a action on client side
    * @param toAct is the action you want to apply
@@ -84,13 +100,19 @@ public abstract class Player {
    * updateGame will receive the latest game from the server and update the game on client side
    */
   public void updateGame(GameInfo latestGame) {
+    if (latestGame == null) {
+      throw new IllegalArgumentException("LatestGame can not be null");
+    }
+    if (!latestGame.getClans().containsKey(color)) {
+      throw new IllegalArgumentException("Color is not in latest game");
+    }
     theGame = latestGame;
     
   }
     //adapting from list of moves to map(territory string to list of placed units)
   public Map<String, List<Unit>> adaptPlacements(List<PlaceAction> placements) {
     Map<String, List<Unit>> serverPlacements = new HashMap<>();
-    List<Territory> occupies = getOccupies();
+    Set <Territory> occupies = getOccupies();
     for (Territory occupy : occupies) {
       serverPlacements.put(occupy.getName(), new ArrayList<Unit>(Arrays.asList(new BasicUnit(0))));
     }
@@ -106,8 +128,8 @@ public abstract class Player {
    * this function is used to adapt a list of placements(move) to the map which maps territory name to a list of units  
    * @return a list of territory which is this player's occupies  
    */  
-  public List<Territory> getOccupies() {
-    return theGame.getClans().get(color).getOccupies();
+  public Set<Territory> getOccupies() {
+    return new HashSet(theGame.getClans().get(color).getOccupies());
   }
 
   /**
@@ -159,7 +181,7 @@ public abstract class Player {
    * @return technology level 
    */
   public Integer getTechLevel() {
-    return theGame.getClans().get(color).getMaxTechLevel();
+    return theGame.getClans().get(color).getTechLevel();
   }
 
   /**

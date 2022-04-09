@@ -22,6 +22,6 @@ public class UpgradeTechAction implements Action, Serializable {
     @Override
     public void clientApply(Actable game) {
         Clan clan = game.getClans().get(color);
-        clan.getResource().costGold(Clan.COST[clan.getMaxTechLevel()]);
+        clan.getResource().costGold(Clan.COST[clan.getTechLevel()]);
     }
 }
