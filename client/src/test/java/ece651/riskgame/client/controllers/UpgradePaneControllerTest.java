@@ -45,6 +45,7 @@ public class UpgradePaneControllerTest {
     System.out.println("finish");
   }
 
+
   @Test
   public void test_updateUpgradePane() throws IOException, ClassNotFoundException {
     MenuButton mb = new MenuButton();
@@ -55,7 +56,19 @@ public class UpgradePaneControllerTest {
   }
 
   @Test
+  public void test_setUpgradePane() {
+    pane.getChildren().clear();
+    MenuButton from = new MenuButton("From");
+    from.setId("from");
+    MenuButton to = new MenuButton("To");
+    to.setId("to");
+    pane.getChildren().addAll(from, to);
+    upgradePaneController.setUpgradePane();    
+  }
+  
+  @Test
   public void test_submitAction() throws IOException, ClassNotFoundException {
+    pane.getChildren().clear();
     MenuButton terr = new MenuButton("Territory");
     terr.setId("territory");
     MenuButton from = new MenuButton("From");
@@ -66,23 +79,28 @@ public class UpgradePaneControllerTest {
     f1.setId("number");
     pane.getChildren().addAll(terr, from,to,  f1);
 
-    // level not match
-    //upgradePaneController.submitAction();
-    //verify(gameController).updateHint(any());
     
-    // match level
+    // level not match
+    upgradePaneController.submitAction();
+    verify(gameController).updateHint(any());
+    
+    // match level, success
     from.setText("North Army");
     to.setText("Golden Company");
-    //upgradePaneController.submitAction();
-    //verify(gameController).updateTopBar();
-    //verify(gameController, times(2)).updateHint(any());
+    upgradePaneController.submitAction();
+    verify(gameController).updateTopBar();
+    verify(gameController, times(2)).updateHint(any());
 
-    // not pass rule checker
-    //doReturn("no").when(gameController.guiPlayer).tryApplyAction(any());
-
-    // fail
-    when(guiPlayer.tryApplyAction(any())).thenReturn("fail");
+    // negative number
+    f1.setText("-1");
+    upgradePaneController.submitAction();
+    verify(gameController, times(3)).updateHint(any());
     f1.setText("1");
-    //upgradePaneController.submitAction();
+    
+    // not pass rule checker
+    doReturn("no").when(gameController.guiPlayer).tryApplyAction(any());
+    upgradePaneController.submitAction();
+    verify(gameController, times(4)).updateHint(any());
+    
   }
 }
