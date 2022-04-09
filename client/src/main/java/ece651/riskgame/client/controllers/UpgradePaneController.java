@@ -9,6 +9,7 @@ import ece651.riskgame.shared.UpgradeUnitAction;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 
 public class UpgradePaneController {
@@ -54,7 +55,7 @@ public class UpgradePaneController {
     String terr = ((MenuButton) pane.lookup("#territory")).getText();
     String from = ((MenuButton) pane.lookup("#from")).getText();
     String to = ((MenuButton) pane.lookup("#to")).getText();
-    String numInput = ((MenuButton) pane.lookup("number")).getText();
+    String numInput = ((TextField) pane.lookup("#number")).getText();
     
     try {
       int fromL = unitLevelNames.indexOf(from);
