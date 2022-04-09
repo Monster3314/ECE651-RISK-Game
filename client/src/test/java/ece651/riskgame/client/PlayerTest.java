@@ -82,10 +82,6 @@ public class PlayerTest {
       p.isGameOver();
     } catch(Exception e) {
     }
-    try {
-      p.isLost();
-    } catch(Exception e) {
-    }    
   }
 
   
@@ -186,6 +182,60 @@ public class PlayerTest {
     b.putEntry(t1, new LinkedList<Territory>(Arrays.asList(t2, t3)));
     b.addTerritory(t2);
     b.putEntry(t2, new LinkedList<Territory>(Arrays.asList(t1, t3)));
+    b.addTerritory(t3);
+    b.putEntry(t3, new LinkedList<Territory>(Arrays.asList(t1, t2)));
+    b.addTerritory(t4);
+    b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
+    return game;
+  }
+  protected GameInfo getEmptyGame() {
+    Board b = new Board();
+    Map<String, Clan> players = new HashMap<String, Clan>();
+    GameInfo g = new GameInfo(b, players);
+    Territory t1 = new BasicTerritory("Durham");
+    Territory t2 = new BasicTerritory("Raleigh");
+    Territory t3 = new BasicTerritory("Cary");
+    Territory t4 = new BasicTerritory("Chapel Hill");
+    Clan c1 = new Clan(new LinkedList<Territory>(Arrays.asList()));
+    Clan c2 = new Clan(new LinkedList<Territory>(Arrays.asList(t1,t2,t3,t4)));
+    players.put("Red", c1);
+    players.put("Blue", c2);
+    t1.addUnit(new BasicUnit(4));
+    t2.addUnit(new BasicUnit(3));
+    t3.addUnit(new BasicUnit(1));
+    b.addTerritory(t1);
+    b.putEntry(t1, new LinkedList<Territory>(Arrays.asList(t2, t3)));
+    b.addTerritory(t2);
+    b.putEntry(t2, new LinkedList<Territory>(Arrays.asList(t1, t3)));
+    b.addTerritory(t3);
+    b.putEntry(t3, new LinkedList<Territory>(Arrays.asList(t1, t2)));
+    b.addTerritory(t4);
+    b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
+    return g;
+  }
+  protected GameInfo getFourPlayerGame() {
+    Board b = new Board();
+    Map<String, Clan> clans = new HashMap<String, Clan>();
+    GameInfo game = new GameInfo(b, clans);
+    Territory t1 = new BasicTerritory("Jiangsu");
+    Territory t2 = new BasicTerritory("Zhejiang");
+    Territory t3 = new BasicTerritory("Shanghai");
+    Territory t4 = new BasicTerritory("Anhui");
+    Clan c1 = new Clan(new LinkedList<Territory>(Arrays.asList(t1)));
+    Clan c2 = new Clan(new LinkedList<Territory>(Arrays.asList(t2)));
+    Clan c3 = new Clan(new LinkedList<Territory>(Arrays.asList(t3)));
+    Clan c4 = new Clan(new LinkedList<Territory>(Arrays.asList(t4)));
+    clans.put("Red", c1);
+    clans.put("Blue", c2);
+    clans.put("Yellow", c3);
+    clans.put("Green", c4);
+    t1.addUnit(new BasicUnit(4));
+    t2.addUnit(new BasicUnit(3));
+    t3.addUnit(new BasicUnit(1));
+    b.addTerritory(t1);
+    b.putEntry(t1, new LinkedList<Territory>(Arrays.asList(t3, t4)));
+    b.addTerritory(t2);
+    b.putEntry(t2, new LinkedList<Territory>(Arrays.asList(t3)));
     b.addTerritory(t3);
     b.putEntry(t3, new LinkedList<Territory>(Arrays.asList(t1, t2)));
     b.addTerritory(t4);
