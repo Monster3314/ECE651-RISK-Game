@@ -10,6 +10,9 @@ public class UpgradeUnitAction implements Action, Serializable {
     private final String color;
 
     public UpgradeUnitAction(String territoryName, int baseLevel, int targetLevel, int num, String color) {
+        if (num <= 0) {
+            throw new IllegalArgumentException("Please enter a positive number.");
+        }
         this.territoryName = territoryName;
         this.baseLevel = baseLevel;
         this.targetLevel = targetLevel;
@@ -41,7 +44,7 @@ public class UpgradeUnitAction implements Action, Serializable {
     public void apply(Actable world) {
         int cost = Unit.getLevelUpCost(baseLevel, targetLevel) * num;
         Clan clan = world.getClans().get(color);
-        clan.getResource().costFood(cost);
+        clan.getResource().costGold(cost);
         Territory territory = world.getBoard().getTerritory(territoryName);
         Unit baseUnit = new BasicUnit(num, baseLevel);
         Unit targetUnit = new BasicUnit(num, targetLevel);

@@ -49,9 +49,9 @@ class ClanTest {
         Territory t2 = new BasicTerritory("B", 0, new Resource(new int[]{3, 4}));
         clan.addTerritory(t1);
         clan.addTerritory(t2);
-        assertEquals(new Resource(new int[]{0, 0}), clan.getResource());
+        assertEquals(new Resource(new int[]{40, 100}), clan.getResource());
         clan.getTerritoryProduction();
-        assertEquals(new Resource(new int[]{4, 6}), clan.getResource());
+        assertEquals(new Resource(new int[]{44, 106}), clan.getResource());
   }
 
 }

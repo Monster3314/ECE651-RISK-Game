@@ -121,6 +121,7 @@ public class GameControllerTest {
   @Test
   public void test_levelUp() {
     mockPrepare();
+    when(scene.lookup(any())).thenReturn(new Button());
     doNothing().when(gameController).updateHint(any());
     doNothing().when(gameController).updateTopBar();
     gameController.levelUp(null);
@@ -279,6 +280,7 @@ public class GameControllerTest {
     doNothing().when(gameController).isLostOrWin();
     doNothing().when(gameController).updateCurrentTerritoryInfo();
     when(scene.lookup(any())).thenReturn(new Label());
+    when(scene.lookup("#levelUp")).thenReturn(new Button());
     gameController.nextTurn();
   }
 
@@ -286,7 +288,7 @@ public class GameControllerTest {
   public void test_idlostorwin() throws IOException, ClassNotFoundException, InterruptedException {
     mockPrepare();
     doNothing().when(gameController).updateHint(any());
-    doNothing().when(gameController).disableButtonsInPlacement();
+    doNothing().when(gameController).disableButtonsButLogout();
 
     // game continue
     when(guiPlayer.isLost()).thenReturn(false);

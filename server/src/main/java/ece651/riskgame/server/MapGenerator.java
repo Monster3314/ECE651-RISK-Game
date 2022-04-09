@@ -11,6 +11,7 @@ import java.util.Map;
 
 import ece651.riskgame.shared.BasicTerritory;
 import ece651.riskgame.shared.Board;
+import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 
 public class MapGenerator {
@@ -96,7 +97,7 @@ public class MapGenerator {
     int numTer = 3 * playerNum;
     // add board names
     for (int i = 0; i < numTer; i++) {
-      Territory t = new BasicTerritory(territoryNameList.get(i));
+      Territory t = new BasicTerritory(territoryNameList.get(i), 2, new Resource(new int[] {20, 50}));
       board.addTerritory(t);
       addedTerritories.add(t);
     }

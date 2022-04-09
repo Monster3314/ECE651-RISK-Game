@@ -56,7 +56,7 @@ public abstract class Unit implements Serializable{
 
   @Override
   public String toString() {
-    return number + (number <= 1 ? " Unit" : " Units");
+    return number + " " + NAME[level];
   }
 
   /**
@@ -64,12 +64,12 @@ public abstract class Unit implements Serializable{
    */
   public abstract int getRandomAttack();
 
-  public void levelUp() {
-    if (level == Unit.MAX_LEVEL) {
-      throw new IllegalStateException("Exceed the max level");
-    }
-    level ++;
-  }
+//  public void levelUp() {
+//    if (level == Unit.MAX_LEVEL) {
+//      throw new IllegalStateException("Exceed the max level");
+//    }
+//    level ++;
+//  }
 
   static public int getLevelUpCost(int baseLevel, int targetLevel) {
     int cost = 0;

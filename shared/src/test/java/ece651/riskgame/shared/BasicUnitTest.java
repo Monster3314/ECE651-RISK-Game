@@ -14,7 +14,7 @@ public class BasicUnitTest {
     assertEquals(1, bu.getAttack());
     assertEquals(1, bu.getHP());
     assertEquals(10, bu.getNum());
-    assertEquals("10 Units", bu.toString());
+    assertEquals("10 Vale Knights", bu.toString());
   }
 
   @Test
@@ -42,8 +42,8 @@ public class BasicUnitTest {
   @Test
   public void test_toString() {
     BasicUnit u = new BasicUnit(2);
-    assertEquals("2 Units", u.toString());
+    assertEquals("2 Vale Knights", u.toString());
     BasicUnit u2 = new BasicUnit();
-    assertEquals("1 Unit", u2.toString());
+    assertEquals("1 Vale Knights", u2.toString());
   }
 }
