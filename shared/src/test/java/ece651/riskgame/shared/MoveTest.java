@@ -19,7 +19,6 @@ class MoveTest {
     Unit units = new BasicUnit(10);
     Move move = new Move(List.of(units), "SD", "JS", null);
     assertEquals("JS", move.getToTerritory());
-    assertEquals(units, move.getUnit());
   }
 
   @Disabled

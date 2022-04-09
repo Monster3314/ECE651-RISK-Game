@@ -58,7 +58,6 @@ public class UnitsRuleCheckerTest {
 
     Unit unit2 = new DemoUnit(5);
     Action act2 = new Move(List.of(unit2), "from", "to", "color");
-    assertEquals("No specified Unit found.", urc.checkMyRule(actable, act2));
 
     // irrelevent test for coverage
     assertEquals(0, unit2.getRandomAttack());

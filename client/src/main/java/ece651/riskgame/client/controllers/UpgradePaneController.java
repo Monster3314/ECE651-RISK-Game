@@ -55,6 +55,9 @@ public class UpgradePaneController {
         // ignore for now
         System.out.println("number format wrong");
       }
+      catch (NullPointerException e) {
+        System.out.println("Null Pointer found");
+      }
     }    
     
   }
