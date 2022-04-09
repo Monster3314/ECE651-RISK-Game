@@ -124,7 +124,7 @@ public class App {
   public void doPostDeathPhase() throws IOException {
     String choice = player.getPostDeathChoice();
     if (choice.equals("S")) {
-      player.doSpectationPhase();
+      //player.doSpectationPhase();
       player.doGameOverPhase();
     }
     else if (choice.equals("Q")) {

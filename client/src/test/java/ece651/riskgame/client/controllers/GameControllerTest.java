@@ -161,6 +161,7 @@ public class GameControllerTest {
     Board borad = mock(Board.class);
     doReturn(borad).when(game).getBoard();
     Territory ter = mock(Territory.class);
+    when(guiPlayer.getTerritory(any())).thenReturn(ter);
     doReturn(ter).when(borad).getTerritory(any());
     when(ter.getName()).thenReturn("Durham");
     Unit unit = mock(Unit.class);
@@ -306,6 +307,7 @@ public class GameControllerTest {
     doNothing().when(gameController).updateTerritoryColors();
     doNothing().when(gameController).set3ActionPanesInvisible();
     doNothing().when(gameController).set3ButtonsUnselected();
+
     gameController.displayGame();
   }
   
