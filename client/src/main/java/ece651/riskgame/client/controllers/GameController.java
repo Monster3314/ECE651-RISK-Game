@@ -420,7 +420,7 @@ public class GameController implements Initializable {
   public void logout() throws IOException {
     if(gameIO == null) scene.getScene().setRoot(roomPane);
     else {
-      //gameIO.close();
+      gameIO.close();
       scene.getScene().setRoot(roomPane);
     }
   }

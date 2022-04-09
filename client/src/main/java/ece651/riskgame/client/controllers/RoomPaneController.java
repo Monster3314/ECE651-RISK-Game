@@ -161,6 +161,8 @@ public class RoomPaneController {
 
         gameController.initializeGame();
 
+        gameController.setRoomPane(roomPane);
+
         Room temproom = new Room(guiPlayer, gameController, gp);
 
         rooms.put(roomnum, temproom);

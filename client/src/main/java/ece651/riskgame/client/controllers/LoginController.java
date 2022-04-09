@@ -112,7 +112,7 @@ public class LoginController {
 
                 Parent gp = loader.load();
 
-                gameController.initializeGame();
+                gameController.reconnect();
 
                 Room room = new Room(guiPlayer, gameController, gp);
 
