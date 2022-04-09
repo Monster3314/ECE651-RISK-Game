@@ -71,7 +71,8 @@ public class ActionPaneControllerTest {
       TextField f = new TextField(""+i);
       f.setId("field"+i);
       pane.getChildren().add(f);
-    }    
+    }
+    actionPaneController.moveMode();
     actionPaneController.submitAction();
     
     actionPaneController.attackMode();

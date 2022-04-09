@@ -104,6 +104,9 @@ public class PlacementPaneControllerTest {
     when(guiPlayer.tryPlace(any())).thenReturn("wrong");
     placementPaneController.submitPlacement(null);
 
+    // input negative number
+    when(guiPlayer.tryPlace(any())).thenThrow(IllegalArgumentException.class);
+    placementPaneController.submitPlacement(null);
   }
 
 }

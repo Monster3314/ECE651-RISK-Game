@@ -1,6 +1,7 @@
 package ece651.riskgame.client.controllers;
 
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.doNothing;
@@ -99,6 +100,15 @@ public class GameControllerTest {
     scene = new Region();
   }
 
+  @Test
+  public void test_setGameIO() {
+    GUIPlayer guiPlayer = mock(GUIPlayer.class);
+    GameIO gameIO = mock(GameIO.class);
+    GameController gameController = new GameController(guiPlayer);
+    gameController.setGameIO(gameIO);
+    assertSame(gameIO, gameController.gameIO);
+  }
+  
   @Test
   public void test_SetScene() throws IOException, ClassNotFoundException, InterruptedException {
     mockPrepare();
@@ -284,6 +294,22 @@ public class GameControllerTest {
     gameController.nextTurn();
   }
 
+  @Test
+  public void test_reconnect() throws ClassNotFoundException, IOException {
+    mockPrepare();
+    doNothing().when(gameController).disableButtonsButLogout();
+    doNothing().when(gameController).activateButtons();
+    doNothing().when(gameController).setUsername(any(), any());
+    doNothing().when(gameController).setAvailableTerritories(any(), any());
+    doNothing().when(gameController).setHint();
+    doNothing().when(gameController).updateTopBar();
+    doNothing().when(gameController).updateTerritoryColors();
+    doNothing().when(gameController).set3ActionPanesInvisible();
+    doNothing().when(gameController).set3ButtonsUnselected();
+    doNothing().when(gameController).isLostOrWin();
+    gameController.reconnect();
+  }
+  
   @Test
   public void test_idlostorwin() throws IOException, ClassNotFoundException, InterruptedException {
     mockPrepare();
