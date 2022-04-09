@@ -52,6 +52,7 @@ public class GameController implements Initializable {
   
   @FXML
   Parent scene;
+  @FXML
   Label hint;
 
   
@@ -59,6 +60,15 @@ public class GameController implements Initializable {
     guiPlayer = p;
     this.gameIO = gameIO;
     username = p.getColor();
+  }
+
+  public GameController(GUIPlayer p) {
+    guiPlayer = p;
+    username = p.getColor();
+  }
+
+  public void setGameIO(GameIO gameIO) {
+    this.gameIO = gameIO;
   }
 
   public void setScene(Parent s) {

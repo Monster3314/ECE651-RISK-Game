@@ -65,6 +65,7 @@ public class RiscApplication extends Application {
     loginController.setSocket(serverSocket);
     Scene scene = new Scene(loginPane, 1138, 823);
     stage.setScene(scene);
+    stage.setResizable(false);
     stage.show();
 
     /*
