@@ -15,12 +15,12 @@
             <Image url="@css/img/roomPane.jpeg" />
          </image>
       </ImageView>
-      <Button fx:id="newroom" layoutX="572.0" layoutY="589.0" mnemonicParsing="false" onAction="#newgame" opacity="0.2" prefHeight="25.0" prefWidth="177.0" text="newgame" textFill="TRANSPARENT">
+      <Button fx:id="newroom" layoutX="569.0" layoutY="591.0" mnemonicParsing="false" onAction="#newgame" opacity="0.2" prefHeight="25.0" prefWidth="177.0" text="newgame" textFill="TRANSPARENT">
          <effect>
             <DropShadow />
          </effect></Button>
       <Button fx:id="logout" layoutX="486.0" layoutY="711.0" mnemonicParsing="false" onAction="#logout" opacity="0.2" prefHeight="25.0" prefWidth="139.0" text="logout" textFill="TRANSPARENT" />
-      <Button layoutX="557.0" layoutY="193.0" mnemonicParsing="false" opacity="0.2" prefHeight="25.0" prefWidth="177.0" text="b1" textFill="TRANSPARENT">
+      <Button fx:id="connect1" layoutX="557.0" layoutY="193.0" mnemonicParsing="false" onAction="#connect" opacity="0.2" prefHeight="25.0" prefWidth="177.0" text="b1" textFill="TRANSPARENT">
          <effect>
             <DropShadow />
          </effect></Button>
@@ -28,22 +28,22 @@
          <effect>
             <DropShadow />
          </effect></Button>
-      <ImageView fitHeight="49.0" fitWidth="49.0" layoutX="492.0" layoutY="183.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      <ImageView fx:id="image1" fitHeight="49.0" fitWidth="49.0" layoutX="492.0" layoutY="183.0" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>
             <Image url="@css/img/one.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="49.0" fitWidth="49.0" layoutX="492.0" layoutY="277.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      <ImageView fx:id="image2" fitHeight="49.0" fitWidth="49.0" layoutX="492.0" layoutY="277.0" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>
             <Image url="@css/img/two.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="49.0" fitWidth="49.0" layoutX="498.0" layoutY="365.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      <ImageView fx:id="image3" fitHeight="49.0" fitWidth="49.0" layoutX="498.0" layoutY="365.0" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>
             <Image url="@css/img/three.png" />
          </image>
       </ImageView>
-      <ImageView fitHeight="49.0" fitWidth="49.0" layoutX="494.0" layoutY="471.0" pickOnBounds="true" preserveRatio="true" visible="false">
+      <ImageView fx:id="image4" fitHeight="49.0" fitWidth="49.0" layoutX="494.0" layoutY="471.0" pickOnBounds="true" preserveRatio="true" visible="false">
          <image>
             <Image url="@css/img/four.png" />
          </image>
@@ -73,12 +73,12 @@
             <DropShadow />
          </effect>
       </Button>
-      <Button fx:id="connect4" layoutX="565.0" layoutY="483.0" mnemonicParsing="false" onAction="#connect" opacity="0.2" prefHeight="25.0" prefWidth="177.0" text="b4" textFill="TRANSPARENT">
+      <Button fx:id="connect4" layoutX="564.0" layoutY="483.0" mnemonicParsing="false" onAction="#connect" opacity="0.2" prefHeight="25.0" prefWidth="177.0" text="b4" textFill="TRANSPARENT">
          <effect>
             <DropShadow />
          </effect>
       </Button>
-      <Label layoutX="427.0" layoutY="114.0" prefHeight="25.0" prefWidth="264.0" text="Label" textFill="WHITE">
+      <Label fx:id="hint" layoutX="427.0" layoutY="114.0" prefHeight="25.0" prefWidth="264.0" text="Label" textFill="WHITE">
          <font>
             <Font size="17.0" />
          </font>

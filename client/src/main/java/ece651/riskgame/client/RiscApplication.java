@@ -37,6 +37,7 @@ public class RiscApplication extends Application {
   public void start(Stage stage) throws IOException, ClassNotFoundException {
 
 
+    /*
     String ip = "0.0.0.0";
     int port = 1651;
     // connect to server
@@ -51,7 +52,7 @@ public class RiscApplication extends Application {
       System.exit(1);
     }
     System.out.println("Connection Estabilished");
-
+    */
 
     loginController = new LoginController(new UserInit());
 
@@ -62,7 +63,7 @@ public class RiscApplication extends Application {
     Parent loginPane = loginLoader.load();
 
     loginController.setLoginPane(loginPane);
-    loginController.setSocket(serverSocket);
+    //loginController.setSocket(serverSocket);
     Scene scene = new Scene(loginPane, 1138, 823);
     stage.setScene(scene);
     stage.setResizable(false);

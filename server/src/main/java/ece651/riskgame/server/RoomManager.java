@@ -43,12 +43,18 @@ public class RoomManager implements Runnable{
                 String username = (String) ois.readObject();
                 if(roomnumber < 0) { //start a new room
                     if(latestRoom.getNumber() != playerNum) {
+                        ObjectOutputStream oos = new ObjectOutputStream(player.getOutputStream());
+                        oos.writeObject(latestRoomNum);
                         latestRoom.addNewPlayer(player, username);
                         latestRoom.oisMap.put(player, ois);
+                        latestRoom.oosMap.put(player, oos);
                     } else {
                         latestRoom = new serverRoom();
+                        ObjectOutputStream oos = new ObjectOutputStream(player.getOutputStream());
+                        oos.writeObject(latestRoomNum);
                         latestRoom.addNewPlayer(player, username);
                         latestRoom.oisMap.put(player, ois);
+                        latestRoom.oosMap.put(player, oos);
                         gameRooms.put(latestRoomNum, latestRoom);
                         RiskGame game = new RiskGame(playerNum, "new_territories.csv", "new_adj_list.csv", latestRoom);
                         latestRoom.setRiskgame(game);
@@ -58,15 +64,17 @@ public class RoomManager implements Runnable{
 
                 } else {
                     if(gameRooms.containsKey(roomnumber) && !gameRooms.get(roomnumber).close_status) {
+                        ObjectOutputStream oos = new ObjectOutputStream(player.getOutputStream());
+                        String result = "succ";
+                        oos.writeObject(result);
+
                         serverRoom temp = gameRooms.get(roomnumber);
                         String tempcolor = temp.nameColorMap.get(username);
                         temp.sockets.put(player, tempcolor);
                         temp.oisMap.put(player, ois);
-                        ObjectOutputStream oos = new ObjectOutputStream(player.getOutputStream());
                         temp.oosMap.put(player, oos);
                         temp.online.put(tempcolor, true);
-                        String result = "succ";
-                        oos.writeObject(result);
+
                     } else {
                         ObjectOutputStream oos = new ObjectOutputStream(player.getOutputStream());
                         String result = "fail";
