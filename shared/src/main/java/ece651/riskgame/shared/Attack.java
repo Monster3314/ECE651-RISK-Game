@@ -39,7 +39,6 @@ public class Attack extends MigrationAction implements Serializable {
             c.addTerritory(t);
         }
 
-        world.getClans().get(color).getResource().costFood(getTotalUnits());
     }
 
     /**
@@ -60,5 +59,6 @@ public class Attack extends MigrationAction implements Serializable {
         for (Unit unit : units) {
             board.getTerritory(fromTerritory).decUnit(unit);
         }
+        world.getClans().get(color).getResource().costFood(getTotalUnits());
     }
 }

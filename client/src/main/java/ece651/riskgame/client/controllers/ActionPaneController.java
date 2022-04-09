@@ -58,10 +58,14 @@ public class ActionPaneController {
       for (int i = 1; i <= 7; i++) {
         try {
           int num = Integer.parseInt(((TextField) pane.lookup("#field"+i)).getText());
-          Unit unit = new BasicUnit(num, i);
+          Unit unit = new BasicUnit(num, i-1);
           units.add(unit);
+          System.out.println(unit.getNum());
         }
         catch (NullPointerException e) {
+          // ignore it
+        }
+        catch (NumberFormatException e) {
           // ignore it
         }
       }
@@ -81,9 +85,6 @@ public class ActionPaneController {
       }
       gameController.updateTopBar();
     } // end try
-    catch (NumberFormatException e) {
-      gameController.updateHint("Assign numbers please");
-    }
     catch (IllegalArgumentException e) {
       gameController.updateHint(e.getMessage());
     }

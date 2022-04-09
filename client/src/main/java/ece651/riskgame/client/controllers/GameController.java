@@ -81,8 +81,19 @@ public class GameController implements Initializable {
       updateHint(result);
     }
     else {
+      updateHint("Level up!");
       updateTopBar();
+      guiPlayer.addActionToSend(lu);
+      disableLevelUp();
     }
+  }
+
+  public void disableLevelUp() {
+    ((Button)scene.lookup("#levelUp")).setDisable(true);    
+  }
+
+  public void activateLevelUp() {
+    ((Button)scene.lookup("#levelUp")).setDisable(false);
   }
   
   @FXML
@@ -175,7 +186,7 @@ public class GameController implements Initializable {
   public void initializeGame() throws IOException, ClassNotFoundException {
     setUsername(scene, guiPlayer.getColor());
     setAvailableTerritories(scene, guiPlayer.getTerritoryNames()); 
-    disableButtonsInPlacement();    
+    disableButtonsButLogout();    
     placementPaneController.setPlacementPaneLabels();
     setHint();
 
@@ -194,6 +205,8 @@ public class GameController implements Initializable {
    * Update food, gold, food
    */
   public void updateTopBar() {
+    System.out.println("topbar update");
+    System.out.println(guiPlayer.getFood());
     ((Label)scene.lookup("#playerFood")).setText("Food: "+Integer.toString(guiPlayer.getFood()));
     ((Label)scene.lookup("#playerGold")).setText("Gold: "+Integer.toString(guiPlayer.getGold()));
     ((Label)scene.lookup("#playerLevel")).setText("Level: "+Integer.toString(guiPlayer.getTechLevel()));    
@@ -215,8 +228,8 @@ public class GameController implements Initializable {
   /**
    * Disable button in placement phase to avoid undefined actions
    */
-  public void disableButtonsInPlacement() {
-    List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "switchRoom", "logout", "newRoom", "moveButton", "attackButton", "upgradeButton", "levelUp"));
+  public void disableButtonsButLogout() {
+    List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "moveButton", "attackButton", "upgradeButton", "levelUp"));
     btns.stream().forEach(s -> scene.lookup("#"+s).setDisable(true));
   }
   
@@ -257,13 +270,14 @@ public class GameController implements Initializable {
     set3ButtonsUnselected();
     set3ActionPanesInvisible();
     updateTopBar();
+    activateLevelUp();
   }
 
   /**
    * Active button after placement phase
    */
   public void activateButtonsAfterPlacement() {
-    List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "switchRoom", "logout", "newRoom", "moveButton", "attackButton", "upgradeButton", "levelUp"));
+    List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "logout", "moveButton", "attackButton", "upgradeButton", "levelUp"));
     btns.stream().forEach(s -> scene.lookup("#"+s).setDisable(false));
   }
 
@@ -326,13 +340,14 @@ public class GameController implements Initializable {
     set3ButtonsUnselected();
     updateCurrentTerritoryInfo();
     updateTopBar();
+    activateLevelUp();
     // TODO update level
     isLostOrWin();
   }
 
   public void isLostOrWin() throws IOException, ClassNotFoundException{
     if (guiPlayer.isLost()) {
-      disableButtonsInPlacement();
+      disableButtonsButLogout();
       updateHint("Woops. You have lost.");
       while (!guiPlayer.isGameOver()) {
         guiPlayer.updateGame(gameIO.recvGame());
@@ -341,7 +356,7 @@ public class GameController implements Initializable {
     }
     else if (guiPlayer.isGameOver()) { // winner
       updateHint("Congratulations! You are the winner");
-      disableButtonsInPlacement();
+      disableButtonsButLogout();
     }
   }
 

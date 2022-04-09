@@ -275,6 +275,11 @@ public class RiskGame implements Runnable{
     for (Territory t : world.getBoard().getTerritoriesList()) {
       t.addUnit(new BasicUnit(1));
     }
+    for (Clan clan : world.getClans().values()) {
+      if (clan.isActive()) {
+        clan.getTerritoryProduction();
+      }
+    }
   }
 
   /**

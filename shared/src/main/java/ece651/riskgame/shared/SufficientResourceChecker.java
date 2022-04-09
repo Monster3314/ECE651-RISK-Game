@@ -36,7 +36,7 @@ public class SufficientResourceChecker extends ActionRuleChecker {
                 cost = Clan.COST[actable.getClans().get(uta.getColor()).getMaxTechLevel()];
                 color = uta.getColor();
             }
-            if (actable.getClans().get(color).getResource().getResourceNum(Resource.FOOD) >= cost) {
+            if (actable.getClans().get(color).getResource().getResourceNum(Resource.GOLD) >= cost) {
                 return null;
             }
             else {
