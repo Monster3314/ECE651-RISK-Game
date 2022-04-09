@@ -7,6 +7,10 @@ public class UpgradeTechAction implements Action {
         this.color = color;
     }
 
+    public String getColor() {
+        return color;
+    }
+
     @Override
     public void apply(Actable world) {
         Clan clan = world.getClans().get(color);

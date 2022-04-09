@@ -7,12 +7,14 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 @ExtendWith(MockitoExtension.class)
 public class MigrationActionTest {
 
   public class DemoMigrationAction extends MigrationAction {
     public DemoMigrationAction(Unit moveUnit, String fromTerritory, String toTerritory, String color) {
-      super(moveUnit, fromTerritory, toTerritory, color);
+      super((List<Unit>) moveUnit, fromTerritory, toTerritory, color);
     }
 
     @Override

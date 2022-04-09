@@ -4,23 +4,17 @@
 package ece651.riskgame.client;
 
 import java.io.IOException;
-import java.net.ConnectException;
-import java.net.Socket;
 import java.net.URL;
-import java.net.UnknownHostException;
 import java.util.HashMap;
 
 import ece651.riskgame.client.controllers.GameController;
 import ece651.riskgame.client.controllers.LoginController;
-import ece651.riskgame.client.controllers.PlacementPaneController;
 import ece651.riskgame.shared.UserInit;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-import org.apache.commons.math3.analysis.function.Log;
 
 public class RiscApplication extends Application {
   // GUIPlayer

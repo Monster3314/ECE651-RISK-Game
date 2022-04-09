@@ -6,6 +6,9 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,9 @@ import org.testfx.framework.junit5.Start;
 
 import ece651.riskgame.client.GUIPlayer;
 import ece651.riskgame.client.GameIO;
+import ece651.riskgame.shared.BasicTerritory;
+import ece651.riskgame.shared.BasicUnit;
+import ece651.riskgame.shared.Territory;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
@@ -48,6 +54,19 @@ public class PlacementPaneControllerTest {
     System.out.println("finish");
   }
 
+  @Test
+  public void testSetPlacementPaneLabels() throws ClassNotFoundException, IOException {
+    List<Territory> list = new ArrayList<> ();
+    list.add(new BasicTerritory("shitland"));
+    when(guiPlayer.getOccupies()).thenReturn(list);
+    Label label = new Label();
+    label.setId("label1");
+    Label title = new Label("titlee");
+    title.setId("title");
+    pane.getChildren().addAll(label, title);
+    when(gameIO.recvUnitsToPlace()).thenReturn(new ArrayList<>(Arrays.asList(new BasicUnit(3))));
+    placementPaneController.setPlacementPaneLabels();
+  }
   
   @Test
   public void test_submitPlacement() throws IOException, ClassNotFoundException, InterruptedException {

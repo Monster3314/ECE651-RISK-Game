@@ -1,25 +1,26 @@
 package ece651.riskgame.shared;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * abstract Action class extended by Action involving two territories (Move and Attack)
  */
 public abstract class MigrationAction implements Action, Serializable{
-    protected Unit Unit;
+    protected List<Unit> units;
     protected String fromTerritory;
     protected String toTerritory;
     protected String color;
 
-    public MigrationAction(Unit moveUnit, String fromTerritory, String toTerritory, String color) {
-        this.Unit = moveUnit;
+    public MigrationAction(List<Unit> units, String fromTerritory, String toTerritory, String color) {
+        this.units = units;
         this.fromTerritory = fromTerritory;
         this.toTerritory = toTerritory;
         this.color = color;
     }
 
-    public Unit getUnit() {
-        return Unit;
+    public List<Unit> getUnit() {
+        return units;
     }
 
     /**
@@ -41,5 +42,13 @@ public abstract class MigrationAction implements Action, Serializable{
      */
     public String getColor() {
         return color;
+    }
+
+    public int getTotalUnits() {
+        int num = 0;
+        for (Unit unit : units) {
+            num += unit.getNum();
+        }
+        return num;
     }
 }
