@@ -10,6 +10,12 @@ public class UpgradeUnitAction implements Action, Serializable {
     private final String color;
 
     public UpgradeUnitAction(String territoryName, int baseLevel, int targetLevel, int num, String color) {
+        if (num <= 0) {
+            throw new IllegalArgumentException("Please enter a positive number.");
+        }
+        if (baseLevel >= targetLevel) {
+            throw new IllegalArgumentException("Target level should be higher than base level.");
+        }
         this.territoryName = territoryName;
         this.baseLevel = baseLevel;
         this.targetLevel = targetLevel;

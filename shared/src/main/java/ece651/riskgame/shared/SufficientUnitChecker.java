@@ -12,7 +12,7 @@ public class SufficientUnitChecker extends ActionRuleChecker {
     protected String checkMyRule(Actable actable, Action action) {
         UpgradeUnitAction uua = (UpgradeUnitAction) action;
         Territory territory = actable.getBoard().getTerritory(uua.getTerritoryName());
-        if (!actable.getTerritoryOwnership(territory.getName()).equals(uua.getColor())) {
+        if (!uua.getColor().equals(actable.getTerritoryOwnership(territory.getName()))) {
             return territory.getName() + " does not belong to " + uua.getColor();
         }
         Unit territoryUnit = territory.getUnitByLevel(uua.getBaseLevel());
