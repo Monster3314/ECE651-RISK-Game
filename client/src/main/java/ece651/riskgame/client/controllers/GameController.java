@@ -7,13 +7,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import ece651.riskgame.client.GUIPlayer;
 import ece651.riskgame.client.GameIO;
+import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
+import ece651.riskgame.shared.UpgradeTechAction;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -42,6 +43,8 @@ public class GameController implements Initializable {
   PlacementPaneController placementPaneController;
   @FXML
   ActionPaneController actionPaneController;
+  @FXML
+  UpgradePaneController upgradePaneController;
   
   String username;
   GUIPlayer guiPlayer;
@@ -51,8 +54,6 @@ public class GameController implements Initializable {
   Parent scene;
   Label hint;
 
-  // flags
-  boolean ifMoveInAction = true;
   
   public GameController(GUIPlayer p, GameIO gameIO) {
     guiPlayer = p;
@@ -73,20 +74,26 @@ public class GameController implements Initializable {
   }
 
   @FXML
-  public void showTerritoryInfo(MouseEvent me) {
-    String territoryName = ((Button) me.getSource()).getText();
-    try {
-      updateTerritoryInfo(territoryName);
+  public void levelUp(MouseEvent me) {
+    Action lu = new UpgradeTechAction(guiPlayer.getColor());
+    String result = guiPlayer.tryApplyAction(lu);
+    if (result != null) {
+      updateHint(result);
     }
-    catch (Exception e) {
-      updateHint("You cannot see territory details before placement");
+    else {
+      updateTopBar();
     }
   }
-
+  
+  @FXML
+  public void showTerritoryInfo(MouseEvent me) {
+    String territoryName = ((Button) me.getSource()).getText();
+    updateTerritoryInfo(territoryName);
+  }
   /**
    * Method to update territoryinfo pane according given territory name
    */
-  private void updateTerritoryInfo(String territoryName) {
+  public void updateTerritoryInfo(String territoryName) {
     ObservableList<Node> children = infoView.getChildren();
     children.clear();
     infoView.setAlignment(Pos.TOP_CENTER);
@@ -169,47 +176,33 @@ public class GameController implements Initializable {
     setUsername(scene, guiPlayer.getColor());
     setAvailableTerritories(scene, guiPlayer.getTerritoryNames()); 
     disableButtonsInPlacement();    
-    setPlacementPaneLabels();
+    placementPaneController.setPlacementPaneLabels();
     setHint();
 
     updateTerritoryColors();
   }
   
-  /**
-   * Set labels(territory names) for
-   */
-  public void setPlacementPaneLabels() throws ClassNotFoundException, IOException {
-    int i = 1;
-    for (Territory t : guiPlayer.getOccupies()) {
-      String labelId = "label" + i;
-      Label label = (Label) scene.lookup("#placementPane").lookup("#" + labelId);
-      label.setText(t.getName());
-      i++;
-    }
-    Label title = ((Label) scene.lookup("#placementPane").lookup("#title"));
-    List<Unit> units = gameIO.recvUnitsToPlace();
-    title.setText("Place your " + units.get(0).getNum() + " units");
-  }
 
   /**
    * Set username of the game
    */
   public void setUsername(Parent scene, String name) {
-    ((Labeled) scene.lookup("#playerName")).textProperty().setValue(name);
+    ((Labeled) scene.lookup("#playerName")).setText(name);;
   }
 
   /**
    * Update food, gold, food
    */
   public void updateTopBar() {
-    // TODO
-    //((Label)scene.lookup("#playerFood")).setText();
+    ((Label)scene.lookup("#playerFood")).setText("Food: "+Integer.toString(guiPlayer.getFood()));
+    ((Label)scene.lookup("#playerGold")).setText("Gold: "+Integer.toString(guiPlayer.getGold()));
+    ((Label)scene.lookup("#playerLevel")).setText("Level: "+Integer.toString(guiPlayer.getTechLevel()));    
   }
 
   /**
    * Set available territories based on game ppl
    */
-  private void setAvailableTerritories(Parent scene, Set<String> names) {
+  public void setAvailableTerritories(Parent scene, Set<String> names) {
     Set<Node> nodes = scene.lookupAll("Button");
     
     nodes.stream().filter(node -> (node.getId() != null))
@@ -222,7 +215,7 @@ public class GameController implements Initializable {
   /**
    * Disable button in placement phase to avoid undefined actions
    */
-  private void disableButtonsInPlacement() {
+  public void disableButtonsInPlacement() {
     List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "switchRoom", "logout", "newRoom", "moveButton", "attackButton", "upgradeButton", "levelUp"));
     btns.stream().forEach(s -> scene.lookup("#"+s).setDisable(true));
   }
@@ -238,23 +231,8 @@ public class GameController implements Initializable {
     }
   }
 
-  /**
-   * Update action pane base on current gameinfo
-   */
-  public void updateActionPane() {
-    MenuButton from = (MenuButton) scene.lookup("#actionPane #from");
-    MenuButton to = (MenuButton) scene.lookup("#actionPane #to");
-    // update two drop down menus
-    updateMenuButton(from, guiPlayer.getOccupies().stream().map(t -> createMenuItem(t.getName(), from)).collect(Collectors.toList()));
-    if (ifMoveInAction) {
-      updateMenuButton(to, guiPlayer.getOccupies().stream().map(t -> createMenuItem(t.getName(), to)).collect(Collectors.toList()));
-    } else { // attack
-      updateMenuButton(to, guiPlayer.getEnemyTerritoryNames().stream().map(t -> createMenuItem(t, to)).collect(Collectors.toList()));
-    }
-    // TODO : advanced feature, adjust unit numbers based on selected territory
-  }
 
-  private MenuItem createMenuItem(String name, MenuButton button) {
+  public  MenuItem createMenuItem(String name, MenuButton button) {
     MenuItem mb = new MenuItem(name);
     mb.setOnAction(a -> {
         button.setText(name);
@@ -265,7 +243,7 @@ public class GameController implements Initializable {
   /**
    * Helper function to update MenuButton with given contents
    */
-  private void updateMenuButton(MenuButton mb, List<MenuItem> contents) {
+  public void updateMenuButton(MenuButton mb, List<MenuItem> contents) {
     mb.getItems().clear();
     contents.stream().forEach(c -> mb.getItems().add(c));
   }
@@ -273,17 +251,18 @@ public class GameController implements Initializable {
   /**
    * Helper function to call function from placement phase to action phase
    */
-  public void fromPlacementToAction() {
+  public void fromPlacementToAction() throws IOException, ClassNotFoundException {
     updateTerritoryColors();
     activateButtonsAfterPlacement();
     set3ButtonsUnselected();
-    set3ActionPanesInvisible();    
+    set3ActionPanesInvisible();
+    updateTopBar();
   }
 
   /**
    * Active button after placement phase
    */
-  private void activateButtonsAfterPlacement() {
+  public void activateButtonsAfterPlacement() {
     List<String> btns = new ArrayList<>(Arrays.asList("nextTurn", "switchRoom", "logout", "newRoom", "moveButton", "attackButton", "upgradeButton", "levelUp"));
     btns.stream().forEach(s -> scene.lookup("#"+s).setDisable(false));
   }
@@ -295,8 +274,8 @@ public class GameController implements Initializable {
     scene.lookup("#actionPane").setVisible(true);
     set3ButtonsUnselected();
     scene.lookup("#moveButton").setStyle("-fx-background-color: #ab7011");
-    ifMoveInAction = true;
-    updateActionPane();
+    actionPaneController.moveMode();
+    actionPaneController.updateActionPane();
   }
 
   @FXML
@@ -305,23 +284,23 @@ public class GameController implements Initializable {
     scene.lookup("#actionPane").setVisible(true);
     set3ButtonsUnselected();
     scene.lookup("#attackButton").setStyle("-fx-background-color: #ab7011");
-    ifMoveInAction = false;
-    updateActionPane();
+    actionPaneController.attackMode();
+    actionPaneController.updateActionPane();
   }
 
   @FXML
-  public void selectUpgradePane() {
+  public void selectUpgradePane() throws IOException, ClassNotFoundException{
     set3ActionPanesInvisible();    
     scene.lookup("#upgradePane").setVisible(true);
     set3ButtonsUnselected();
     scene.lookup("#upgradeButton").setStyle("-fx-background-color: #ab7011");
-    // TODO update upgrade pane
+    upgradePaneController.updateUpgradePane();
   }
 
   /**
    * Method to set placmentPane, actionpane and upgradePane invisible
    */
-  private void set3ActionPanesInvisible() {
+  public void set3ActionPanesInvisible() {
     scene.lookup("#upgradePane").setVisible(false);
     scene.lookup("#placementPane").setVisible(false);
     scene.lookup("#actionPane").setVisible(false);
@@ -330,7 +309,7 @@ public class GameController implements Initializable {
   /**
    * Method to set move, attack, upgrade buttons to unselected mode
    */
-  private void set3ButtonsUnselected() {
+  public void set3ButtonsUnselected() {
     scene.lookup("#moveButton").setStyle("-fx-background-color: #af9468");
     scene.lookup("#attackButton").setStyle("-fx-background-color: #af9468");
     scene.lookup("#upgradeButton").setStyle("-fx-background-color: #af9468");
@@ -345,8 +324,8 @@ public class GameController implements Initializable {
     updateTerritoryColors();
     set3ActionPanesInvisible();
     set3ButtonsUnselected();
-    // update territory info
     updateCurrentTerritoryInfo();
+    updateTopBar();
     // TODO update level
     isLostOrWin();
   }
@@ -372,6 +351,8 @@ public class GameController implements Initializable {
     placementPaneController.pane = (Pane)scene.lookup("#placementPane");
     actionPaneController.gameController = this;
     actionPaneController.pane = (Pane)scene.lookup("#actionPane");
+    upgradePaneController.gameController = this;
+    upgradePaneController.pane = (Pane)scene.lookup("#upgradePane");
   }
   
 }

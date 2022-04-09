@@ -16,7 +16,7 @@ public class BasicUnit extends Unit {
 
   public BasicUnit(int number, int level) {
     super(number, level);
-
+    rand = new Random();
   }
 
   /**
@@ -24,6 +24,7 @@ public class BasicUnit extends Unit {
    */
   public BasicUnit() {
     super(1, 1, 1);
+    rand = new Random();
   }
 
   /**

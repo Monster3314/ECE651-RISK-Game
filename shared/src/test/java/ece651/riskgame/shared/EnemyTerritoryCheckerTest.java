@@ -1,7 +1,6 @@
 package ece651.riskgame.shared;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -44,12 +43,12 @@ public class EnemyTerritoryCheckerTest {
     ActionRuleChecker urc = new EnemyTerritoryChecker(null);
     
     Unit unit = new BasicUnit(5);
-    Action act1 = new Attack(unit, "t1", "t1", "Red");
-    Action act2 = new Attack(unit, "t1", "t2", "Red");
-    Action act3 = new Attack(unit, "t2", "t1", "Red");
+    Action act1 = new Attack(List.of(unit), "t1", "t1", "Red");
+    Action act2 = new Attack(List.of(unit), "t1", "t2", "Red");
+    Action act3 = new Attack(List.of(unit), "t2", "t1", "Red");
 
     assertEquals("Territories belong to same clan.", urc.checkMyRule(actable, act1));
-    assertEquals(null, urc.checkMyRule(actable, act2));
+    assertNull(urc.checkMyRule(actable, act2));
     assertNotNull(urc.checkMyRule(actable, act3));
   }
 

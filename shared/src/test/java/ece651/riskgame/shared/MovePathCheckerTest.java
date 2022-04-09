@@ -67,11 +67,11 @@ public class MovePathCheckerTest {
     when(actable.getTerritoryOwnership("t4")).thenReturn("Red");    
 
     Unit unit = new BasicUnit(5);
-    Action act1 = new Move(unit, "t1", "t1", "Red");
-    Action act2 = new Move(unit, "t1", "t2", "Blue");
-    Action act3 = new Move(unit, "t1", "t2", "Red");
-    Action act4 = new Move(unit, "t1", "t4", "Red");
-    Action act5 = new Move(unit, "t1", "t3", "Red");
+    Action act1 = new Move(List.of(unit), "t1", "t1", "Red");
+    Action act2 = new Move(List.of(unit), "t1", "t2", "Blue");
+    Action act3 = new Move(List.of(unit), "t1", "t2", "Red");
+    Action act4 = new Move(List.of(unit), "t1", "t4", "Red");
+    Action act5 = new Move(List.of(unit), "t1", "t3", "Red");
 
     ActionRuleChecker urc = new MovePathChecker(null);
 
