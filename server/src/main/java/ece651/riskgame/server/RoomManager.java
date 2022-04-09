@@ -70,6 +70,10 @@ public class RoomManager implements Runnable{
 
                         serverRoom temp = gameRooms.get(roomnumber);
                         String tempcolor = temp.nameColorMap.get(username);
+
+                        for(Map.Entry<Socket, String> i: temp.sockets.entrySet()) {
+                            if(i.getValue().equals(tempcolor)) temp.sockets.remove(i.getKey());
+                        }
                         temp.sockets.put(player, tempcolor);
                         temp.oisMap.put(player, ois);
                         temp.oosMap.put(player, oos);

@@ -391,8 +391,9 @@ public class GameController implements Initializable {
   }
   
   public void reconnect() throws ClassNotFoundException, IOException {    
-    gameIO.recvGame();
-    activateButtons();    
+    guiPlayer.updateGame(gameIO.recvGame());
+    displayGame();
+    activateButtons();
     // check lose or win
     isLostOrWin();
   }

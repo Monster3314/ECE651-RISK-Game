@@ -340,6 +340,7 @@ public class RiskGame implements Runnable{
       roominfo.close_status = true;
       closeSockets();
     } catch (Exception ignored) {
+      roominfo.close_status = true;
       ignored.printStackTrace();
     }
 

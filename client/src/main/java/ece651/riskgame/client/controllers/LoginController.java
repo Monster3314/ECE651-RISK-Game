@@ -112,7 +112,7 @@ public class LoginController {
 
                 Parent gp = loader.load();
 
-                gameController.reconnect();
+                gameController.displayGame();
 
                 Room room = new Room(guiPlayer, gameController, gp);
 
@@ -124,8 +124,9 @@ public class LoginController {
             FXMLLoader roomLoader = new FXMLLoader(roomXML);
             loadControllers(roomLoader);
             Parent roomPane = roomLoader.load();
-            roomPaneController.setRoomPane(roomPane);
 
+            roomPaneController.setRoomPane(roomPane);
+            roomPaneController.initializeRoomPane();
             loginPane.getScene().setRoot(roomPane);
         }
 
