@@ -62,7 +62,7 @@ public class LoginController {
 
     @FXML
     void login(ActionEvent event) throws IOException, ClassNotFoundException {
-        String ip = "0.0.0.0";
+        String ip = "vcm-24269.vm.duke.edu";
         int port = 1651;
         // connect to server
         Socket serverSocket = null;
@@ -135,7 +135,7 @@ public class LoginController {
     @FXML
     void register(ActionEvent event) throws IOException, ClassNotFoundException {
 
-        String ip = "0.0.0.0";
+        String ip = "vcm-24269.vm.duke.edu";
         int port = 1651;
         // connect to server
         Socket serverSocket = null;
