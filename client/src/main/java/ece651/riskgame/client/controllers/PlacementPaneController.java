@@ -36,8 +36,8 @@ public class PlacementPaneController {
       i++;
     }
     Label title = ((Label) pane.lookup("#title"));
-    List<Unit> units = gameController.gameIO.recvUnitsToPlace();
-    title.setText("Place your " + totalUnit + " units");
+    totalUnit = gameController.gameIO.recvUnitsToPlace();
+    title.setText("Place your " + totalUnit.get(0).getNum() + " units");
   }
 
   
