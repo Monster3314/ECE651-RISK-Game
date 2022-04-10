@@ -213,6 +213,28 @@ public class PlayerTest {
     b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
     return g;
   }
+  protected GameInfo getInitialGame() {
+     Board b = new Board();
+    Map<String, Clan> players = new HashMap<String, Clan>();
+    GameInfo g = new GameInfo(b, players);
+    Territory t1 = new BasicTerritory("Durham");
+    Territory t2 = new BasicTerritory("Raleigh");
+    Territory t3 = new BasicTerritory("Cary");
+    Territory t4 = new BasicTerritory("Chapel Hill");
+    Clan c1 = new Clan(new LinkedList<Territory>(Arrays.asList(t1, t3)));
+    Clan c2 = new Clan(new LinkedList<Territory>(Arrays.asList(t2, t4)));
+    players.put("Red", c1);
+    players.put("Blue", c2);
+    b.addTerritory(t1);
+    b.putEntry(t1, new LinkedList<Territory>(Arrays.asList(t2, t3)));
+    b.addTerritory(t2);
+    b.putEntry(t2, new LinkedList<Territory>(Arrays.asList(t1, t3)));
+    b.addTerritory(t3);
+    b.putEntry(t3, new LinkedList<Territory>(Arrays.asList(t1, t2)));
+    b.addTerritory(t4);
+    b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
+    return g;
+  }
   protected GameInfo getFourPlayerGame() {
     Board b = new Board();
     Map<String, Clan> clans = new HashMap<String, Clan>();
