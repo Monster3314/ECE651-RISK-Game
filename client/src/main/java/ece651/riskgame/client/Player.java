@@ -60,15 +60,15 @@ public abstract class Player {
   
   protected void setupActionCheckers() {
     actionCheckers.put(Attack.class,
-        new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null))));
-    actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(null)));
+        new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(new SufficientResourceChecker(null)))));
+    actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(new SufficientResourceChecker(null))));
     actionCheckers.put(UpgradeUnitAction.class, new SufficientUnitChecker(new SufficientResourceChecker(null)));
     actionCheckers.put(UpgradeTechAction.class, new  SufficientResourceChecker(null));
   }
   
   /**
    * try to apply a action on client side
-   * @param toAct is the action you want to apply
+   * @param toApply is the action you want to apply
    * @return error message if action is invalid, otherwise null
    */
   public String tryApplyAction(Action toApply) {
