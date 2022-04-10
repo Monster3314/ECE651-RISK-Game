@@ -31,6 +31,9 @@ import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
 public class TextPlayerTest extends PlayerTest{
+  ByteArrayOutputStream bytes;
+  String input;
+
 
   @Test
   public void test_doOneSpectation() {
@@ -365,6 +368,11 @@ public class TextPlayerTest extends PlayerTest{
     input = "0\n0\n0\n";
     player = createTextPlayer(input, bytes);
     assertEquals(0, player.readUnits(toRead, "").size());
+  }
+  @Test
+  public void test_getGameInfo() {
+    
+    TextPlayer player = createTextPlayer(input, bytes)
   }
 
 

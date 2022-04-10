@@ -2,7 +2,9 @@ package ece651.riskgame.client;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -99,6 +101,16 @@ public class PlayerTest {
     assertEquals("Durham", redPlayer.getTerritory("Durham").getName());
     assertEquals("Raleigh", redPlayer.getTerritory("Raleigh").getName());
     assertThrows(IllegalArgumentException.class, () -> redPlayer.getTerritory("Jiangsu"));
+  }
+  @Test
+  public void test_occupyTerritory() {
+    GameInfo game = getDefaultGame();
+    final TextPlayer redPlayer = new TextPlayer("Red", game);
+    assertTrue(redPlayer.occupyTerritory("Durham"));
+    assertTrue(redPlayer.occupyTerritory("Cary"));
+    assertFalse(redPlayer.occupyTerritory("Raleigh"));
+    assertFalse(redPlayer.occupyTerritory("Chapel Hill"));
+    assertThrows(IllegalArgumentException.class, () -> redPlayer.occupyTerritory("Jiangsu"));
   }
   @Test
   public void test_getEnemyTerritoryNames() {
