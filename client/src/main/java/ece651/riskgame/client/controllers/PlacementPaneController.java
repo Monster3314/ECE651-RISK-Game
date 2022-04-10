@@ -51,7 +51,7 @@ public class PlacementPaneController {
       for (int i = 1; i <= 3; i++) {
         String territory = ((Label) pane.lookup("#label" + i)).getText();
         int num = Integer.parseInt(((TextField) pane.lookup("#field"+i)).getText());
-        Unit unit = new BasicUnit(num, 1);
+        Unit unit = new BasicUnit(num, 0);
         placements.put(territory, List.of(unit));
       }
       // TODO: The wait needs Task.setOnSucceded, learn later
