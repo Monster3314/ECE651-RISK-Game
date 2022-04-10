@@ -51,7 +51,9 @@ public class RoomPaneController {
         this.roomPane = roomPane;
     }
 
-    public void initialize() {
+    public void initializeRoomPane() {
+        hint.setText(username);
+        imageToRoom.clear();
         int num = 1;
         for(Integer i : rooms.keySet()) {
             if(num > 4) break;
@@ -67,6 +69,7 @@ public class RoomPaneController {
         int roomNumber = imageToRoom.get(Integer.parseInt(text.charAt(4) + ""));
         Room r = rooms.get(roomNumber);
         r.getGameController().disableButtonsButLogout();
+        r.getGameController().setRoomPane(roomPane);
         roomPane.getScene().setRoot(r.getGamePane());
     }
 
@@ -87,7 +90,7 @@ public class RoomPaneController {
         }
         System.out.println("Connection Estabilished");
 
-        int roomnum = imageToRoom.get(Integer.parseInt(((Button) event.getSource()).getText()));
+        int roomnum = imageToRoom.get(Integer.parseInt(((Button) event.getSource()).getText().charAt(1) + ""));
 
 
         ObjectOutputStream oos = new ObjectOutputStream(roomSocket.getOutputStream());
@@ -100,7 +103,8 @@ public class RoomPaneController {
         String result = (String) ois.readObject();
 
         if(result.equals("succ")) {
-            GameIO io = new GameIO(roomSocket);
+            GameIO io = new GameIO(ois, oos);
+            io.setSocket(roomSocket);
             GameController cc = rooms.get(roomnum).getGameController();
             cc.setGameIO(io);
             cc.setRoomPane(roomPane);
@@ -146,6 +150,7 @@ public class RoomPaneController {
         int roomnum = (int) ois.readObject();
 
         GameIO gameIO = new GameIO(ois, oos);
+        gameIO.setSocket(roomSocket);
         String color = gameIO.recvColor();
         GameInfo gi = gameIO.recvGame();
         GUIPlayer guiPlayer = new GUIPlayer(color, gi);
@@ -160,6 +165,8 @@ public class RoomPaneController {
         Parent gp = loader.load();
 
         gameController.initializeGame();
+
+        gameController.setRoomPane(roomPane);
 
         Room temproom = new Room(guiPlayer, gameController, gp);
 

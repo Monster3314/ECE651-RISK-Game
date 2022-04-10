@@ -29,6 +29,10 @@ public class GameIO {
     this.output = new ObjectOutputStream(server.getOutputStream());
   }
 
+  public void setSocket(Socket server) {
+    this.server = server;
+  }
+
   /**
    * send placements to server
    * @param placements that map a territory name to a list of units placed
@@ -83,7 +87,7 @@ public class GameIO {
    * close objectInputStream and objectOutputStream  
    */
   public void close() throws IOException{
-    //server.close();
+    server.close();
     input.close();
     output.close();
   }

@@ -96,6 +96,7 @@ public class GameIOTest {
     io.sendPlacements(new HashMap<String, List<Unit>>());
     assertTrue(io.recvGame() instanceof GameInfo);
     io.sendActions(new ArrayList<Action>());
+    io.setSocket(server);
     io.close();
     server.close();
 
