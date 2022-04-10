@@ -2,7 +2,9 @@ package ece651.riskgame.client;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -10,6 +12,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,6 +24,7 @@ import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.PlaceAction;
 import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 
@@ -43,6 +47,12 @@ public class PlayerTest {
     //GameInfo game = mock(GameInfo.class);
     
 
+  }
+  @Test
+  public void test_apaptPlacements() {
+    GameInfo game = getDefaultGame();
+    TextPlayer redPlayer = new TextPlayer("Red", game);
+    redPlayer.adaptPlacements(List.of(new PlaceAction(new BasicUnit(), "Durham")));
   }
   @Test
   public void test_adaptPlacements() {
@@ -84,7 +94,24 @@ public class PlayerTest {
     }
   }
 
-  
+  @Test
+  public void test_getTerritory() {
+    GameInfo game = getDefaultGame();
+    final TextPlayer redPlayer = new TextPlayer("Red", game);
+    assertEquals("Durham", redPlayer.getTerritory("Durham").getName());
+    assertEquals("Raleigh", redPlayer.getTerritory("Raleigh").getName());
+    assertThrows(IllegalArgumentException.class, () -> redPlayer.getTerritory("Jiangsu"));
+  }
+  @Test
+  public void test_occupyTerritory() {
+    GameInfo game = getDefaultGame();
+    final TextPlayer redPlayer = new TextPlayer("Red", game);
+    assertTrue(redPlayer.occupyTerritory("Durham"));
+    assertTrue(redPlayer.occupyTerritory("Cary"));
+    assertFalse(redPlayer.occupyTerritory("Raleigh"));
+    assertFalse(redPlayer.occupyTerritory("Chapel Hill"));
+    assertThrows(IllegalArgumentException.class, () -> redPlayer.occupyTerritory("Jiangsu"));
+  }
   @Test
   public void test_getEnemyTerritoryNames() {
     GameInfo game = getDefaultGame();
@@ -203,6 +230,28 @@ public class PlayerTest {
     t1.addUnit(new BasicUnit(4));
     t2.addUnit(new BasicUnit(3));
     t3.addUnit(new BasicUnit(1));
+    b.addTerritory(t1);
+    b.putEntry(t1, new LinkedList<Territory>(Arrays.asList(t2, t3)));
+    b.addTerritory(t2);
+    b.putEntry(t2, new LinkedList<Territory>(Arrays.asList(t1, t3)));
+    b.addTerritory(t3);
+    b.putEntry(t3, new LinkedList<Territory>(Arrays.asList(t1, t2)));
+    b.addTerritory(t4);
+    b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
+    return g;
+  }
+  protected GameInfo getInitialGame() {
+     Board b = new Board();
+    Map<String, Clan> players = new HashMap<String, Clan>();
+    GameInfo g = new GameInfo(b, players);
+    Territory t1 = new BasicTerritory("Durham");
+    Territory t2 = new BasicTerritory("Raleigh");
+    Territory t3 = new BasicTerritory("Cary");
+    Territory t4 = new BasicTerritory("Chapel Hill");
+    Clan c1 = new Clan(new LinkedList<Territory>(Arrays.asList(t1, t3)));
+    Clan c2 = new Clan(new LinkedList<Territory>(Arrays.asList(t2, t4)));
+    players.put("Red", c1);
+    players.put("Blue", c2);
     b.addTerritory(t1);
     b.putEntry(t1, new LinkedList<Territory>(Arrays.asList(t2, t3)));
     b.addTerritory(t2);
