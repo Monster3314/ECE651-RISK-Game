@@ -1,28 +1,45 @@
 package ece651.riskgame.shared;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public abstract class Territory implements Serializable {
+  private static final long serialVersionUID = -543339904871157059L;
+
   protected String name;
   protected List<Unit> units;
+  protected Resource production;
+  protected int size;
 
   public Territory(String name) {
+    this(name, 0, new Resource(new int[]{0, 0}));
+  }
+
+  public Territory(String name, int size, Resource production) {
     this.name = name;
     units = new ArrayList<Unit>();
+    this.production = production;
+    this.size = size;
   }
 
   public String getName() {
     return name;
   }
 
+  public Resource getProduction() {
+    return production;
+  }
+
+  public int getSize() {
+    return this.size;
+  }
+
   /**
-   * Add a single unit to the terrority
+   * Add a single unit to the territory
    */
   public void addUnit(Unit u) {
     for (Unit i : units) {
-      if (i.getClass() == u.getClass()) {
+      if (i.getLevel() == u.getLevel()) {
         i.addSoldiers(u.getNum());
         return;
       }
@@ -32,8 +49,11 @@ public abstract class Territory implements Serializable {
 
   public void decUnit(Unit u) {
     for (Unit i : units) {
-      if (i.getClass() == u.getClass()) {
+      if (i.getLevel() == u.getLevel()) {
         i.decSoldiers(u.getNum());
+        if (i.getNum() == 0) {
+          units.remove(i);
+        }
         return;
       }
     }
@@ -51,6 +71,15 @@ public abstract class Territory implements Serializable {
 
   public List<Unit> getUnits() {
     return units;
+  }
+
+  public Unit getUnitByLevel(int level) {
+    for (Unit unit : units) {
+      if (unit.getLevel() == level) {
+        return unit;
+      }
+    }
+    return null;
   }
 
   /**
@@ -79,6 +108,46 @@ public abstract class Territory implements Serializable {
     throw new IllegalArgumentException("there is no such type of unit");
   }
 
+  public boolean beAttacked(List<Unit> attacker) {
+    boolean attackRound = true;
+    while (attacker.size() != 0 && units.size() != 0) {
+      if (attackRound) {
+        combat(attacker, units);
+      }
+      else {
+        combat(units, attacker);
+      }
+      attackRound = !attackRound;
+    }
+    if (units.size() == 0) {
+      addUnitList(attacker);
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
+  private void combat(List<Unit> units1, List<Unit> units2) {
+    Unit u1 = Collections.max(units1, Comparator.comparingInt(Unit::getLevel));
+    Unit u2 = Collections.min(units2, Comparator.comparingInt(Unit::getLevel));
+    while (u1.getNum() != 0 && u2.getNum() != 0) {
+      int u1Dice = u1.getRandomAttack();
+      int u2Dice = u2.getRandomAttack();
+      if (u1Dice >= u2Dice)
+        u2.decSoldiers(1);
+      else
+        u1.decSoldiers(1);
+    }
+    if (u1.getNum() == 0) {
+      units1.remove(u1);
+    }
+    else {
+      units2.remove(u2);
+    }
+  }
+
+  
   @Override
   public boolean equals(Object o) {
     if (this == o)

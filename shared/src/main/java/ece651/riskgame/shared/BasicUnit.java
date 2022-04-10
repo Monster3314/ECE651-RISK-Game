@@ -14,11 +14,17 @@ public class BasicUnit extends Unit {
     rand = new Random();
   }
 
+  public BasicUnit(int number, int level) {
+    super(number, level);
+    rand = new Random();
+  }
+
   /**
    * used for test
    */
   public BasicUnit() {
     super(1, 1, 1);
+    rand = new Random();
   }
 
   /**
@@ -26,6 +32,6 @@ public class BasicUnit extends Unit {
    */
   @Override
   public int getRandomAttack() {    
-    return rand.nextInt(20) + 1;
+    return rand.nextInt(20) + 1 + Unit.BONUS[level];
   }
 }
