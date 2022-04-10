@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -21,6 +22,7 @@ import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.PlaceAction;
 import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 
@@ -43,6 +45,12 @@ public class PlayerTest {
     //GameInfo game = mock(GameInfo.class);
     
 
+  }
+  @Test
+  public void test_apaptPlacements() {
+    GameInfo game = getDefaultGame();
+    TextPlayer redPlayer = new TextPlayer("Red", game);
+    redPlayer.adaptPlacements(List.of(new PlaceAction(new BasicUnit(), "Durham")));
   }
   @Test
   public void test_adaptPlacements() {
@@ -84,7 +92,14 @@ public class PlayerTest {
     }
   }
 
-  
+  @Test
+  public void test_getTerritory() {
+    GameInfo game = getDefaultGame();
+    final TextPlayer redPlayer = new TextPlayer("Red", game);
+    assertEquals("Durham", redPlayer.getTerritory("Durham").getName());
+    assertEquals("Raleigh", redPlayer.getTerritory("Raleigh").getName());
+    assertThrows(IllegalArgumentException.class, () -> redPlayer.getTerritory("Jiangsu"));
+  }
   @Test
   public void test_getEnemyTerritoryNames() {
     GameInfo game = getDefaultGame();
