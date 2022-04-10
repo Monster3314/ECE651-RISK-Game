@@ -33,6 +33,10 @@ import ece651.riskgame.shared.Unit;
 public class TextPlayerTest extends PlayerTest{
   ByteArrayOutputStream bytes;
   String input;
+  public TextPlayerTest(){
+    bytes = new ByteArrayOutputStream();
+    input = "";
+  }
 
 
   @Test
@@ -371,8 +375,8 @@ public class TextPlayerTest extends PlayerTest{
   }
   @Test
   public void test_getGameInfo() {
-    
-    TextPlayer player = createTextPlayer(input, bytes)
+    TextPlayer player = createTextPlayer(input, bytes);
+    player.getGameInfo();
   }
 
 
