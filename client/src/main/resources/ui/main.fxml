@@ -76,7 +76,7 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="460.0" layoutY="512.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="26.6" text="Crowlands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="CrowlandsTerritory">
+      <Button layoutX="460.0" layoutY="512.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="26.6" text="Crownlands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="CrownlandsTerritory">
          <font>
             <Font size="16.0" />
          </font>
