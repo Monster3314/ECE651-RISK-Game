@@ -111,8 +111,10 @@ public class Login implements Runnable{
                     oos.writeObject("no");
                 }
             } else {  //user register
-                userTable.put(userinfo.getUsername(), userinfo.getPassword());
-                writeToText(userinfo.getUsername() + "," + userinfo.getPassword() + "\n");
+                if(!userTable.containsKey(userinfo.getUsername())) {
+                    userTable.put(userinfo.getUsername(), userinfo.getPassword());
+                    writeToText(userinfo.getUsername() + "," + userinfo.getPassword() + "\n");
+                }
                 oos.writeObject("no");
             }
             oos.flush();

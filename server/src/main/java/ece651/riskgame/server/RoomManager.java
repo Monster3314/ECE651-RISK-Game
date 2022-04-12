@@ -13,7 +13,7 @@ public class RoomManager implements Runnable{
     private serverRoom latestRoom;
     private int latestRoomNum;
     private Map<Integer, serverRoom> gameRooms;
-    private int playerNum = 2;
+    private int playerNum = 5;
 
     public RoomManager(int port) throws IOException {
         this.port = port;
@@ -28,7 +28,7 @@ public class RoomManager implements Runnable{
     public void setGameRooms(Map<Integer, serverRoom> gameRooms) {
         this.gameRooms = gameRooms;
         gameRooms.put(latestRoomNum, latestRoom);
-        latestRoomNum++;
+
     }
 
 
@@ -50,6 +50,7 @@ public class RoomManager implements Runnable{
                         latestRoom.oosMap.put(player, oos);
                     } else {
                         latestRoom = new serverRoom();
+                        latestRoomNum++;
                         ObjectOutputStream oos = new ObjectOutputStream(player.getOutputStream());
                         oos.writeObject(latestRoomNum);
                         latestRoom.addNewPlayer(player, username);
