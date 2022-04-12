@@ -75,7 +75,7 @@ public class RoomPaneController {
 
     @FXML
     void connect(ActionEvent event) throws IOException, ClassNotFoundException {
-        String ip = "vcm-24269.vm.duke.edu";
+        String ip = "0.0.0.0";
         int port = 1653;
         // connect to server
         Socket roomSocket = null;
@@ -119,7 +119,7 @@ public class RoomPaneController {
 
     @FXML
     void newgame(ActionEvent event) throws IOException, ClassNotFoundException {
-        String ip = "vcm-24269.vm.duke.edu";
+        String ip = "0.0.0.0";
         int port = 1653;
         // connect to server
         Socket roomSocket = null;
