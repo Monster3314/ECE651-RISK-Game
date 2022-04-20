@@ -166,17 +166,6 @@ public class TextPlayer extends Player{
     int readNumber;
     String inputString;
     while (true) {
-      //TODO:Support multiple units
-      Unit u = units.get(0);
-      StringBuilder promptMsg = new StringBuilder();
-      promptMsg.append("You have " + Integer.toString(u.getNum()) + " units.\n");
-      promptMsg.append(prompt + "\n");
-      printPromptMsg(promptMsg.toString());
-
-      s = inputReader.readLine();
-      if (s == null) {
-        throw new EOFException("EOF");
-      }
       try {
         inputString = inputReader.readLine();
         if (inputString == null) {

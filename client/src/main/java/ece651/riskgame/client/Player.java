@@ -217,6 +217,30 @@ public abstract class Player {
   public Integer getGold() {
     return theGame.getClans().get(color).getResource().getResourceNum(Resource.GOLD);
   }
+
+  /**
+   * Check if player has visibility of certain territory
+   * @param territoryName is the name of the territory you want to check
+   * @return a boolean that shows if player has the visibility of this territory
+   * @throws IllegalArgumentException when unexisted territory name is given
+   */
+  
+  public boolean hasVisibilityOf(String territoryName) {
+    Territory toCheck = getTerritory(territoryName);
+    //Ownership
+    if (theGame.getClans().get(color).occupyTerritory(territoryName)) {
+      return true;
+    }
+    //Adjacency
+    for (Territory neighbour: theGame.getBoard().getNeighbors(toCheck)) {
+      if (theGame.getClans().get(color).occupyTerritory(neighbour.getName())) {
+        return true;
+      }
+    }
+    //TODO:Cloak
+
+    return false;
+  }
   
 
 }

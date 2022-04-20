@@ -169,8 +169,31 @@ public class PlayerTest {
     assertEquals(0, bluePlayer.getGold());
     assertEquals(new HashSet<String>(Arrays.asList("Cary", "Chapel Hill")), bluePlayer.getOccupies().stream().map(t -> t.getName()).collect(Collectors.toSet()));
   }
+  @Test
+  public void test_hasVisibilityOf() {
+    GameInfo theGame = getFourPlayerGame();
+    final TextPlayer redPlayer = new TextPlayer("Red", theGame);
+    assertTrue(redPlayer.hasVisibilityOf("Jiangsu"));
+    assertTrue(redPlayer.hasVisibilityOf("Shanghai"));
+    assertTrue(redPlayer.hasVisibilityOf("Anhui"));
+    assertFalse(redPlayer.hasVisibilityOf("Zhejiang"));
+    assertThrows(IllegalArgumentException.class, () -> redPlayer.hasVisibilityOf("Jiangxi"));
+    assertThrows(IllegalArgumentException.class, () -> redPlayer.hasVisibilityOf("Guangzhou"));
+    assertThrows(IllegalArgumentException.class, () -> redPlayer.hasVisibilityOf("Fujian"));
 
-  protected GameInfo getDefaultGame() {
+    final TextPlayer yellowPlayer = new TextPlayer("Yellow", theGame);
+    assertTrue(yellowPlayer.hasVisibilityOf("Jiangsu"));
+    assertTrue(yellowPlayer.hasVisibilityOf("Shanghai"));
+    assertTrue(yellowPlayer.hasVisibilityOf("Zhejiang"));
+    assertFalse(yellowPlayer.hasVisibilityOf("Anhui"));
+
+    assertThrows(IllegalArgumentException.class, () -> yellowPlayer.hasVisibilityOf("Jiangxi"));
+    assertThrows(IllegalArgumentException.class, () -> yellowPlayer.hasVisibilityOf("Guangzhou"));
+    assertThrows(IllegalArgumentException.class, () -> yellowPlayer.hasVisibilityOf("Fujian"));
+    
+  }
+
+  public static GameInfo getDefaultGame() {
     Board b = new Board();
     Map<String, Clan> clans = new HashMap<String, Clan>();
     GameInfo game = new GameInfo(b, clans);
@@ -195,7 +218,7 @@ public class PlayerTest {
     b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
     return game;
   }
-  protected GameInfo getAnotherGame() {
+  public static GameInfo getAnotherGame() {
     Board b = new Board();
     Map<String, Clan> clans = new HashMap<String, Clan>();
     GameInfo game = new GameInfo(b, clans);
@@ -220,7 +243,7 @@ public class PlayerTest {
     b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
     return game;
   }
-  protected GameInfo getEmptyGame() {
+  public static GameInfo getEmptyGame() {
     Board b = new Board();
     Map<String, Clan> players = new HashMap<String, Clan>();
     GameInfo g = new GameInfo(b, players);
@@ -245,7 +268,7 @@ public class PlayerTest {
     b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
     return g;
   }
-  protected GameInfo getInitialGame() {
+  public static GameInfo getInitialGame() {
      Board b = new Board();
     Map<String, Clan> players = new HashMap<String, Clan>();
     GameInfo g = new GameInfo(b, players);
@@ -267,7 +290,7 @@ public class PlayerTest {
     b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
     return g;
   }
-  protected GameInfo getFourPlayerGame() {
+  public static GameInfo getFourPlayerGame() {
     Board b = new Board();
     Map<String, Clan> clans = new HashMap<String, Clan>();
     GameInfo game = new GameInfo(b, clans);
