@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import ece651.riskgame.shared.BasicTerritory;
@@ -25,6 +26,10 @@ import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 
 public class PlayerTest {
+  @BeforeAll
+  public static void start() {
+    System.out.println("PlayerTest starting...");
+  }
   @Test
   public void test_PlayerConstructer() {
     GameInfo game = mock(GameInfo.class);
@@ -191,6 +196,31 @@ public class PlayerTest {
     b.addTerritory(t4);
     b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
     return game;
+  }
+  protected GameInfo getEmptyGame() {
+    Board b = new Board();
+    Map<String, Clan> players = new HashMap<String, Clan>();
+    GameInfo g = new GameInfo(b, players);
+    Territory t1 = new BasicTerritory("Durham");
+    Territory t2 = new BasicTerritory("Raleigh");
+    Territory t3 = new BasicTerritory("Cary");
+    Territory t4 = new BasicTerritory("Chapel Hill");
+    Clan c1 = new Clan(new LinkedList<Territory>(Arrays.asList()));
+    Clan c2 = new Clan(new LinkedList<Territory>(Arrays.asList(t1,t2,t3,t4)));
+    players.put("Red", c1);
+    players.put("Blue", c2);
+    t1.addUnit(new BasicUnit(4));
+    t2.addUnit(new BasicUnit(3));
+    t3.addUnit(new BasicUnit(1));
+    b.addTerritory(t1);
+    b.putEntry(t1, new LinkedList<Territory>(Arrays.asList(t2, t3)));
+    b.addTerritory(t2);
+    b.putEntry(t2, new LinkedList<Territory>(Arrays.asList(t1, t3)));
+    b.addTerritory(t3);
+    b.putEntry(t3, new LinkedList<Territory>(Arrays.asList(t1, t2)));
+    b.addTerritory(t4);
+    b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
+    return g;
   }
 
 }
