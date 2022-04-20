@@ -46,8 +46,9 @@ public class TextPlayerTest extends PlayerTest{
    TextPlayer player = createTextPlayer(input, bytes);
    player.doOneSpectation();
   }
+  //@Override
   @Test
-  public void test_update() {
+  public void test_updateGame() {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     String input = "";
     GameInfo oldGame = getDefaultGame();
@@ -71,7 +72,6 @@ public class TextPlayerTest extends PlayerTest{
     player = createTextPlayer(input, bytes);
     assertFalse(player.isLost());
   }
-
   @Test
   public void test_doGameOverPhase() throws IOException{
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();

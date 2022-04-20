@@ -17,6 +17,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import ece651.riskgame.shared.BasicTerritory;
@@ -29,6 +30,10 @@ import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 
 public class PlayerTest {
+  @BeforeAll
+  public static void start() {
+    System.out.println("PlayerTest starting...");
+  }
   @Test
   public void test_PlayerConstructer() {
     GameInfo game = mock(GameInfo.class);
