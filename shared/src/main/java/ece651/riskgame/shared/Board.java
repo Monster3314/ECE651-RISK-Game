@@ -1,16 +1,10 @@
 package ece651.riskgame.shared;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class Board implements Serializable {
+  //private static final long serialVersionUID = -5196897839043527760L;
   private HashMap<Territory, List<Territory>> adjacency;
   private Map<String, Territory> territories;
   
@@ -41,6 +35,10 @@ public class Board implements Serializable {
   
   public List<Territory> getTerritoriesList() {
     return new ArrayList<Territory>(territories.values());
+  }
+
+  public Collection<String> getTerritoryNames() {
+    return territories.keySet();
   }
 
   public boolean containsTerritory(String name) {

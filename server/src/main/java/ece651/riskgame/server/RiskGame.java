@@ -9,26 +9,45 @@ import java.util.*;
 
 import ece651.riskgame.shared.*;
 
-public class RiskGame {
+public class RiskGame implements Runnable{
 
   private Map<Socket, String> sockets; // A map of sockets and their colors
   private Map<Socket, ObjectOutputStream> oosMap;
   private Map<Socket, ObjectInputStream> oisMap;
   private Map<String, Boolean> online;
+  private Map<String, String> nameColorMap;
 
   /**
    * The board(map) of game, storing all territories and their adjacencies
    */
   private World world;
   private int playerNumber;
-  private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(null));
-  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(null)));
-
+  private ActionRuleChecker MoveActionChecker = new MovePathChecker(new UnitsRuleChecker(new SufficientResourceChecker(null)));
+  private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(new SufficientResourceChecker(null))));
+  private ActionRuleChecker upgradeUnitChecker = new SufficientUnitChecker(new SufficientResourceChecker(null));
+  private ActionRuleChecker upgradeTechChecker = new SufficientResourceChecker(null);
+  private serverRoom roominfo;
   private Logger logger = Logger.getInstance();
 
   /**
    * Constructor with specifying player number
    */
+  public RiskGame(int playerNum, String territoryListFile, String adjacencyListFile, serverRoom roominfo) throws IOException {
+    playerNumber = playerNum;
+    world = new World(playerNum, territoryListFile, adjacencyListFile);
+    sockets = roominfo.sockets;
+    oosMap = roominfo.oosMap;
+    oisMap = roominfo.oisMap;
+    online = roominfo.online;
+    nameColorMap = roominfo.nameColorMap;
+    this.roominfo = roominfo;
+  }
+
+  
+  /**
+   * Constructor with specifying player number
+   */
+  @Deprecated
   public RiskGame(int playerNum) throws IOException {
     playerNumber = playerNum;
     world = new World(playerNum);
@@ -38,6 +57,7 @@ public class RiskGame {
     online = new HashMap<>();
   }
 
+  
   /**
    * Initialize each connected player, send color to client
    */
@@ -47,8 +67,10 @@ public class RiskGame {
       String color = world.addClan();
       sockets.put(socket, color);
       online.put(color, true);
-      ObjectOutputStream oos = oosMap.get(socket);
-      oos.writeObject(color);
+      nameColorMap.put(roominfo.socketUsernameMap.get(socket), color);
+      //ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+      //oosMap.put(socket, oos);
+      oosMap.get(socket).writeObject(color);
     }
     logger.flushBuffer();
   }
@@ -56,24 +78,16 @@ public class RiskGame {
   /**
    * Wait for players to connect
    */
-  private void waitForPlayers(ServerSocket ss, int playerNum) throws IOException {
+  private void waitForPlayers(int playerNum) throws IOException {
     logger.writeLog("Begin to wait for " + playerNum + " players.");
-    for (int i = 0; i < playerNum; i++) { // what if player exits while waiting for other players
-      Socket socket = ss.accept();
-      logger.writeLog("Player " + i + " connected successfully!");
-      sockets.put(socket, null);
-      ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
-      oosMap.put(socket, oos);
-      ObjectInputStream ois = new ObjectInputStream(socket.getInputStream());
-      oisMap.put(socket, ois);
-    }
+    while(sockets.size() != playerNum);  //TODO: selfspin
     logger.flushBuffer();
   }
 
   /**
    * Get the GameInfo of current round/initialization.
    */
-  private GameInfo getCurrentGameInfo() {
+  public GameInfo getCurrentGameInfo() {
     return world.getGameInfo();
   }
 
@@ -89,6 +103,9 @@ public class RiskGame {
         oos.reset();
         oos.writeObject(gi);
       } catch (IOException e) {
+        sockets.remove(player.getKey());
+        oosMap.remove(player.getKey());
+        oisMap.remove(player.getKey());
         online.put(player.getValue(), false);
         logger.writeLog("Player " + player.getValue() + " disconnect");
       }
@@ -133,13 +150,17 @@ public class RiskGame {
    */
   @SuppressWarnings("unchecked")
   private List<Action> readActions() {
+    Set<String> nowUsers = new HashSet<>(sockets.values());
     List<Action> Actions = new ArrayList<>();
     for(Map.Entry<Socket, String> player : sockets.entrySet()) {
-      if(!isAlive(player.getValue()) || !isOnline(player.getValue())) continue;
+      if(!nowUsers.contains(player.getValue())|| !isAlive(player.getValue()) || !isOnline(player.getValue())) continue;
       ObjectInputStream ois = oisMap.get(player.getKey());
       try {
         Actions.addAll((List<Action>) ois.readObject());
-      } catch (Exception ignored) {
+      } catch (Exception e) {
+        sockets.remove(player.getKey());
+        oosMap.remove(player.getKey());
+        oisMap.remove(player.getKey());
         online.put(player.getValue(), false);
         logger.writeLog("Player " + player.getValue() + " disconnect");
       }
@@ -155,43 +176,74 @@ public class RiskGame {
     List<Action> Actions = readActions();
     if(Actions.size() == 0) return;
 
-    List<Move> moves = new ArrayList<>();
+    List<Action> movesAndUpgradeUnits = new ArrayList<>();
     List<Attack> attacks = new ArrayList<>();
+    List<UpgradeTechAction> upgradeTechActions = new ArrayList<>();
 
     for (Action a : Actions) {
-      if (a.getClass() == Move.class) {
-        moves.add((Move) a);
-        continue;
-      }
-      //if (a.getClass() == Attack.class) {
-      else { // for coverage
+      if (a.getClass() == Attack.class) {
         attacks.add((Attack) a);
-        continue;
+      }
+      else if (a.getClass() == UpgradeTechAction.class) {
+        upgradeTechActions.add((UpgradeTechAction) a);
+      }
+      else { // for coverage
+        movesAndUpgradeUnits.add(a);
       }
     }
 
-    doMoveAction(moves);
+    doMoveAndUpgradeUnitAction(movesAndUpgradeUnits);
     doAttackAction(attacks);
+    doUpgradeLevelAction(upgradeTechActions);
 
     // TODO: Send to players before flushing
     logger.flushBuffer();
   }
 
+  private void doUpgradeLevelAction(List<UpgradeTechAction> upgradeTechActions) {
+    for (UpgradeTechAction action : upgradeTechActions) {
+      String checkResult = upgradeTechChecker.checkAction(world, action);
+      if (checkResult != null) {
+        // TODO: log
+        return;
+      }
+      world.acceptAction(action);
+    }
+  }
+
+  private void doMoveAndUpgradeUnitAction(List<Action> movesAndUpgradeUnits) {
+    for (Action a : movesAndUpgradeUnits) {
+      if (a.getClass() == Move.class) {
+        doMoveAction((Move) a);
+      }
+      else {
+        doUpgradeUnitAction((UpgradeUnitAction) a);
+      }
+    }
+  }
+
+  private void doUpgradeUnitAction(UpgradeUnitAction a) {
+    String checkResult = upgradeUnitChecker.checkAction(world, a);
+    if (checkResult != null) {
+      // TODO: log
+      return;
+    }
+    world.acceptAction(a);
+  }
+
   /**
    * do move action
-   * @param moveActions the list of Move actions
+   * @param a the Move action
    */
-  private void doMoveAction(List<Move> moveActions) {
-    for (Move a : moveActions) {
-      String checkResult = MoveActionChecker.checkAction(world, a);
-      if (checkResult != null) {
-        logger.writeLog("Discard " + a.getColor() + "'s move" + "(" + a.getFromTerritory() + ", " + a.getToTerritory()
-                + ", " + a.getUnit() + ") for reason: " + checkResult);
-        continue;
-      }
-      world.acceptAction(a);
-      logger.writeLog(a.getColor() + " player moves " + a.getUnit() + " from " + a.getFromTerritory() + " to " + a.getToTerritory() + ".");
+  private void doMoveAction(Move a) {
+    String checkResult = MoveActionChecker.checkAction(world, a);
+    if (checkResult != null) {
+      logger.writeLog("Discard " + a.getColor() + "'s move" + "(" + a.getFromTerritory() + ", " + a.getToTerritory()
+              + ", " + a.getUnit() + ") for reason: " + checkResult);
+      return;
     }
+    world.acceptAction(a);
+    logger.writeLog(a.getColor() + " player moves " + a.getUnit() + " from " + a.getFromTerritory() + " to " + a.getToTerritory() + ".");
   }
 
   /**
@@ -223,6 +275,11 @@ public class RiskGame {
   private void afterTurn() {
     for (Territory t : world.getBoard().getTerritoriesList()) {
       t.addUnit(new BasicUnit(1));
+    }
+    for (Clan clan : world.getClans().values()) {
+      if (clan.isActive()) {
+        clan.getTerritoryProduction();
+      }
     }
   }
 
@@ -265,22 +322,38 @@ public class RiskGame {
     for(Socket s: sockets.keySet()) s.close();
   }
 
-  public void run(int port) throws IOException, ClassNotFoundException, IllegalAccessException {
-    ServerSocket ss = new ServerSocket(port);
+  @Override
+  public void run() {
     // only one player is allowed now
-    waitForPlayers(ss, playerNumber);
-    initPlayers(); // assign color and territories for each player
-    sendGameInfo(getCurrentGameInfo()); // send a initial board without unit number to client
-    assignUnits(30);
-    sendGameInfo(getCurrentGameInfo());
-    GameInfo gi = getCurrentGameInfo();
-    while(stillHaveAlivePlayers() && (gi.getWinner() == null)) {
-      doAction();
-      afterTurn();
-      gi = getCurrentGameInfo();
-      sendGameInfo(gi);
+    try{
+      waitForPlayers(playerNumber);
+      initPlayers(); // assign color and territories for each player
+      sendGameInfo(getCurrentGameInfo()); // send a initial board without unit number to client
+//      printMoveCost();
+      assignUnits(30);
+      sendGameInfo(getCurrentGameInfo());
+      GameInfo gi = getCurrentGameInfo();
+      while(stillHaveAlivePlayers() && (gi.getWinner() == null)) {
+        doAction();
+        afterTurn();
+        gi = getCurrentGameInfo();
+        sendGameInfo(gi);
+      }
+      roominfo.close_status = true;
+      closeSockets();
+    } catch (Exception ignored) {
+      roominfo.close_status = true;
+      ignored.printStackTrace();
     }
-    ss.close();
-    closeSockets();
-  }    
+
+  }
+
+//  private void printMoveCost() {
+//    for (Map.Entry<String, Clan> entry : world.getClans().entrySet()) {
+//      for (Territory territory : entry.getValue().getOccupies()) {
+//        System.out.println(territory.getName());
+//        System.out.println(world.getUnitMoveCost(territory.getName(), entry.getKey()));
+//      }
+//    }
+//  }
 }

@@ -1,6 +1,7 @@
 package ece651.riskgame.shared;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.mockito.Mockito.when;
 
 import java.util.HashMap;
@@ -34,12 +35,12 @@ public class AdjacentTerritoryCheckerTest {
     when(actable.getBoard()).thenReturn(b);
 
     Unit unit = new BasicUnit(5);
-    Action act1 = new Move(unit, "t1", "t2", "color");
-    Action act2 = new Move(unit, "t1", "t3", "color");
+    Action act1 = new Move(List.of(unit), "t1", "t2", "color");
+    Action act2 = new Move(List.of(unit), "t1", "t3", "color");
 
     ActionRuleChecker urc = new AdjacentTerritoryChecker(null);
 
-    assertEquals(null, urc.checkMyRule(actable, act1));
+    assertNull(urc.checkMyRule(actable, act1));
     assertEquals("Departure and destination territories are not adjacent", urc.checkMyRule(actable, act2));    
   }
 

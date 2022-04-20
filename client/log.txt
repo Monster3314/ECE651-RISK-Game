@@ -1,0 +1,6 @@
+04-08 16:00:49  |  Begin to wait for 1 players.
+04-08 16:00:49  |  Player 0 connected successfully!
+04-08 16:00:49  |  Begin to initialize players information.
+04-08 16:00:50  |  Begin to wait for 1 players.
+04-08 16:00:50  |  Player 0 connected successfully!
+04-08 16:00:50  |  Begin to initialize players information.

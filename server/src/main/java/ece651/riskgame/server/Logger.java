@@ -41,6 +41,7 @@ public class Logger {
      * @return String logs in buffer
      */
     public Iterable<String> getBuffer() {
+        //filter
         return buffer;
     }
 

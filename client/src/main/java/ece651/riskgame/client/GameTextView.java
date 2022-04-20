@@ -36,26 +36,34 @@ public class GameTextView implements GameView {
   }
   
   /**
-   * Display Units information in text
+   * Get Units information in text
    * @return a string that represents the units  
    */
-  public String displayUnits(List<Unit> units) {
-    StringBuilder line = new StringBuilder();
+  public String getUnitsInfo(List<Unit> units) {
+    StringBuilder infoMsg = new StringBuilder();
+    infoMsg.append("Your Troops:");
     if (units.size() == 0) {
-      line.append("0 unit ");
+      infoMsg.append("\nNo Unit");
     }
     else {
       for (Unit unit : units) {
-        line.append(Integer.toString(unit.getNum()));
-        //TODO:unit has name
-        if (unit.getNum() > 1) {
-          line.append(" units ");
-        } else {
-          line.append(" unit ");
-        }
+        infoMsg.append("\n");
+        infoMsg.append(getUnitInfo(unit));
       }
     }
-    return line.toString();
+    return infoMsg.toString();
+  }
+
+  /**
+   * Get Unit information in Text:
+   * @return a string that represent unit name and number e.g. 4 Second Son
+   */  
+  public String getUnitInfo(Unit unit) {
+    StringBuilder infoMsg = new StringBuilder();
+    infoMsg.append(Integer.toString(unit.getNum()));
+    infoMsg.append(" ");
+    infoMsg.append(unit.getName());
+    return infoMsg.toString();
   }
   /**
    * Display a single Territory in text
@@ -65,7 +73,7 @@ public class GameTextView implements GameView {
     StringBuilder line = new StringBuilder();
     //territory units
     List<Unit> units = t.getUnits();
-    line.append(displayUnits(units));
+    line.append(getUnitsInfo(units));
     //territory name
     line.append("in ");
     line.append(t.getName());

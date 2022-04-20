@@ -15,22 +15,30 @@ public class World implements Actable{
   private Map<String, Clan> clans;  //the map for color of player and his clan
 
   private MapGenerator mapGenerator;
-  private List<String> colors = new ArrayList<>(Arrays.asList("Red", "Blue", "Green", "Yellow", "Pink"));
+  private List<String> colors = new ArrayList<>(Arrays.asList("red", "blue", "green", "mediumvioletred", "black"));
   private int colorUsed;
   private int playerNum;
 
   /**
    * Create board and clans, but only initialize board.
    */
-  public World(int playerNum) throws IOException {
+  public World(int playerNum, String territoryList, String adjacencyList) throws IOException {
     board = new Board();
     clans = new HashMap<>();
 
-    mapGenerator = new MapGenerator("territories.csv", "adjacency_list.csv");
+    mapGenerator = new MapGenerator(territoryList, adjacencyList);
     mapGenerator.apply(getBoard(), playerNum);
 
     colorUsed = 0;
     this.playerNum = playerNum;
+  }
+  
+  /**
+   * Create board and clans, but only initialize board.
+   */
+  @Deprecated
+  public World(int playerNum) throws IOException {
+    this(playerNum, "territories.csv", "adjacency_list.csv");
   }
 
   @Override
