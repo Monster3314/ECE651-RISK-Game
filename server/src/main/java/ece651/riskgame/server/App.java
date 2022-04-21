@@ -14,7 +14,7 @@ public class App {
   Map<Integer, serverRoom> gameRooms;
 
   public App() throws IOException {
-    roomManager = new RoomManager(1651);
+    roomManager = new RoomManager(1653);
     login = new Login("userTable.txt");
     gameRooms = new ConcurrentHashMap<>();
     roomManager.setGameRooms(gameRooms);
