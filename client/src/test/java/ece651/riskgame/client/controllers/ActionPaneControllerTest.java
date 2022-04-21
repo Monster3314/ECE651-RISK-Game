@@ -9,6 +9,7 @@ import static org.mockito.Mockito.when;
 import java.io.IOException;
 
 import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.framework.junit5.ApplicationExtension;
@@ -61,6 +62,7 @@ public class ActionPaneControllerTest {
   }
   
   @Test
+  @Disabled
   public void test_submitAction() throws IOException {
     MenuButton from = new MenuButton("US");
     from.setId("from");

@@ -28,6 +28,7 @@ public class UpgradePaneControllerTest {
   private Pane pane;
   private UpgradePaneController upgradePaneController;
   private GUIPlayer guiPlayer;
+  private TopBarController topBarController;
 
   @Start
   private void start(Stage stage) {
@@ -35,9 +36,11 @@ public class UpgradePaneControllerTest {
     guiPlayer = mock(GUIPlayer.class);
     gameController = mock(GameController.class);
     gameController.guiPlayer = guiPlayer;
+    topBarController = mock(TopBarController.class);
     upgradePaneController = new UpgradePaneController();
     upgradePaneController.pane = pane;
     upgradePaneController.gameController = gameController;
+    gameController.topBarController = topBarController;
   }
 
   @AfterAll
@@ -88,7 +91,7 @@ public class UpgradePaneControllerTest {
     from.setText("North Army");
     to.setText("Golden Company");
     upgradePaneController.submitAction();
-    verify(gameController).updateTopBar();
+
     verify(gameController, times(2)).updateHint(any());
 
     // negative number

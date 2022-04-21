@@ -45,8 +45,9 @@ public class GameController implements Initializable {
   ActionPaneController actionPaneController;
   @FXML
   UpgradePaneController upgradePaneController;
+  @FXML
+  TopBarController topBarController;
 
-  String username;
   GUIPlayer guiPlayer;
   GameIO gameIO;
   Parent roomPane;
@@ -56,15 +57,14 @@ public class GameController implements Initializable {
   @FXML
   Label hint;
 
+
   public GameController(GUIPlayer p, GameIO gameIO) {
     guiPlayer = p;
     this.gameIO = gameIO;
-    username = p.getColor();
   }
 
   public GameController(GUIPlayer p) {
     guiPlayer = p;
-    username = p.getColor();
   }
 
   public void setGameIO(GameIO gameIO) {
@@ -85,28 +85,6 @@ public class GameController implements Initializable {
 
   public void updateHint(String s) {
     hint.setText(s);
-  }
-
-  @FXML
-  public void levelUp(MouseEvent me) {
-    Action lu = new UpgradeTechAction(guiPlayer.getColor());
-    String result = guiPlayer.tryApplyAction(lu);
-    if (result != null) {
-      updateHint(result);
-    } else {
-      updateHint("Level up!");
-      updateTopBar();
-      guiPlayer.addActionToSend(lu);
-      disableLevelUpButton();
-    }
-  }
-
-  public void disableLevelUpButton() {
-    ((Button) scene.lookup("#levelUp")).setDisable(true);
-  }
-
-  public void activateLevelUpButton() {
-    ((Button) scene.lookup("#levelUp")).setDisable(false);
   }
 
   @FXML
@@ -210,7 +188,7 @@ public class GameController implements Initializable {
   }
 
   public void initializeGame() throws IOException, ClassNotFoundException {
-    setUsername(scene, guiPlayer.getColor());
+    topBarController.setUsername(guiPlayer.getColor());
     setAvailableTerritories(scene, guiPlayer.getTerritoryNames());
     disableButtonsInPlacement();
     placementPaneController.setPlacementPaneLabels();
@@ -218,24 +196,6 @@ public class GameController implements Initializable {
     setHint();
 
     updateTerritoryColors();
-  }
-
-  /**
-   * Set username of the game
-   */
-  public void setUsername(Parent scene, String name) {
-    ((Labeled) scene.lookup("#playerName")).setText(name);
-  }
-
-  /**
-   * Update food, gold, food
-   */
-  public void updateTopBar() {
-    System.out.println("topbar update");
-    System.out.println(guiPlayer.getFood());
-    ((Label) scene.lookup("#playerFood")).setText("Food: " + Integer.toString(guiPlayer.getFood()));
-    ((Label) scene.lookup("#playerGold")).setText("Gold: " + Integer.toString(guiPlayer.getGold()));
-    ((Label) scene.lookup("#playerLevel")).setText("Level: " + Integer.toString(guiPlayer.getTechLevel()));
   }
 
   /**
@@ -302,7 +262,7 @@ public class GameController implements Initializable {
     activateButtonsAfterPlacement();
     set3ButtonsUnselected();
     set3ActionPanesInvisible();
-    updateTopBar();
+    topBarController.updateTopBar();
   }
 
   /**
@@ -379,8 +339,8 @@ public class GameController implements Initializable {
     set3ActionPanesInvisible();
     set3ButtonsUnselected();
     updateCurrentTerritoryInfo();
-    updateTopBar();
-    activateLevelUpButton();
+    topBarController.updateTopBar();
+    topBarController.activateLevelUpButton();
     // TODO update level
     isLostOrWin();
   }
@@ -390,13 +350,13 @@ public class GameController implements Initializable {
    */
   public void displayGame() {
     disableButtonsButLogout();
-    setUsername(scene, guiPlayer.getColor());
+    topBarController.setUsername(guiPlayer.getColor());
     setAvailableTerritories(scene, guiPlayer.getTerritoryNames());
     setHint();
 
     upgradePaneController.setUpgradePane();
     // update/display information
-    updateTopBar();
+    topBarController.updateTopBar();
     updateTerritoryColors();
     set3ActionPanesInvisible();
     set3ButtonsUnselected();
@@ -431,6 +391,8 @@ public class GameController implements Initializable {
     actionPaneController.pane = (Pane) scene.lookup("#actionPane");
     upgradePaneController.gameController = this;
     upgradePaneController.pane = (Pane) scene.lookup("#upgradePane");
+    topBarController.gameController = this;
+    topBarController.guiPlayer = this.guiPlayer;
   }
 
   @FXML

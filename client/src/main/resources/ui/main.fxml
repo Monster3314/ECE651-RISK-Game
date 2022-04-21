@@ -2,131 +2,115 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.MenuButton?>
-<?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.TextField?>
 <?import javafx.scene.effect.DropShadow?>
 <?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.Pane?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<Pane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="823.0" prefWidth="1138.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ece651.riskgame.client.controllers.GameController" fx:id="scene">
+<Pane fx:id="scene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="823.0" prefWidth="1138.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ece651.riskgame.client.controllers.GameController">
    <children>
       <ImageView fitHeight="829.0" fitWidth="1138.0" layoutY="-2.0" pickOnBounds="true">
          <image>
             <Image url="@css/img/map.jpeg" />
          </image>
       </ImageView>
-      <Button fx:id="nextTurn" layoutX="913.0" layoutY="770.0" mnemonicParsing="false" opacity="0.2" prefHeight="25.0" prefWidth="138.0" text="Next Turn" textFill="TRANSPARENT" onMouseClicked="#nextTurn"/>
+      <Button fx:id="nextTurn" layoutX="913.0" layoutY="770.0" mnemonicParsing="false" onMouseClicked="#nextTurn" opacity="0.2" prefHeight="25.0" prefWidth="138.0" text="Next Turn" textFill="TRANSPARENT" />
       <Label fx:id="hint" layoutX="312.0" layoutY="62.0" prefHeight="53.0" prefWidth="504.0" text="Hint" textFill="WHITE">
          <font>
             <Font size="18.0" />
          </font>
       </Label>
-      <Label fx:id="playerName" layoutX="14.0" layoutY="4.0" prefHeight="31.0" prefWidth="110.0" text="Name: Zhiwei Zhou" textFill="WHITE" style="-fx-font-size:20;" alignment="CENTER"/>
-      <Label fx:id="playerFood" layoutX="137.0" layoutY="4.0" prefHeight="31.0" prefWidth="72.0" text="Food: 0" textFill="WHITE" />
-      <Button fx:id="logout" layoutX="1025.0" layoutY="6.0" mnemonicParsing="false" opacity="0.2" prefHeight="18.0" prefWidth="93.0" text="logout" textFill="TRANSPARENT" onMouseClicked="#logout">
+      <Button fx:id="logout" layoutX="1025.0" layoutY="6.0" mnemonicParsing="false" onMouseClicked="#logout" opacity="0.2" prefHeight="18.0" prefWidth="93.0" text="logout" textFill="TRANSPARENT">
          <font>
             <Font size="10.0" />
          </font>
       </Button>
-      <Button layoutX="347.0" layoutY="217.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="74.0" rotate="-41.2" text="North" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="NorthTerritory">
+      <Button id="NorthTerritory" layoutX="347.0" layoutY="217.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" prefHeight="25.0" prefWidth="74.0" rotate="-41.2" text="North" textFill="TRANSPARENT">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Label fx:id="playerGold" layoutX="207.0" layoutY="4.0" prefHeight="31.0" prefWidth="72.0" text="Gold: 0" textFill="WHITE" />
-      <Label fx:id="playerLevel" layoutX="271.0" layoutY="4.0" prefHeight="31.0" prefWidth="60.0" text="Level: 1" textFill="WHITE" />
-      <Button layoutX="486.0" layoutY="198.0" mnemonicParsing="false" opacity="0.15" text="Dorne" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="DorneTerritory">
+      <Button id="DorneTerritory" layoutX="486.0" layoutY="198.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" text="Dorne" textFill="TRANSPARENT">
          <font>
             <Font size="18.0" />
          </font>
       </Button>
-      <Button layoutX="660.0" layoutY="220.0" mnemonicParsing="false" opacity="0.15" text="Reach" textFill="TRANSPARENT"
-              onMouseClicked="#showTerritoryInfo"
-              id="ReachTerritory">
+      <Button id="ReachTerritory" layoutX="660.0" layoutY="220.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" text="Reach" textFill="TRANSPARENT">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="701.0" layoutY="297.0" mnemonicParsing="false" opacity="0.15" prefHeight="29.0" prefWidth="70.0" rotate="-29.7" text="Asshai" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="AsshaiTerritory">
+      <Button id="AsshaiTerritory" layoutX="701.0" layoutY="297.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" prefHeight="29.0" prefWidth="70.0" rotate="-29.7" text="Asshai" textFill="TRANSPARENT">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="330.0" layoutY="336.0" mnemonicParsing="false" opacity="0.15" rotate="-7.1" text="Vale" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="ValeTerritory">
+      <Button id="ValeTerritory" layoutX="330.0" layoutY="336.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" rotate="-7.1" text="Vale" textFill="TRANSPARENT">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="385.0" layoutY="350.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="-51.3" text="Stormlands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="StormlandsTerritory"/>
-      <Button layoutX="508.0" layoutY="318.0" mnemonicParsing="false" opacity="0.15" rotate="-6.0" text="Riverlands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="RiverlandsTerritory">
+      <Button id="StormlandsTerritory" layoutX="385.0" layoutY="350.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="-51.3" text="Stormlands" textFill="TRANSPARENT" />
+      <Button id="RiverlandsTerritory" layoutX="508.0" layoutY="318.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" rotate="-6.0" text="Riverlands" textFill="TRANSPARENT">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="263.0" layoutY="490.0" mnemonicParsing="false" opacity="0.15" prefHeight="35.0" prefWidth="117.0" rotate="63.4" text="Westerlands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="WesterlandsTerritory">
+      <Button id="WesterlandsTerritory" layoutX="263.0" layoutY="490.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" prefHeight="35.0" prefWidth="117.0" rotate="63.4" text="Westerlands" textFill="TRANSPARENT">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="460.0" layoutY="512.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="26.6" text="Crowlands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="CrowlandsTerritory">
+      <Button id="CrowlandsTerritory" layoutX="460.0" layoutY="512.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="26.6" text="Crowlands" textFill="TRANSPARENT">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="357.0" layoutY="588.0" mnemonicParsing="false" opacity="0.15" prefHeight="30.0" prefWidth="117.0" rotate="-24.0" text="Dothraki Sea" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Dothraki SeaTerritory">
+      <Button id="Dothraki SeaTerritory" layoutX="357.0" layoutY="588.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" prefHeight="30.0" prefWidth="117.0" rotate="-24.0" text="Dothraki Sea" textFill="TRANSPARENT">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="565.0" layoutY="456.0" mnemonicParsing="false" opacity="0.15" rotate="-26.6" text="Slaver's bay" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Slaver's bayTerritory">
+      <Button id="Slaver's bayTerritory" layoutX="565.0" layoutY="456.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" rotate="-26.6" text="Slaver's bay" textFill="TRANSPARENT">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="718.0" layoutY="391.0" mnemonicParsing="false" opacity="0.15" text="Qarth" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="QarthTerritory">
+      <Button id="QarthTerritory" layoutX="718.0" layoutY="391.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" text="Qarth" textFill="TRANSPARENT">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="771.0" layoutY="478.0" mnemonicParsing="false" opacity="0.15" rotate="-66.8" text="Free cities" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Free citiesTerritory">
+      <Button id="Free citiesTerritory" layoutX="771.0" layoutY="478.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" rotate="-66.8" text="Free cities" textFill="TRANSPARENT">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="638.0" layoutY="574.0" mnemonicParsing="false" opacity="0.15" text="Beyond the wall" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="Beyond the wallTerritory">
+      <Button id="Beyond the wallTerritory" layoutX="638.0" layoutY="574.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" text="Beyond the wall" textFill="TRANSPARENT">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="521.0" layoutY="618.0" mnemonicParsing="false" opacity="0.15" prefHeight="31.0" prefWidth="110.0" rotate="-10.0" text="Iron islands" textFill="TRANSPARENT"  onMouseClicked="#showTerritoryInfo" id="Iron islandsTerritory"/>
-      <Button fx:id="moveButton" layoutX="16.0" layoutY="133.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="50.0" style="-fx-background-color: #AF9468;" text="Move" textFill="WHITE" onMouseClicked="#selectMovePane">
+      <Button id="Iron islandsTerritory" layoutX="521.0" layoutY="618.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" prefHeight="31.0" prefWidth="110.0" rotate="-10.0" text="Iron islands" textFill="TRANSPARENT" />
+      <Button fx:id="moveButton" layoutX="16.0" layoutY="133.0" mnemonicParsing="false" onMouseClicked="#selectMovePane" prefHeight="38.0" prefWidth="50.0" style="-fx-background-color: #AF9468;" text="Move" textFill="WHITE">
          <effect>
             <Glow />
          </effect></Button>
-      <Button fx:id="attackButton" layoutX="78.0" layoutY="133.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="60.0" style="-fx-background-color: #AF9468;" text="Attack" textFill="WHITE" onMouseClicked="#selectAttackPane">
+      <Button fx:id="attackButton" layoutX="78.0" layoutY="133.0" mnemonicParsing="false" onMouseClicked="#selectAttackPane" prefHeight="38.0" prefWidth="60.0" style="-fx-background-color: #AF9468;" text="Attack" textFill="WHITE">
          <effect>
             <Glow />
          </effect></Button>
-      <Button fx:id="upgradeButton" layoutX="148.0" layoutY="132.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="70.0" style="-fx-background-color: #AF9468;" text="Upgrade" textFill="WHITE" onMouseClicked="#selectUpgradePane">
+      <Button fx:id="upgradeButton" layoutX="148.0" layoutY="132.0" mnemonicParsing="false" onMouseClicked="#selectUpgradePane" prefHeight="38.0" prefWidth="70.0" style="-fx-background-color: #AF9468;" text="Upgrade" textFill="WHITE">
          <effect>
             <Glow />
          </effect></Button>
       <VBox fx:id="infoView" layoutX="945.0" layoutY="228.0" prefHeight="405.0" prefWidth="183.0" />
-      <fx:include source="placementPane.fxml" layoutX="37.0" layoutY="184.0" fx:id="placementPane" />
-      <fx:include source="ActionPane.fxml" layoutX="37.0" layoutY="184.0" fx:id="actionPane" visible="false"/>
-      <fx:include source="upgradePane.fxml" layoutX="37.0" layoutY="184.0" fx:id="upgradePane" visible="false"/>
-      <Button layoutX="331.0" layoutY="4.0" mnemonicParsing="false" prefHeight="26.0" prefWidth="71.0" style="-fx-background-color: #9ea1a2;" text="Level UP!" id="levelUp" onMouseClicked="#levelUp">
-         <effect>
-            <DropShadow />
-         </effect>
-      </Button>
+      <fx:include fx:id="placementPane" layoutX="37.0" layoutY="184.0" source="placementPane.fxml" />
+      <fx:include fx:id="actionPane" layoutX="37.0" layoutY="184.0" source="ActionPane.fxml" visible="false" />
+      <fx:include fx:id="upgradePane" layoutX="37.0" layoutY="184.0" source="upgradePane.fxml" visible="false" />
+      <fx:include fx:id="topBar" source="topbar.fxml" layoutX="17.0" layoutY="-1.0"/>
    </children>
 </Pane>
