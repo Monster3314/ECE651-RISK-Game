@@ -17,18 +17,18 @@ public class Login implements Runnable{
 
     private Map<String, String> userTable;
 
-    private BufferedWriter wr;
-
     private ServerSocket loginSocket;
 
     private Socket player;
+
+    private String tableTxt;
 
     private Map<Integer, serverRoom> gameRooms;
 
     public Login(String tableTxt) throws IOException {
         userTable = new ConcurrentHashMap<>();
+        this.tableTxt = tableTxt;
         readFile(tableTxt);
-        wr = new BufferedWriter(new FileWriter(tableTxt));
     }
 
     public void setGameRooms(Map<Integer, serverRoom> gameRooms) {
@@ -53,6 +53,13 @@ public class Login implements Runnable{
             Thread t = new Thread(this);
             t.start();
         }
+    }
+
+    public void writeToText(String userinfo) throws IOException {
+        BufferedWriter wr = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(tableTxt, true)));
+        wr.write(userinfo);
+        wr.flush();
+        wr.close();
     }
 
     @Override
@@ -104,8 +111,10 @@ public class Login implements Runnable{
                     oos.writeObject("no");
                 }
             } else {  //user register
-                userTable.put(userinfo.getUsername(), userinfo.getPassword());
-                wr.write(userinfo.getUsername() + "," + userinfo.getPassword() + "\n");
+                if(!userTable.containsKey(userinfo.getUsername())) {
+                    userTable.put(userinfo.getUsername(), userinfo.getPassword());
+                    writeToText(userinfo.getUsername() + "," + userinfo.getPassword() + "\n");
+                }
                 oos.writeObject("no");
             }
             oos.flush();

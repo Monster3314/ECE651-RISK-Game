@@ -236,6 +236,7 @@ public class GameController implements Initializable {
   public void updateTerritoryColors() {
     for (String color : guiPlayer.getGame().getClans().keySet()) {
       for (Territory t : guiPlayer.getGame().getClans().get(color).getOccupies()) {
+        System.out.println(t.getName());
         ((Button) scene.lookup("#" + t.getName() + "Territory")).setStyle("-fx-background-color:" + color);
       }
     }
@@ -366,8 +367,9 @@ public class GameController implements Initializable {
   }
   
   public void reconnect() throws ClassNotFoundException, IOException {    
-    gameIO.recvGame();
-    activateButtons();    
+    guiPlayer.updateGame(gameIO.recvGame());
+    displayGame();
+    activateButtons();
     // check lose or win
     isLostOrWin();
   }
@@ -420,7 +422,7 @@ public class GameController implements Initializable {
   public void logout() throws IOException {
     if(gameIO == null) scene.getScene().setRoot(roomPane);
     else {
-      //gameIO.close();
+      gameIO.close();
       scene.getScene().setRoot(roomPane);
     }
   }

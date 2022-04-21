@@ -150,9 +150,10 @@ public class RiskGame implements Runnable{
    */
   @SuppressWarnings("unchecked")
   private List<Action> readActions() {
+    Set<String> nowUsers = new HashSet<>(sockets.values());
     List<Action> Actions = new ArrayList<>();
     for(Map.Entry<Socket, String> player : sockets.entrySet()) {
-      if(!isAlive(player.getValue()) || !isOnline(player.getValue())) continue;
+      if(!nowUsers.contains(player.getValue())|| !isAlive(player.getValue()) || !isOnline(player.getValue())) continue;
       ObjectInputStream ois = oisMap.get(player.getKey());
       try {
         Actions.addAll((List<Action>) ois.readObject());
@@ -341,6 +342,7 @@ public class RiskGame implements Runnable{
       roominfo.close_status = true;
       closeSockets();
     } catch (Exception ignored) {
+      roominfo.close_status = true;
       ignored.printStackTrace();
     }
 
