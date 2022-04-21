@@ -1,17 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.effect.Glow?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
 <Pane fx:id="scene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="823.0" prefWidth="1138.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ece651.riskgame.client.controllers.GameController">
    <children>
-      <ImageView fitHeight="829.0" fitWidth="1138.0" layoutY="-2.0" pickOnBounds="true">
+      <ImageView fitHeight="829.0" fitWidth="1138.0" layoutX="2.0" layoutY="-3.0" pickOnBounds="true">
          <image>
             <Image url="@css/img/map.jpeg" />
          </image>
@@ -63,17 +68,17 @@
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="460.0" layoutY="512.0" mnemonicParsing="false" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="26.6" text="Crownlands" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="CrownlandsTerritory">
+      <Button id="CrownlandsTerritory" layoutX="460.0" layoutY="512.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" prefHeight="25.0" prefWidth="110.0" rotate="26.6" text="Crownlands" textFill="TRANSPARENT">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="357.0" layoutY="588.0" mnemonicParsing="false" opacity="0.15" prefHeight="30.0" prefWidth="117.0" rotate="-24.0" text="Dothrakisea" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="DothrakiseaTerritory">
+      <Button id="DothrakiseaTerritory" layoutX="357.0" layoutY="588.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" prefHeight="30.0" prefWidth="117.0" rotate="-24.0" text="Dothrakisea" textFill="TRANSPARENT">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="565.0" layoutY="456.0" mnemonicParsing="false" opacity="0.15" rotate="-26.6" text="Slaverbay" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="SlaverbayTerritory">
+      <Button id="SlaverbayTerritory" layoutX="565.0" layoutY="456.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" rotate="-26.6" text="Slaverbay" textFill="TRANSPARENT">
          <font>
             <Font size="15.0" />
          </font>
@@ -83,18 +88,18 @@
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="771.0" layoutY="478.0" mnemonicParsing="false" opacity="0.15" rotate="-66.8" text="Freecities" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="FreecitiesTerritory">
+      <Button id="FreecitiesTerritory" layoutX="771.0" layoutY="478.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" rotate="-66.8" text="Freecities" textFill="TRANSPARENT">
          <font>
             <Font size="16.0" />
          </font>
       </Button>
-      <Button layoutX="638.0" layoutY="574.0" mnemonicParsing="false" opacity="0.15" text="Beyondthewall" textFill="TRANSPARENT" onMouseClicked="#showTerritoryInfo" id="BeyondthewallTerritory">
+      <Button id="BeyondthewallTerritory" layoutX="638.0" layoutY="574.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" text="Beyondthewall" textFill="TRANSPARENT">
          <font>
             <Font size="15.0" />
          </font>
       </Button>
-      <Button layoutX="521.0" layoutY="618.0" mnemonicParsing="false" opacity="0.15" prefHeight="31.0" prefWidth="110.0" rotate="-10.0" text="Ironislands" textFill="TRANSPARENT"  onMouseClicked="#showTerritoryInfo" id="IronislandsTerritory"/>
-      <Button fx:id="moveButton" layoutX="16.0" layoutY="133.0" mnemonicParsing="false" prefHeight="38.0" prefWidth="50.0" style="-fx-background-color: #AF9468;" text="Move" textFill="WHITE" onMouseClicked="#selectMovePane">
+      <Button id="IronislandsTerritory" layoutX="521.0" layoutY="618.0" mnemonicParsing="false" onMouseClicked="#showTerritoryInfo" opacity="0.15" prefHeight="31.0" prefWidth="110.0" rotate="-10.0" text="Ironislands" textFill="TRANSPARENT" />
+      <Button fx:id="moveButton" layoutX="16.0" layoutY="133.0" mnemonicParsing="false" onMouseClicked="#selectMovePane" prefHeight="38.0" prefWidth="50.0" style="-fx-background-color: #AF9468;" text="Move" textFill="WHITE">
          <effect>
             <Glow />
          </effect></Button>
@@ -106,7 +111,162 @@
          <effect>
             <Glow />
          </effect></Button>
-      <VBox fx:id="infoView" layoutX="945.0" layoutY="228.0" prefHeight="405.0" prefWidth="183.0" />
+      <VBox fx:id="infoView" layoutX="945.0" layoutY="228.0" prefHeight="405.0" prefWidth="183.0">
+         <children>
+            <VBox prefHeight="216.0" prefWidth="173.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="20.0" prefWidth="173.0">
+                     <children>
+                        <Label fx:id="territoryName" alignment="CENTER" text="Garrett West" textFill="WHITE">
+                           <font>
+                              <Font size="19.0" />
+                           </font>
+                        </Label>
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </HBox>
+                  <VBox prefHeight="202.0" prefWidth="173.0">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
+                           <children>
+                              <Label text="Vale Knights                    " textFill="WHITE" />
+                              <Label fx:id="unitNum0" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
+                           <children>
+                              <Label text="North Army                      " textFill="WHITE" />
+                              <Label fx:id="unitNum1" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
+                           <children>
+                              <Label text="Second Sons                   " textFill="WHITE" />
+                              <Label fx:id="unitNum2" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
+                           <children>
+                              <Label text="Iron Fleet                           " textFill="WHITE" />
+                              <Label fx:id="unitNum3" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
+                           <children>
+                              <Label text="Unsullied                           " textFill="WHITE" />
+                              <Label fx:id="unitNum4" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
+                           <children>
+                              <Label text="Golden Company          " textFill="WHITE" />
+                              <Label fx:id="unitNum5" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
+                           <children>
+                              <Label text="Dead Army                       " textFill="WHITE" />
+                              <Label fx:id="unitNum6" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                        <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
+                           <children>
+                              <Label text="Spy                                      " textFill="WHITE" />
+                              <Label fx:id="unitNum61" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                           </children>
+                        </HBox>
+                     </children>
+                     <padding>
+                        <Insets left="5.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </VBox>
+            <VBox prefHeight="70.0" prefWidth="173.0">
+               <children>
+                  <HBox alignment="CENTER" prefHeight="24.0" prefWidth="173.0">
+                     <children>
+                        <Label contentDisplay="CENTER" text="Land Statistics" textFill="WHITE">
+                           <font>
+                              <Font size="17.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                     </children>
+                  </HBox>
+                  <GridPane alignment="CENTER">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="58.0" text="Gold" textFill="WHITE" />
+                        <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="65.0" text="Food" textFill="WHITE" GridPane.columnIndex="1" />
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="76.0" text="Size" textFill="WHITE" GridPane.columnIndex="2" />
+                        <Label fx:id="goldProduction" alignment="CENTER" prefHeight="17.0" prefWidth="72.0" text="Procut" textFill="WHITE" GridPane.rowIndex="1" />
+                        <Label fx:id="foodProduction" alignment="CENTER" prefHeight="17.0" prefWidth="76.0" text="production" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="77.0" text="comsuption" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                     </children>
+                  </GridPane>
+               </children>
+            </VBox>
+            <HBox prefHeight="120.0" prefWidth="173.0">
+               <children>
+                  <VBox fx:id="neighborsBox" prefHeight="137.0" prefWidth="102.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="91.0" text="Neighbors" textFill="WHITE">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets bottom="4.0" top="3.0" />
+                           </VBox.margin>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <VBox prefHeight="137.0" prefWidth="60.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="23.0" prefWidth="86.0" text="Cloak" textFill="WHITE">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="cloakDeveloped" alignment="CENTER" prefHeight="23.0" prefWidth="90.0" text="Undeveloped" textFill="WHITE">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets bottom="5.0" top="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <ImageView fx:id="cloakBtn" fitHeight="36.0" fitWidth="69.0" onMouseClicked="#cloak" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../img/develop_cloak.png" />
+                           </image>
+                           <VBox.margin>
+                              <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                           </VBox.margin>
+                        </ImageView>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+         </children>
+         <padding>
+            <Insets left="5.0" right="5.0" />
+         </padding></VBox>
       <fx:include fx:id="placementPane" layoutX="37.0" layoutY="184.0" source="placementPane.fxml" />
       <fx:include fx:id="actionPane" layoutX="37.0" layoutY="184.0" source="ActionPane.fxml" visible="false" />
       <fx:include fx:id="upgradePane" layoutX="37.0" layoutY="184.0" source="upgradePane.fxml" visible="false" />

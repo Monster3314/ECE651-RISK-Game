@@ -398,7 +398,7 @@ public class GameController implements Initializable {
     upgradePaneController.pane = (Pane) scene.lookup("#upgradePane");
     topBarController.gameController = this;
     topBarController.guiPlayer = this.guiPlayer;
-    playMusic();
+    //playMusic();
   }
 
   public void playMusic() {
