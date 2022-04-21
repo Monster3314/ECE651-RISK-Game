@@ -12,12 +12,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -66,6 +69,7 @@ public class GameControllerTest {
   private ActionPaneController actionPaneController;
   private PlacementPaneController placementPaneController;
   private UpgradePaneController upgradePaneController;
+  private TopBarController topBarController;
 
   private void mockPrepare() {
     gameIO = mock(GameIO.class);
@@ -80,9 +84,11 @@ public class GameControllerTest {
     placementPaneController = mock(PlacementPaneController.class);
     actionPaneController = mock(ActionPaneController.class);
     upgradePaneController = mock(UpgradePaneController.class);
+    topBarController = mock(TopBarController.class);
     gameController.placementPaneController = placementPaneController;
     gameController.actionPaneController = actionPaneController;
     gameController.upgradePaneController = upgradePaneController;
+    gameController.topBarController = topBarController;
   }
 
   @AfterEach
@@ -126,19 +132,6 @@ public class GameControllerTest {
   public void test_updateHint() throws IOException, ClassNotFoundException, InterruptedException {
     mockPrepare();
     gameController.updateHint("hintt");
-  }
-
-  @Test
-  public void test_levelUp() {
-    mockPrepare();
-    when(scene.lookup(any())).thenReturn(new Button());
-    doNothing().when(gameController).updateHint(any());
-    doNothing().when(gameController).updateTopBar();
-    gameController.levelUp(null);
-
-    // result not null
-    doReturn("wow").when(guiPlayer).tryApplyAction(any());
-    gameController.levelUp(null);
   }
 
   @Test
@@ -300,10 +293,8 @@ public class GameControllerTest {
     mockPrepare();
     doNothing().when(gameController).disableButtonsButLogout();
     doNothing().when(gameController).activateButtons();
-    doNothing().when(gameController).setUsername(any(), any());
     doNothing().when(gameController).setAvailableTerritories(any(), any());
     doNothing().when(gameController).setHint();
-    doNothing().when(gameController).updateTopBar();
     doNothing().when(gameController).updateTerritoryColors();
     doNothing().when(gameController).set3ActionPanesInvisible();
     doNothing().when(gameController).set3ButtonsUnselected();
@@ -316,10 +307,8 @@ public class GameControllerTest {
     mockPrepare();
     doNothing().when(gameController).disableButtonsButLogout();
     doNothing().when(gameController).activateButtons();
-    doNothing().when(gameController).setUsername(any(), any());
     doNothing().when(gameController).setAvailableTerritories(any(), any());
     doNothing().when(gameController).setHint();
-    doNothing().when(gameController).updateTopBar();
     doNothing().when(gameController).updateTerritoryColors();
     doNothing().when(gameController).set3ActionPanesInvisible();
     doNothing().when(gameController).set3ButtonsUnselected();
@@ -368,4 +357,11 @@ public class GameControllerTest {
     when(scene.lookupAll("Button")).thenReturn(Set.of(btn));
     gameController.setAvailableTerritories(btn, Set.of("22"));
   }
+
+  /*@Test
+  public void test_music() throws URISyntaxException {
+    Media media = new Media(getClass().getResource("/maintitle.mp3").toURI().toString());
+    MediaPlayer mediaPlayer = new MediaPlayer(media);
+    mediaPlayer.play();
+  }*/
 }
