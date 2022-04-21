@@ -63,7 +63,7 @@ public abstract class Player {
         new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(new SufficientResourceChecker(null)))));
     actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(new SufficientResourceChecker(null))));
     actionCheckers.put(UpgradeUnitAction.class, new SufficientUnitChecker(new SufficientResourceChecker(null)));
-    actionCheckers.put(UpgradeTechAction.class, new  SufficientResourceChecker(null));
+    actionCheckers.put(UpgradeTechAction.class, new SufficientResourceChecker(null));
   }
   
   /**
@@ -98,6 +98,8 @@ public abstract class Player {
 
   /**
    * updateGame will receive the latest game from the server and update the game on client side
+   * @param latestGame is the game recieved from server
+   * @throws IllegalArgumentException when latestGame is null or player is not in this game(Not even dead) 
    */
   public void updateGame(GameInfo latestGame) {
     if (latestGame == null) {
@@ -216,6 +218,30 @@ public abstract class Player {
    */
   public Integer getGold() {
     return theGame.getClans().get(color).getResource().getResourceNum(Resource.GOLD);
+  }
+
+  /**
+   * Check if player has visibility of certain territory
+   * @param territoryName is the name of the territory you want to check
+   * @return a boolean that shows if player has the visibility of this territory
+   * @throws IllegalArgumentException when unexisted territory name is given
+   */
+  
+  public boolean hasVisibilityOf(String territoryName) {
+    Territory toCheck = getTerritory(territoryName);
+    //Ownership
+    if (theGame.getClans().get(color).occupyTerritory(territoryName)) {
+      return true;
+    }
+    //Adjacency
+    for (Territory neighbour: theGame.getBoard().getNeighbors(toCheck)) {
+      if (theGame.getClans().get(color).occupyTerritory(neighbour.getName())) {
+        return true;
+      }
+    }
+    //TODO:Cloak
+
+    return false;
   }
   
 
