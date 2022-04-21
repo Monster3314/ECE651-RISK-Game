@@ -358,10 +358,10 @@ public class GameControllerTest {
     gameController.setAvailableTerritories(btn, Set.of("22"));
   }
 
-  @Test
+  /*@Test
   public void test_music() throws URISyntaxException {
     Media media = new Media(getClass().getResource("/maintitle.mp3").toURI().toString());
     MediaPlayer mediaPlayer = new MediaPlayer(media);
     mediaPlayer.play();
-  }
+  }*/
 }
