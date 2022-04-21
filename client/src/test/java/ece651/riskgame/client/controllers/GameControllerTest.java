@@ -12,12 +12,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import org.assertj.core.util.Arrays;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
@@ -353,5 +356,12 @@ public class GameControllerTest {
     btn.setId("21Territory");
     when(scene.lookupAll("Button")).thenReturn(Set.of(btn));
     gameController.setAvailableTerritories(btn, Set.of("22"));
+  }
+
+  @Test
+  public void test_music() throws URISyntaxException {
+    Media media = new Media(getClass().getResource("/maintitle.mp3").toURI().toString());
+    MediaPlayer mediaPlayer = new MediaPlayer(media);
+    mediaPlayer.play();
   }
 }

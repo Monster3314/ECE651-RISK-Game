@@ -1,6 +1,7 @@
 package ece651.riskgame.client.controllers;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -31,6 +32,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
@@ -393,6 +396,24 @@ public class GameController implements Initializable {
     upgradePaneController.pane = (Pane) scene.lookup("#upgradePane");
     topBarController.gameController = this;
     topBarController.guiPlayer = this.guiPlayer;
+    playMusic();
+  }
+
+  public void playMusic() {
+    Thread thread = new Thread(new Runnable() {
+      @Override
+      public void run() {
+        Media media = null;
+        try {
+          media = new Media(getClass().getResource("/maintitle.mp3").toURI().toString());
+        } catch (URISyntaxException e) {
+          e.printStackTrace();
+        }
+        MediaPlayer mediaPlayer = new MediaPlayer(media);
+        mediaPlayer.play();
+      }
+    });
+    thread.start();
   }
 
   @FXML
