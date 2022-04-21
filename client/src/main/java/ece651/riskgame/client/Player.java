@@ -63,7 +63,7 @@ public abstract class Player {
         new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(new SufficientResourceChecker(null)))));
     actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(new SufficientResourceChecker(null))));
     actionCheckers.put(UpgradeUnitAction.class, new SufficientUnitChecker(new SufficientResourceChecker(null)));
-    actionCheckers.put(UpgradeTechAction.class, new  SufficientResourceChecker(null));
+    actionCheckers.put(UpgradeTechAction.class, new SufficientResourceChecker(null));
   }
   
   /**
@@ -98,6 +98,8 @@ public abstract class Player {
 
   /**
    * updateGame will receive the latest game from the server and update the game on client side
+   * @param latestGame is the game recieved from server
+   * @throws IllegalArgumentException when latestGame is null or player is not in this game(Not even dead) 
    */
   public void updateGame(GameInfo latestGame) {
     if (latestGame == null) {
