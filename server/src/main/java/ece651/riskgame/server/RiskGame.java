@@ -278,7 +278,7 @@ public class RiskGame implements Runnable{
     }
     for (Clan clan : world.getClans().values()) {
       if (clan.isActive()) {
-        clan.getTerritoryProduction();
+        clan.afterTurn();
       }
     }
   }
