@@ -30,6 +30,8 @@ import java.util.Map;
 
 public class LoginController {
 
+    final String ip = "0.0.0.0";
+
     @FXML
     private PasswordField password;
 
@@ -62,7 +64,6 @@ public class LoginController {
 
     @FXML
     void login(ActionEvent event) throws IOException, ClassNotFoundException {
-        String ip = "0.0.0.0";
         int port = 1651;
         // connect to server
         Socket serverSocket = null;
@@ -134,8 +135,6 @@ public class LoginController {
 
     @FXML
     void register(ActionEvent event) throws IOException, ClassNotFoundException {
-
-        String ip = "0.0.0.0";
         int port = 1651;
         // connect to server
         Socket serverSocket = null;
