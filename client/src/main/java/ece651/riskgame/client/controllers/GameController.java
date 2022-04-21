@@ -3,11 +3,7 @@ package ece651.riskgame.client.controllers;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 import ece651.riskgame.client.GUIPlayer;
 import ece651.riskgame.client.GameIO;
@@ -38,6 +34,8 @@ import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 public class GameController implements Initializable {
+
+  final List<String> territoryNameList = List.of("North", "Dorne", "Vale", "Stormlands", "Riverlands", "Reach", "Asshai", "Qarth", "Slaverbay", "Freecities", "Crownlands", "Beyondthewall", "Westerlands", "Dothrakisea", "Ironislands");
 
   @FXML
   VBox infoView;
@@ -100,86 +98,58 @@ public class GameController implements Initializable {
    * Method to update territoryinfo pane according given territory name
    */
   public void updateTerritoryInfo(String territoryName) {
-    ObservableList<Node> children = infoView.getChildren();
-    children.clear();
-    infoView.setAlignment(Pos.TOP_CENTER);
-    // territory name
-    Label label = new Label(territoryName);
-    label.setTextAlignment(TextAlignment.CENTER);
-    label.setFont(new Font(20));
-    label.setId("territoryName");
-    children.add(label);
+    Label territoryNameLabel = (Label) infoView.lookup("#territoryName");
+    territoryNameLabel.setText(territoryName);
     // territory units
     for (int i = 0; i < 7; i++) {
-      String armyName = Unit.NAME[i];
-      HBox hbox = new HBox();
-      Label labelUnit = new Label(armyName);
-      labelUnit.setMaxWidth(Double.MAX_VALUE);
-      labelUnit.setAlignment(Pos.CENTER_LEFT);
-      labelUnit.setFont(new Font(15));
-
-      Label text = new Label("0");
-      text.setMaxWidth(Double.MAX_VALUE);
-      text.setAlignment(Pos.CENTER_RIGHT);
-      text.setFont(new Font(15));
+      Label numLabel = (Label)infoView.lookup("#unitNum"+i);
+      numLabel.setText("0");
       try {
         int unitNum = guiPlayer.getTerritory(territoryName).getUnitByLevel(i).getNum();
-        text.setText(Integer.toString(unitNum));
+        numLabel.setText(Integer.toString(unitNum));
       } catch (Exception e) {
       }
-      hbox.getChildren().addAll(labelUnit, text);
-      HBox.setHgrow(labelUnit, Priority.ALWAYS);
-      HBox.setHgrow(text, Priority.ALWAYS);
-      children.add(hbox);
-    }
-    // resource production
-    Label title2 = new Label("Resource Production");
-    title2.setTextAlignment(TextAlignment.CENTER);
-    title2.setFont(new Font(20));
-    children.add(title2);
-    
-    for (String resourceName : new String[] { Resource.FOOD, Resource.GOLD }) {
-      HBox hbox = new HBox();
-      Label labelUnit = new Label(resourceName);
-      labelUnit.setMaxWidth(Double.MAX_VALUE);
-      labelUnit.setAlignment(Pos.CENTER);
-      labelUnit.setFont(new Font(15));
-     
-      Label text = new Label(Integer.toString(
-          guiPlayer.getTerritory(territoryName).getProduction().getResourceNum(resourceName)));
-      text.setMaxWidth(Double.MAX_VALUE);
-      text.setAlignment(Pos.CENTER);
-      text.setFont(new Font(15));
-      hbox.getChildren().addAll(labelUnit, text);
-      HBox.setHgrow(labelUnit, Priority.ALWAYS);
-      HBox.setHgrow(text, Priority.ALWAYS);
-      children.add(hbox);            
     }
 
-    // territory size
-    Label titleSize = new Label("Territory Size(Food Consumption)");
-    titleSize.setTextAlignment(TextAlignment.CENTER);
-    titleSize.setFont(new Font(20));
-    children.add(titleSize);
-    Label size = new Label(Integer.toString(guiPlayer.getTerritory(territoryName).getSize()));
-    size.setTextAlignment(TextAlignment.CENTER);
-    size.setFont(new Font(15));
-    children.add(size);
-    
+    // TODO set spy
+    //((Label)infoView.lookup("#spyNum"))
+    //        .setText(String.valueOf(guiPlayer.getTerritory(territoryName)));
+
+    // set resources
+    ((Label)infoView.lookup("#goldProduction"))
+            .setText(String.valueOf(guiPlayer.getTerritory(territoryName).getProduction().getResourceNum(Resource.GOLD)));
+    ((Label)infoView.lookup("#foodProduction"))
+            .setText(String.valueOf(guiPlayer.getTerritory(territoryName).getProduction().getResourceNum(Resource.FOOD)));
+    ((Label)infoView.lookup("#size"))
+            .setText(String.valueOf(guiPlayer.getTerritory(territoryName).getSize()));
 
     // neighbors
-    // This should be removed in the future
-    Label title3 = new Label("Neighbors");
-    title3.setTextAlignment(TextAlignment.CENTER);
-    title3.setFont(new Font(20));
-    children.add(title3);
-
+    VBox neighborBox = (VBox) infoView.lookup("#neighborsBox");
+    List.of(0,1,2,3).stream().forEach(i -> ((Label)infoView.lookup("#neighbor"+i)).setText(""));
+    int i = 0;
     for (Territory neighbor : guiPlayer.getGame().getBoard()
         .getNeighbors(guiPlayer.getTerritory(territoryName))) {
-      Label neigh = new Label(neighbor.getName());
-      neigh.setTextAlignment(TextAlignment.CENTER);
-      neigh.setFont(new Font(15));
-      children.add(neigh);
+      ((Label)infoView.lookup("#neighbor"+i)).setText(neighbor.getName());
+      i++;
+    }
+
+    // TODO cloak thing
+  }
+
+  /**
+   * Method called to update if a cloud shold show up
+   */
+  public void updateClouds() {
+    territoryNameList.stream().forEach(name -> {
+      System.out.println(name.toLowerCase()+"cloud");
+      scene.lookup("#"+name.toLowerCase()+"cloud").setVisible(false);
+    });
+    for (String territoryName: territoryNameList) {
+      if (guiPlayer.getGame().getBoard().containsTerritory(territoryName)) {
+        if (!guiPlayer.hasVisibilityOf(territoryName)) {
+          scene.lookup("#"+territoryName.toLowerCase()+"cloud").setVisible(true);
+        }
+      }
     }
   }
 
@@ -199,6 +169,7 @@ public class GameController implements Initializable {
     setHint();
 
     updateTerritoryColors();
+    updateClouds();
   }
 
   /**
@@ -343,9 +314,9 @@ public class GameController implements Initializable {
     set3ActionPanesInvisible();
     set3ButtonsUnselected();
     updateCurrentTerritoryInfo();
+    updateClouds();
     topBarController.updateTopBar();
     topBarController.activateLevelUpButton();
-    // TODO update level
     isLostOrWin();
   }
 
@@ -361,6 +332,7 @@ public class GameController implements Initializable {
     upgradePaneController.setUpgradePane();
     // update/display information
     topBarController.updateTopBar();
+    updateTerritoryColors();
     updateTerritoryColors();
     set3ActionPanesInvisible();
     set3ButtonsUnselected();
@@ -398,7 +370,7 @@ public class GameController implements Initializable {
     upgradePaneController.pane = (Pane) scene.lookup("#upgradePane");
     topBarController.gameController = this;
     topBarController.guiPlayer = this.guiPlayer;
-    //playMusic();
+    // TODO playMusic();
   }
 
   public void playMusic() {
@@ -419,6 +391,21 @@ public class GameController implements Initializable {
       }
     });
     thread.start();
+  }
+
+  @FXML
+  public void cloak() {
+    // TODO what happens after clicking on the cloak
+  }
+
+  @FXML
+  public void surprise() {
+    scene.lookup("#surpriseImg").setVisible(true);
+  }
+
+  @FXML
+  public void hideSurprise() {
+    scene.lookup("#surpriseImg").setVisible(false);
   }
 
   @FXML

@@ -16,7 +16,7 @@
 
 <Pane fx:id="scene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="823.0" prefWidth="1138.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ece651.riskgame.client.controllers.GameController">
    <children>
-      <ImageView fitHeight="829.0" fitWidth="1138.0" layoutX="2.0" layoutY="-3.0" pickOnBounds="true">
+      <ImageView fitHeight="829.0" fitWidth="1138.0" pickOnBounds="true">
          <image>
             <Image url="@css/img/map.jpeg" />
          </image>
@@ -132,49 +132,49 @@
                         <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
                            <children>
                               <Label text="Vale Knights                    " textFill="WHITE" />
-                              <Label fx:id="unitNum0" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                              <Label fx:id="unitNum0" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="999" textAlignment="RIGHT" textFill="WHITE" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
                            <children>
                               <Label text="North Army                      " textFill="WHITE" />
-                              <Label fx:id="unitNum1" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                              <Label fx:id="unitNum1" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="999" textAlignment="RIGHT" textFill="WHITE" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
                            <children>
                               <Label text="Second Sons                   " textFill="WHITE" />
-                              <Label fx:id="unitNum2" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                              <Label fx:id="unitNum2" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="999" textAlignment="RIGHT" textFill="WHITE" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
                            <children>
                               <Label text="Iron Fleet                           " textFill="WHITE" />
-                              <Label fx:id="unitNum3" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                              <Label fx:id="unitNum3" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="999" textAlignment="RIGHT" textFill="WHITE" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
                            <children>
                               <Label text="Unsullied                           " textFill="WHITE" />
-                              <Label fx:id="unitNum4" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                              <Label fx:id="unitNum4" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="999" textAlignment="RIGHT" textFill="WHITE" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
                            <children>
                               <Label text="Golden Company          " textFill="WHITE" />
-                              <Label fx:id="unitNum5" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                              <Label fx:id="unitNum5" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="999" textAlignment="RIGHT" textFill="WHITE" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
                            <children>
                               <Label text="Dead Army                       " textFill="WHITE" />
-                              <Label fx:id="unitNum6" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                              <Label fx:id="unitNum6" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="999" textAlignment="RIGHT" textFill="WHITE" />
                            </children>
                         </HBox>
                         <HBox alignment="CENTER_LEFT" prefHeight="24.0" prefWidth="183.0">
                            <children>
                               <Label text="Spy                                      " textFill="WHITE" />
-                              <Label fx:id="unitNum61" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="#Num" textAlignment="RIGHT" textFill="WHITE" />
+                              <Label fx:id="spyNum" alignment="CENTER_RIGHT" contentDisplay="RIGHT" text="999" textAlignment="RIGHT" textFill="WHITE" />
                            </children>
                         </HBox>
                      </children>
@@ -212,9 +212,9 @@
                         <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="58.0" text="Gold" textFill="WHITE" />
                         <Label alignment="CENTER" contentDisplay="CENTER" prefHeight="17.0" prefWidth="65.0" text="Food" textFill="WHITE" GridPane.columnIndex="1" />
                         <Label alignment="CENTER" prefHeight="17.0" prefWidth="76.0" text="Size" textFill="WHITE" GridPane.columnIndex="2" />
-                        <Label fx:id="goldProduction" alignment="CENTER" prefHeight="17.0" prefWidth="72.0" text="Procut" textFill="WHITE" GridPane.rowIndex="1" />
-                        <Label fx:id="foodProduction" alignment="CENTER" prefHeight="17.0" prefWidth="76.0" text="production" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="77.0" text="comsuption" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                        <Label fx:id="goldProduction" alignment="CENTER" prefHeight="17.0" prefWidth="72.0" text="999" textFill="WHITE" GridPane.rowIndex="1" />
+                        <Label fx:id="foodProduction" alignment="CENTER" prefHeight="17.0" prefWidth="76.0" text="999" textFill="WHITE" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="size" alignment="CENTER" prefHeight="17.0" prefWidth="77.0" text="999" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                      </children>
                   </GridPane>
                </children>
@@ -229,6 +229,26 @@
                            </font>
                            <VBox.margin>
                               <Insets bottom="4.0" top="3.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="neighbor0" alignment="CENTER" prefHeight="17.0" prefWidth="91.0" text="501 Estate" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets bottom="2.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="neighbor1" alignment="CENTER" prefHeight="17.0" prefWidth="91.0" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets bottom="2.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="neighbor2" alignment="CENTER" prefHeight="17.0" prefWidth="91.0" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets bottom="2.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label fx:id="neighbor3" alignment="CENTER" prefHeight="17.0" prefWidth="91.0" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets bottom="2.0" />
                            </VBox.margin>
                         </Label>
                      </children>
@@ -270,7 +290,7 @@
       <fx:include fx:id="placementPane" layoutX="37.0" layoutY="184.0" source="placementPane.fxml" />
       <fx:include fx:id="actionPane" layoutX="37.0" layoutY="184.0" source="ActionPane.fxml" visible="false" />
       <fx:include fx:id="upgradePane" layoutX="37.0" layoutY="184.0" source="upgradePane.fxml" visible="false" />
-      <fx:include fx:id="topBar" layoutX="17.0" layoutY="-1.0" source="topbar.fxml" />
+      <fx:include fx:id="topBar" layoutX="17.0" layoutY="-3.0" source="topbar.fxml" />
       <ImageView fx:id="northcloud" fitHeight="206.0" fitWidth="205.0" layoutX="282.0" layoutY="126.0" mouseTransparent="true" opacity="0.5" pickOnBounds="true" preserveRatio="true" rotate="-6.7">
          <image>
             <Image url="@../img/cloud1.png" />
@@ -301,7 +321,7 @@
             <Image url="@../img/cloud1.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="dorthrakiseacloud" fitHeight="206.0" fitWidth="205.0" layoutX="302.0" layoutY="506.0" mouseTransparent="true" opacity="0.5" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="dothrakiseacloud" fitHeight="206.0" fitWidth="205.0" layoutX="302.0" layoutY="506.0" mouseTransparent="true" opacity="0.5" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/cloud1.png" />
          </image>
@@ -321,7 +341,7 @@
             <Image url="@../img/cloud1.png" />
          </image>
       </ImageView>
-      <ImageView fx:id="slaversbaycloud" fitHeight="206.0" fitWidth="205.0" layoutX="511.0" layoutY="352.0" mouseTransparent="true" opacity="0.5" pickOnBounds="true" preserveRatio="true">
+      <ImageView fx:id="slaverbaycloud" fitHeight="206.0" fitWidth="205.0" layoutX="511.0" layoutY="352.0" mouseTransparent="true" opacity="0.5" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/cloud1.png" />
          </image>
@@ -344,6 +364,12 @@
       <ImageView fx:id="ironislandscloud" fitHeight="206.0" fitWidth="205.0" layoutX="454.0" layoutY="531.0" mouseTransparent="true" opacity="0.5" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/cloud1.png" />
+         </image>
+      </ImageView>
+      <Button fx:id="secretBtn" layoutX="787.0" layoutY="634.0" mnemonicParsing="false" onMouseClicked="#surprise" opacity="0.0" prefHeight="20.0" prefWidth="37.0" />
+      <ImageView fx:id="surpriseImg" fitHeight="419.0" fitWidth="378.0" layoutX="399.0" layoutY="205.0" onMouseMoved="#hideSurprise" pickOnBounds="true" preserveRatio="true" visible="false">
+         <image>
+            <Image url="@../img/surprise.jpeg" />
          </image>
       </ImageView>
    </children>
