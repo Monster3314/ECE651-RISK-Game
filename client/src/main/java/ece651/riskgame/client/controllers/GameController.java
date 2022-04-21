@@ -408,11 +408,14 @@ public class GameController implements Initializable {
         Media media = null;
         try {
           media = new Media(getClass().getResource("/maintitle.mp3").toURI().toString());
+          MediaPlayer mediaPlayer = new MediaPlayer(media);
+          mediaPlayer.play();
         } catch (URISyntaxException e) {
           e.printStackTrace();
+        } catch (NullPointerException e) {
+          System.out.println("Cannot find music lol");
+          e.printStackTrace();
         }
-        MediaPlayer mediaPlayer = new MediaPlayer(media);
-        mediaPlayer.play();
       }
     });
     thread.start();
