@@ -93,4 +93,9 @@ public class ActionPaneController {
     }    
   }
 
+  @FXML
+  public void moveSpy() {
+    // TODO move a spy from from to to
+  }
+
 }
