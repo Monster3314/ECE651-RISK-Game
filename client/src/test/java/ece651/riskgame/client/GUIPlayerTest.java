@@ -21,8 +21,8 @@ import ece651.riskgame.shared.UpgradeUnitAction;
 public class GUIPlayerTest extends PlayerTest{
   @Test
   public void test_SendActions() {
-    GameInfo game = getDefaultGame();
-    GUIPlayer player = new GUIPlayer("Red", game);
+    ClientWorld w = getDefaultWorld();
+    GUIPlayer player = new GUIPlayer("Red", w);
     List<Unit> toMove = new ArrayList<Unit>();
     List<Unit> toAttack = new ArrayList<Unit>();
     toMove.add(new BasicUnit(3));
@@ -39,13 +39,12 @@ public class GUIPlayerTest extends PlayerTest{
   }
   @Test
   public void test_tryPlace() {
-    GameInfo game = getInitialGame();
-    GUIPlayer player = new GUIPlayer("Red", game);
+    GUIPlayer player = new GUIPlayer("Red", getInitialWorld());
     List<Unit> toAllocate = new ArrayList<>();
     toAllocate.add(new BasicUnit(30));
     Map<String, List<Unit>> placements;
     //valid placements
-    player.updateGame(getInitialGame());
+    player = new GUIPlayer("Red", getInitialWorld());
     placements = new HashMap<>();
     placements.put("Durham", List.of(new BasicUnit(10)));
     placements.put("Cary", List.of(new BasicUnit(20)));
@@ -53,7 +52,7 @@ public class GUIPlayerTest extends PlayerTest{
     assertEquals(10, player.getTerritory("Durham").getUnitByLevel(0).getNum());
     assertEquals(20, player.getTerritory("Cary").getUnitByLevel(0).getNum());
     //valid placements
-    player.updateGame(getInitialGame());
+    player = new GUIPlayer("Red", getInitialWorld());
     placements = new HashMap<>();
     placements.put("Durham", List.of(new BasicUnit(15)));
     placements.put("Cary", List.of(new BasicUnit(15)));
@@ -63,7 +62,7 @@ public class GUIPlayerTest extends PlayerTest{
 
 
     //more units placed
-    player.updateGame(getInitialGame());
+    player = new GUIPlayer("Red", getInitialWorld());
     placements = new HashMap<>();
     placements.put("Durham", List.of(new BasicUnit(10)));
     placements.put("Cary", List.of(new BasicUnit(10)));
@@ -72,7 +71,7 @@ public class GUIPlayerTest extends PlayerTest{
     assertNull(player.getTerritory("Cary").getUnitByLevel(0));
 
     //place on enemy territory
-    player.updateGame(getInitialGame());
+    player = new GUIPlayer("Red", getInitialWorld());
     placements = new HashMap<>();
     placements.put("Durham", List.of(new BasicUnit(10)));
     placements.put("Raleigh", List.of(new BasicUnit(20)));

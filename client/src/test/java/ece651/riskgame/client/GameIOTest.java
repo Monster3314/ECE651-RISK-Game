@@ -85,6 +85,7 @@ public class GameIOTest {
             client.close();
             ss.close();
           } catch (Exception e) {
+            e.printStackTrace();
           }
         }
       };

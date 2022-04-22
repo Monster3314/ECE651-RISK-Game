@@ -1,11 +1,16 @@
 package ece651.riskgame.shared;
 
-import java.util.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.PriorityQueue;
 
 /**
  * Implemented by World and GameInfo
  */
-public abstract class Actable {
+public abstract class Actable implements Serializable{
   protected Board board;
   protected Map<String, Clan> clans;  //the map for color of player and his clan
 

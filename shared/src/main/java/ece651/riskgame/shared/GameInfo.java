@@ -9,7 +9,7 @@ import java.util.Map;
  * board: topology relationship between territories
  * players: map from color to Clan
  */
-public class GameInfo extends Actable implements Serializable{
+public class GameInfo extends Actable{
 
   public GameInfo(Board b, Map<String, Clan> players) {
     super(b, players);

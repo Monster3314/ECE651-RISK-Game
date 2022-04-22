@@ -51,10 +51,10 @@ public class TextPlayerTest extends PlayerTest{
   public void test_updateGame() {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     String input = "";
-    GameInfo oldGame = getDefaultGame();
+    ClientWorld oldWorld = getDefaultWorld();
     TextPlayer player = createTextPlayer(input, bytes);
-    GameInfo newGame = getEmptyGame();
-    player.updateGame(newGame);    
+    //Client newGame = getEmptyGame();
+    //player.updateGame(newGame);    
   }
   
   @Test
@@ -382,22 +382,22 @@ public class TextPlayerTest extends PlayerTest{
 
 
   public static TextPlayer createTextPlayer(String inputData, OutputStream bytes) {
-    GameInfo g = getDefaultGame();
+    ClientWorld w = getDefaultWorld();
     BufferedReader input = new BufferedReader(new StringReader(inputData));
     PrintStream output = new PrintStream(bytes, true);
-    return new TextPlayer("Red", g, input, output);
+    return new TextPlayer("Red", w, input, output);
   }
   public static TextPlayer createWinner(String inputData, OutputStream bytes) {
-    GameInfo g = getEmptyGame();
+    ClientWorld w = getEmptyWorld();
     BufferedReader input = new BufferedReader(new StringReader(inputData));
     PrintStream output = new PrintStream(bytes, true);
-    return new TextPlayer("Blue", g, input, output);
+    return new TextPlayer("Blue", w, input, output);
   }
   public static TextPlayer createLoser(String inputData, OutputStream bytes) {
-    GameInfo g = getEmptyGame();
+    ClientWorld w = getEmptyWorld();
     BufferedReader input = new BufferedReader(new StringReader(inputData));
     PrintStream output = new PrintStream(bytes, true);
-    return new TextPlayer("Red", g, input, output);
+    return new TextPlayer("Red", w, input, output);
   }
     
     
