@@ -331,10 +331,10 @@ public class RiskGame implements Runnable{
 
   private void randomDecResource() {
     Random random = new Random();
-    for(Territory t : world.getBoard().getTerritoriesList()) {
+    for(Map.Entry<String, Clan> i: world.getClans().entrySet()) {
       try {
-        t.getProduction().costGold(random.nextInt(50));
-        t.getProduction().costFood(random.nextInt(100));
+        i.getValue().getResource().costGold(random.nextInt(50));
+        i.getValue().getResource().costFood(random.nextInt(30));
       } catch (Exception e) {
 
       }
