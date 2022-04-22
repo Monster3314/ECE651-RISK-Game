@@ -117,12 +117,11 @@ public class GameController implements Initializable {
       }
     }
 
-    // TODO set spy
-    //((Label)infoView.lookup("#spyNum"))
-    //        .setText(String.valueOf(guiPlayer.getTerritory(territoryName)));
+    Label spyNum = (Label) infoView.lookup("#spyNum");
+    spyNum.setText(String.valueOf(guiPlayer.getSpyNumOnTerritory(territoryName)));
 
     // set resources
-    //System.out.println(territoryName);
+    System.out.println(territoryName);
     ((Label)infoView.lookup("#goldProduction"))
             .setText(String.valueOf(guiPlayer.getTerritory(territoryName).getProduction().getResourceNum(Resource.GOLD)));
     ((Label)infoView.lookup("#foodProduction"))
@@ -175,6 +174,8 @@ public class GameController implements Initializable {
       updateTerritoryInfo(((Label) infoView.lookup("#territoryName")).getText());
     } catch (NullPointerException e) {
     } catch (IllegalStateException e) {
+      hint.setText("Please click on territory to show correct information.");
+    } catch (IllegalArgumentException e) {
       hint.setText("Please click on territory to show correct information.");
     }
   }
@@ -458,7 +459,7 @@ public class GameController implements Initializable {
     upgradePaneController.pane = (Pane) scene.lookup("#upgradePane");
     topBarController.gameController = this;
     topBarController.guiPlayer = this.guiPlayer;
-    // TODO playMusic();
+    //playMusic();
   }
 
   public void playMusic() {

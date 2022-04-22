@@ -18,15 +18,19 @@ import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.EnemyTerritoryChecker;
+import ece651.riskgame.shared.MovableSpyChecker;
 import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.MovePathChecker;
+import ece651.riskgame.shared.MoveSpyAction;
 import ece651.riskgame.shared.PlaceAction;
 import ece651.riskgame.shared.Resource;
+import ece651.riskgame.shared.SpyMovePathChecker;
 import ece651.riskgame.shared.SufficientResourceChecker;
 import ece651.riskgame.shared.SufficientUnitChecker;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 import ece651.riskgame.shared.UnitsRuleChecker;
+import ece651.riskgame.shared.UpgradeSpyAction;
 import ece651.riskgame.shared.UpgradeTechAction;
 import ece651.riskgame.shared.UpgradeUnitAction;
 
@@ -64,6 +68,8 @@ public abstract class Player {
     actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(new SufficientResourceChecker(null))));
     actionCheckers.put(UpgradeUnitAction.class, new SufficientUnitChecker(new SufficientResourceChecker(null)));
     actionCheckers.put(UpgradeTechAction.class, new SufficientResourceChecker(null));
+    actionCheckers.put(UpgradeSpyAction.class, new SufficientResourceChecker(new SufficientUnitChecker(null)));
+    actionCheckers.put(MoveSpyAction.class, new SpyMovePathChecker(new SufficientUnitChecker(new MovableSpyChecker(null)))); 
   }
 
   
@@ -81,6 +87,9 @@ public abstract class Player {
     return errorMsg;
   }
 
+  public int getSpyNumOnTerritory(String territoryName) {
+    return theWorld.getClans().get(color).getSpyNumOnTerritory(territoryName);
+  }
   /**
    * get the color of the player
    * @return the color of this player  

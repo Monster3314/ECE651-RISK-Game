@@ -158,15 +158,15 @@ public class TextPlayerTest extends PlayerTest{
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     String input;
     //valid testcases
-    input = "M\nDurham\nCary\n2\nD\n";
+    input = "M\nDurham\nChapel Hill\n2\nD\n";
     TextPlayer player = createTextPlayer(input, bytes);
     assertEquals(1, player.readActions().size());
     //valid testcases
-    input = "A\nDurham\nRaleigh\n2\nM\nDurham\nCary\n2\nD\n";
+    input = "A\nDurham\nRaleigh\n2\nM\nChapel Hill\nDurham\n2\nD\n";
     player = createTextPlayer(input, bytes);
     assertEquals(2, player.readActions().size());
     //invalid testcases
-    input = "A\nDurham\nCary\n2\nM\nDurham\nCary\n2\nD\n";
+    input = "A\nDurham\nRaleigh\n2\nM\nDurham\nRaleigh\n2\nD\n";
     player = createTextPlayer(input, bytes);
     assertEquals(1, player.readActions().size());
   }
@@ -193,7 +193,7 @@ public class TextPlayerTest extends PlayerTest{
     player.readOneAction();
   }
   @Test
-  public void test_readAttack() {
+  public void test_readAttackAction() {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     String input;
     Attack toAdd;
@@ -230,42 +230,42 @@ public class TextPlayerTest extends PlayerTest{
 
     Move toAdd;
     //valid testcase
-    input = "Durham\nCary\n0\n";
+    input = "Durham\nRaleigh\n0\n";
     TextPlayer player = createTextPlayer(input, bytes);
     toAdd = player.readMoveAction();
     assertEquals(0, toAdd.getUnit().size());
     assertEquals("Durham", toAdd.getFromTerritory());
-    assertEquals("Cary", toAdd.getToTerritory());
+    assertEquals("Raleigh", toAdd.getToTerritory());
     assertEquals("Red", toAdd.getColor());
 
     //invalid testcase
-    input = "Durham\nCary\n5\n4\n";
+    input = "Durham\nRaleigh\n5\n4\n";
     player = createTextPlayer(input, bytes);
     toAdd = player.readMoveAction();
     assertEquals(1, toAdd.getUnit().size());
     assertEquals("Durham", toAdd.getFromTerritory());
-    assertEquals("Cary", toAdd.getToTerritory());
+    assertEquals("Raleigh", toAdd.getToTerritory());
     assertEquals("Red", toAdd.getColor());
 
     //invalid testcase
-    input = "Durham\nCary\nsdhoih\n4\n";
+    input = "Durham\nRaleigh\nsdhoih\n4\n";
     player = createTextPlayer(input, bytes);
     toAdd = player.readMoveAction();
     assertEquals(1, toAdd.getUnit().size());
     assertEquals("Durham", toAdd.getFromTerritory());
-    assertEquals("Cary", toAdd.getToTerritory());
+    assertEquals("Raleigh", toAdd.getToTerritory());
     assertEquals("Red", toAdd.getColor());
     //invalid testcase
-    input = "Durham\nCary\n-1\n4\n";
+    input = "Durham\nRaleigh\n-1\n4\n";
     player = createTextPlayer(input, bytes);
     toAdd = player.readMoveAction();
     assertEquals(1, toAdd.getUnit().size());
     assertEquals("Durham", toAdd.getFromTerritory());
-    assertEquals("Cary", toAdd.getToTerritory());
+    assertEquals("Raleigh", toAdd.getToTerritory());
     assertEquals("Red", toAdd.getColor());
 
     //EOF testcase
-    input = "Durham\nCary\n";
+    input = "Durham\nRaleigh\n";
     player = createTextPlayer(input, bytes);
     toAdd = player.readMoveAction();
     assertNull(toAdd);
