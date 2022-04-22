@@ -63,6 +63,8 @@ public class GameController implements Initializable {
   Label hint;
   @FXML
   Pane helpBox;
+  //@FXML
+  //ImageView cloakBtn;
 
 
   public GameController(GUIPlayer p, GameIO gameIO) {
@@ -218,6 +220,7 @@ public class GameController implements Initializable {
         Arrays.asList("nextTurn", "moveButton", "attackButton", "upgradeButton"));
     btns.stream().forEach(s -> scene.lookup("#" + s).setDisable(true));
     topBarController.inactivateLevelUpButton();
+    //cloakBtn.setDisable(true);
   }
 
   /**
@@ -243,6 +246,7 @@ public class GameController implements Initializable {
     btns.stream().forEach(s -> scene.lookup("#" + s).setDisable(false));
     topBarController.activateLevelUpButton();
     scene.lookup("#logout").setDisable(false);
+    activateCloakDevelopButtons();
   }
 
   /**
@@ -250,6 +254,10 @@ public class GameController implements Initializable {
    */
   public void activateButtonsAfterPlacement() {
     activateButtons();
+  }
+
+  public void activateCloakDevelopButtons() {
+    // TODO
   }
 
   /**
@@ -353,7 +361,9 @@ public class GameController implements Initializable {
       protected Object call() throws Exception {
         gameIO.sendActions(guiPlayer.getActionsToSend());
         guiPlayer.clearActionsToSend();
+        System.out.print("actions sent to server");
         guiPlayer.updateGame(gameIO.recvGame());
+        System.out.println("receive actions from server");
         Platform.runLater(new Runnable() {
           @Override
           public void run() {

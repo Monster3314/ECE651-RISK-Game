@@ -13,6 +13,10 @@ public class SufficientUnitChecker extends ActionRuleChecker {
         if (action.getClass() == UpgradeSpyAction.class) {
             UpgradeSpyAction usa = (UpgradeSpyAction) action;
             String territory = usa.getTerritoryName();
+            Unit territoryUnit = actable.getBoard().getTerritory(territory).getUnitByLevel(0);
+            if (territoryUnit == null) {
+                return "You need to upgrade a spy from a basic unit.";
+            }
             return null;
         }
         else {
