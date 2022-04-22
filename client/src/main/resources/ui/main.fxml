@@ -372,5 +372,10 @@
             <Image url="@../img/surprise.jpeg" />
          </image>
       </ImageView>
+      <ImageView fitHeight="53.0" fitWidth="40.0" layoutX="744.0" layoutY="761.0" onMouseClicked="#showHelp" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@../img/help.png" />
+         </image>
+      </ImageView>
    </children>
 </Pane>

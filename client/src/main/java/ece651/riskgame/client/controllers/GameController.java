@@ -495,4 +495,9 @@ public class GameController implements Initializable {
     }
   }
 
+  @FXML
+  public void showHelp() {
+    // TODO
+  }
+
 }
