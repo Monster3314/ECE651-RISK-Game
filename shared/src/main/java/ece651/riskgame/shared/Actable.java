@@ -99,6 +99,10 @@ public abstract class Actable implements Serializable{
         return true;
       }
     }
+    //Spy
+    if (getClans().get(color).getSpy(territoryName, false) != null) {
+      return true;
+    }
     //TODO:cloak
     return false;
   }

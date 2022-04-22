@@ -134,10 +134,19 @@ public class Clan implements Serializable {
   public List<Spy> getSpies() {
     return spies;
   }
+  public int getSpyNumOnTerritory(String territoryName) {
+    int count = 0;
+    for (Spy s: spies) {
+      if (s.getTerritory().equals(territoryName)) {
+        count += 1;
+      }
+    }
+    return count;
+  }
   public void updateAsset(Clan latestClan) {
     techLevel = latestClan.getTechLevel();
     resource = latestClan.getResource();
-    //spies = latestClan.getSpies();
+    spies = latestClan.getSpies();
     
   }
   
