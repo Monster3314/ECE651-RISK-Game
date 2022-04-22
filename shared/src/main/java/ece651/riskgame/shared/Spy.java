@@ -1,6 +1,8 @@
 package ece651.riskgame.shared;
 
-public class Spy {
+import java.io.Serializable;
+
+public class Spy implements Serializable {
     private String territory;
     private boolean canMove;
 

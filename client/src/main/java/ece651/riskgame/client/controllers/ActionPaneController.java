@@ -35,12 +35,14 @@ public class ActionPaneController {
     MenuButton from = (MenuButton) pane.lookup("#from");
     MenuButton to = (MenuButton) pane.lookup("#to");
     // update two drop down menus
-    gameController.updateMenuButton(from, gameController.guiPlayer.getOccupies().stream().map(t -> gameController.createMenuItem(t.getName(), from)).collect(Collectors.toList()));
-    if (ifMove) {
-      gameController.updateMenuButton(to, gameController.guiPlayer.getOccupies().stream().map(t -> gameController.createMenuItem(t.getName(), to)).collect(Collectors.toList()));
-    } else { // attack
-      gameController.updateMenuButton(to, gameController.guiPlayer.getEnemyTerritoryNames().stream().map(t -> gameController.createMenuItem(t, to)).collect(Collectors.toList()));
-    }
+    //gameController.updateMenuButton(from, gameController.guiPlayer.getOccupies().stream().map(t -> gameController.createMenuItem(t.getName(), from)).collect(Collectors.toList()));
+    gameController.updateMenuButton(from, gameController.guiPlayer.getGame().getBoard().getTerritoryNames().stream().map(t -> gameController.createMenuItem(t, from)).collect(Collectors.toList()));
+//    if (ifMove) {
+//      gameController.updateMenuButton(to, gameController.guiPlayer.getOccupies().stream().map(t -> gameController.createMenuItem(t.getName(), to)).collect(Collectors.toList()));
+//    } else { // attack
+//      gameController.updateMenuButton(to, gameController.guiPlayer.getEnemyTerritoryNames().stream().map(t -> gameController.createMenuItem(t, to)).collect(Collectors.toList()));
+//    }
+    gameController.updateMenuButton(to, gameController.guiPlayer.getGame().getBoard().getTerritoryNames().stream().map(t -> gameController.createMenuItem(t, to)).collect(Collectors.toList()));
     // TODO : advanced feature, adjust unit numbers based on selected territory
   }
 
