@@ -10,9 +10,7 @@ import java.util.Map;
 
 import ece651.riskgame.shared.*;
 
-public class World implements Actable{
-  private Board board;
-  private Map<String, Clan> clans;  //the map for color of player and his clan
+public class World extends Actable{
 
   private MapGenerator mapGenerator;
   private List<String> colors = new ArrayList<>(Arrays.asList("red", "blue", "green", "mediumvioletred", "black"));
@@ -39,16 +37,6 @@ public class World implements Actable{
   @Deprecated
   public World(int playerNum) throws IOException {
     this(playerNum, "territories.csv", "adjacency_list.csv");
-  }
-
-  @Override
-  public Board getBoard() {
-    return board;
-  }
-
-  @Override
-  public Map<String, Clan> getClans() {
-    return clans;
   }
 
   /**
@@ -83,16 +71,4 @@ public class World implements Actable{
     action.apply(this);
   }
 
-  /**
-   * @param name of territory
-   * @return Color of owner(Clan)
-   */
-  public String getTerritoryOwnership(String name) {
-    for (Map.Entry<String, Clan> clan : clans.entrySet()) {
-      if (clan.getValue().occupyTerritory(name)) {
-        return clan.getKey();
-      }
-    }
-    return null;
-  }
 }

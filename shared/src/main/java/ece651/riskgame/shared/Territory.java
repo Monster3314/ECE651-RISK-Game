@@ -35,6 +35,20 @@ public abstract class Territory implements Serializable {
   }
 
   /**
+   * update the status of territory
+   * @param toUpdate is the latest territory used to update
+   * @throws IllegalArgumentException if toUpdate doesn't have the same name  
+   */  
+  public void update(Territory latestTerritory) {
+    if (!latestTerritory.getName().equals(name)) {
+      throw new IllegalArgumentException("Territory used to update should share the same name.");
+    }
+    units = latestTerritory.getUnits();
+    production = latestTerritory.getProduction();
+    size = latestTerritory.getSize();
+  }
+  
+  /**
    * Add a single unit to the territory
    */
   public void addUnit(Unit u) {

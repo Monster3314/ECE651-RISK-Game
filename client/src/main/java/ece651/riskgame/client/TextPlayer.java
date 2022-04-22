@@ -38,7 +38,7 @@ public class TextPlayer extends Player{
    * @param color is the color that represents player's clan
    * @param game is the game the player is playing in  
    */
-  public TextPlayer(String color, GameInfo game) {
+  public TextPlayer(String color, ClientWorld game) {
     this(color, game, new BufferedReader(new InputStreamReader(System.in)), System.out);
   }
   
@@ -49,9 +49,9 @@ public class TextPlayer extends Player{
    * @param input is the reader which is used to fetch instructions from player
    * @param out is to print view and prompt to  
    */
-  public TextPlayer(String color, GameInfo game, BufferedReader input, PrintStream out) {
+  public TextPlayer(String color, ClientWorld game, BufferedReader input, PrintStream out) {
     super(color, game);
-    this.view = new GameTextView(this.theGame);
+    this.view = new GameTextView(game);
     this.inputReader = input;
     this.out = out;
 
@@ -66,14 +66,6 @@ public class TextPlayer extends Player{
    */
   public void setInputReader(BufferedReader newInput) {
     inputReader = newInput;
-  }
-  /**
-   * update current game and view 
-   */
-  @Override
-  public void updateGame(GameInfo latestGame) {
-    super.updateGame(latestGame);
-    view = new GameTextView(theGame);
   }
 
   /**
@@ -212,7 +204,7 @@ public class TextPlayer extends Player{
    */
   public Territory readTerritory(String prompt) throws IOException {
     String s;
-    Board b = theGame.getBoard();
+    Board b = theWorld.getBoard();
     while (true) {
       printPromptMsg(prompt);
       s = inputReader.readLine();
@@ -253,7 +245,7 @@ public class TextPlayer extends Player{
       String errorMsg = null;
       //String errorMsg = tryApplyAction(placement, actionCheckers.get(placement.getClass()));
       if (errorMsg == null) {
-        placement.apply(theGame);
+        placement.apply(theWorld);
         placements.add(placement);
         unitToPlace.decSoldiers(placement.getUnit().getNum());
       }

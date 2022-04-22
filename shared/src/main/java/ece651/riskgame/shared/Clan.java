@@ -9,10 +9,10 @@ import java.util.List;
  * Keep a list of territory occupied by this Clan
  */
 public class Clan implements Serializable {
-    private final List<Territory> occupies;
+    private List<Territory> occupies;
     private int techLevel;
-    private final Resource resource;
-    private final List<Spy> spies;
+    private Resource resource;
+    private List<Spy> spies;
     static public int[] COST = new int[] {0, 50, 75, 125, 200, 300};
     static public int MAX_TECH_LEVEL = 6;
     static public int INITIAL_FOOD = 40;
@@ -78,6 +78,15 @@ public class Clan implements Serializable {
     public void removeTerritory(Territory t) {
         occupies.remove(t);
     }
+  public Territory removeTerritory(String territoryName) {
+    for (Territory occupy: occupies) {
+      if (occupy.getName().equals(territoryName)) {
+        occupies.remove(occupy);
+        return occupy;
+      }
+    }
+    return null;
+  }
 
     public void upgradeLevel() throws IllegalStateException {
       if (techLevel < MAX_TECH_LEVEL) {
@@ -118,4 +127,13 @@ public class Clan implements Serializable {
         }
         return null;
     }
+  public List<Spy> getSpies() {
+    return spies;
+  }
+  public void updateAsset(Clan latestClan) {
+    techLevel = latestClan.getTechLevel();
+    resource = latestClan.getResource();
+    //spies = latestClan.getSpies();
+    
+  }
 }
