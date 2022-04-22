@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import ece651.riskgame.shared.Action;
+import ece651.riskgame.shared.UpgradeSpyAction;
 import ece651.riskgame.shared.UpgradeUnitAction;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
@@ -83,7 +84,21 @@ public class UpgradePaneController {
     }catch (NumberFormatException e) {
       gameController.updateHint("Type positive number");
     }
-    
+  }
 
+  @FXML
+  public void upgradeASpy() {
+    String color = gameController.guiPlayer.getColor();
+    String territoryName = ((MenuButton) pane.lookup("#territory")).getText();
+    UpgradeSpyAction upgradeSpyAction = new UpgradeSpyAction(color, territoryName);
+    String result = gameController.guiPlayer.tryApplyAction(upgradeSpyAction);
+    if (result == null) {
+      gameController.updateHint("Upgrade a spy");
+      gameController.guiPlayer.addActionToSend(upgradeSpyAction);
+      gameController.updateCurrentTerritoryInfo();
+      gameController.topBarController.updateTopBar();
+    } else {
+      gameController.updateHint(result);
+    }
   }
 }
