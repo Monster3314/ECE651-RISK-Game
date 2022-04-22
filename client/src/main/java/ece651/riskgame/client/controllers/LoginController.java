@@ -29,6 +29,7 @@ public class LoginController {
     //static final String ip = "0.0.0.0";
     static final String ip = "vcm-25368.vm.duke.edu";
 
+
     @FXML
     private PasswordField password;
 

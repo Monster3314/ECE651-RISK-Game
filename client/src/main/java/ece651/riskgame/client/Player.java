@@ -115,7 +115,7 @@ public abstract class Player {
 
     //Update players' former occupies
     for (Territory occupy: getOccupies()) {
-      theWorld.updateTerritoryOwnership(occupy.getName(), color);
+      theWorld.updateTerritoryOwnership(occupy.getName(), latestGame.getTerritoryOwnership(occupy.getName()));
     }
 
     //Update Visible Territory
@@ -125,24 +125,33 @@ public abstract class Player {
         theWorld.updateTerritoryOwnership(latestTerritory.getName(), latestGame.getTerritoryOwnership(latestTerritory.getName()));
       }
     }
+  }
 
-  
-  
-  
-  
-  
+  /**
+   * spectateGame according to the gameinfo recved from server
+   * @param latestGame is the gameinfo recved from the server
+   * precondition: player is dead  
+   */  
+  public void spectateGame(GameInfo latestGame) {
+    if (latestGame == null) {
+      throw new IllegalArgumentException("LatestGame can not be null");
+    }
+    if (!latestGame.getClans().containsKey(color)) {
+      throw new IllegalArgumentException("Color is not in latest game");
+    }
+    theWorld = new ClientWorld(latestGame);
   }
   //adapting from list of moves to map(territory string to list of placed units)
   public Map<String, List<Unit>> adaptPlacements(List<PlaceAction> placements) {
-  Map<String, List<Unit>> serverPlacements = new HashMap<>();
-  Set <Territory> occupies = getOccupies();
-  for (Territory occupy : occupies) {
-    serverPlacements.put(occupy.getName(), new ArrayList<Unit>(Arrays.asList(new BasicUnit(0))));
-  }
-  for (PlaceAction placement: placements) {
-    serverPlacements.get(placement.getDestination()).add(placement.getUnit());
-  }
-  return serverPlacements;
+    Map<String, List<Unit>> serverPlacements = new HashMap<>();
+    Set <Territory> occupies = getOccupies();
+    for (Territory occupy : occupies) {
+      serverPlacements.put(occupy.getName(), new ArrayList<Unit>(Arrays.asList(new BasicUnit(0))));
+    }
+    for (PlaceAction placement: placements) {
+      serverPlacements.get(placement.getDestination()).add(placement.getUnit());
+    }
+    return serverPlacements;
   }
   
   
