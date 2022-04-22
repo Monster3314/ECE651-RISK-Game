@@ -35,7 +35,8 @@ public class MoveSpyAction implements Action, Serializable {
             clan.getResource().costFood(world.getUnitMoveCost(fromTerritory, color).get(toTerritory));
         }
         else {
-            clan.getResource().costFood(1);
+            Board board = world.getBoard();
+            clan.getResource().costFood(board.getTerritory(fromTerritory).getSize() + board.getTerritory(toTerritory).getSize());
             spy.setCanMove(false);
         }
     }
