@@ -12,7 +12,9 @@ import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 import ece651.riskgame.shared.UpgradeTechAction;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -116,6 +118,7 @@ public class GameController implements Initializable {
     //        .setText(String.valueOf(guiPlayer.getTerritory(territoryName)));
 
     // set resources
+    //System.out.println(territoryName);
     ((Label)infoView.lookup("#goldProduction"))
             .setText(String.valueOf(guiPlayer.getTerritory(territoryName).getProduction().getResourceNum(Resource.GOLD)));
     ((Label)infoView.lookup("#foodProduction"))
@@ -141,7 +144,7 @@ public class GameController implements Initializable {
    */
   public void updateClouds() {
     territoryNameList.stream().forEach(name -> {
-      System.out.println(name.toLowerCase()+"cloud");
+      //System.out.println(name.toLowerCase()+"cloud");
       scene.lookup("#"+name.toLowerCase()+"cloud").setVisible(false);
     });
     for (String territoryName: territoryNameList) {
@@ -157,9 +160,16 @@ public class GameController implements Initializable {
     try {
       updateTerritoryInfo(((Label) infoView.lookup("#territoryName")).getText());
     } catch (NullPointerException e) {
+    } catch (IllegalStateException e) {
+      hint.setText("Please click on territory to show correct information.");
     }
   }
 
+  /**
+   * Method called at the beginning of the game
+   * @throws IOException
+   * @throws ClassNotFoundException
+   */
   public void initializeGame() throws IOException, ClassNotFoundException {
     topBarController.setUsername(guiPlayer.getColor());
     setAvailableTerritories(scene, guiPlayer.getTerritoryNames());
@@ -168,8 +178,8 @@ public class GameController implements Initializable {
     upgradePaneController.setUpgradePane();
     setHint();
 
-    updateTerritoryColors();
     updateClouds();
+    updateTerritoryColors();
   }
 
   /**
@@ -190,8 +200,9 @@ public class GameController implements Initializable {
    */
   public void disableButtonsButLogout() {
     List<String> btns = new ArrayList<>(
-        Arrays.asList("nextTurn", "moveButton", "attackButton", "upgradeButton", "levelUp"));
+        Arrays.asList("nextTurn", "moveButton", "attackButton", "upgradeButton"));
     btns.stream().forEach(s -> scene.lookup("#" + s).setDisable(true));
+    topBarController.inactivateLevelUpButton();
   }
 
   /**
@@ -201,14 +212,43 @@ public class GameController implements Initializable {
     disableButtonsButLogout();
   }
 
+  public void disableActableButtons() {
+    set3ActionPanesInvisible();
+    set3ButtonsUnselected();
+    disableButtonsButLogout();
+    scene.lookup("#logout").setDisable(true);
+  }
+
+  /**
+   * Active button after placement phase
+   */
+  public void activateButtons() {
+    List<String> btns = new ArrayList<>(
+            Arrays.asList("nextTurn", "logout", "moveButton", "attackButton", "upgradeButton"));
+    btns.stream().forEach(s -> scene.lookup("#" + s).setDisable(false));
+    topBarController.activateLevelUpButton();
+    scene.lookup("#logout").setDisable(false);
+  }
+
+  /**
+   * Active button after placement phase
+   */
+  public void activateButtonsAfterPlacement() {
+    activateButtons();
+  }
+
   /**
    * Update Territory colors, called at the beginning of each round
    */
   public void updateTerritoryColors() {
     for (String color : guiPlayer.getGame().getClans().keySet()) {
       for (Territory t : guiPlayer.getGame().getClans().get(color).getOccupies()) {
-        System.out.println(t.getName());
-        ((Button) scene.lookup("#" + t.getName() + "Territory")).setStyle("-fx-background-color:" + color);
+        Button target = ((Button) scene.lookup("#" + t.getName() + "Territory"));
+        if (!scene.lookup("#"+t.getName().toLowerCase()+"cloud").isVisible()) {
+          target.setStyle("-fx-background-color:" + color);
+        } else {
+          target.setStyle("");
+        }
       }
     }
   }
@@ -233,27 +273,12 @@ public class GameController implements Initializable {
    * Helper function to call function from placement phase to action phase
    */
   public void fromPlacementToAction() throws IOException, ClassNotFoundException {
+    updateClouds();
     updateTerritoryColors();
     activateButtonsAfterPlacement();
     set3ButtonsUnselected();
     set3ActionPanesInvisible();
     topBarController.updateTopBar();
-  }
-
-  /**
-   * Active button after placement phase
-   */
-  public void activateButtons() {
-    List<String> btns = new ArrayList<>(
-        Arrays.asList("nextTurn", "logout", "moveButton", "attackButton", "upgradeButton", "levelUp"));
-    btns.stream().forEach(s -> scene.lookup("#" + s).setDisable(false));
-  }
-
-  /**
-   * Active button after placement phase
-   */
-  public void activateButtonsAfterPlacement() {
-    activateButtons();
   }
 
   @FXML
@@ -306,17 +331,41 @@ public class GameController implements Initializable {
 
   @FXML
   public void nextTurn() throws IOException, ClassNotFoundException {
-    gameIO.sendActions(guiPlayer.getActionsToSend());
-    guiPlayer.clearActionsToSend();
-    guiPlayer.updateGame(gameIO.recvGame());
+    disableActableButtons();
+    hint.setText("Your turn ends. Wait for other players...");
+    Thread th = new Thread(new Task() {
+      @Override
+      protected Object call() throws Exception {
+        gameIO.sendActions(guiPlayer.getActionsToSend());
+        guiPlayer.clearActionsToSend();
+        guiPlayer.updateGame(gameIO.recvGame());
+        Platform.runLater(new Runnable() {
+          @Override
+          public void run() {
+            try {
+              goToNextTurn();
+            } catch (IOException e) {
+              e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+              e.printStackTrace();
+            }
+          }
+        });
+        return null;
+      }
+    });
+    th.setDaemon(true);
+    th.start();
+  }
+
+  public void goToNextTurn() throws IOException, ClassNotFoundException {
     // update game
-    updateTerritoryColors();
-    set3ActionPanesInvisible();
-    set3ButtonsUnselected();
-    updateCurrentTerritoryInfo();
+    hint.setText("New Turn! Do your actions!");
     updateClouds();
+    updateTerritoryColors();
+    updateCurrentTerritoryInfo();
     topBarController.updateTopBar();
-    topBarController.activateLevelUpButton();
+    activateButtons();
     isLostOrWin();
   }
 
@@ -332,7 +381,7 @@ public class GameController implements Initializable {
     upgradePaneController.setUpgradePane();
     // update/display information
     topBarController.updateTopBar();
-    updateTerritoryColors();
+    updateClouds();
     updateTerritoryColors();
     set3ActionPanesInvisible();
     set3ButtonsUnselected();

@@ -22,11 +22,7 @@ import java.util.Set;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import org.assertj.core.util.Arrays;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
@@ -89,6 +85,13 @@ public class GameControllerTest {
     gameController.actionPaneController = actionPaneController;
     gameController.upgradePaneController = upgradePaneController;
     gameController.topBarController = topBarController;
+    try {
+      doNothing().when(gameController).goToNextTurn();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    }
   }
 
   @AfterEach
@@ -167,8 +170,17 @@ public class GameControllerTest {
 
     List<Territory> neighbors = List.of(new BasicTerritory("Durham"));
     when(borad.getNeighbors(any())).thenReturn(neighbors);
+    when(infoView.lookup("#territoryName")).thenReturn(mock(Label.class));
+    when(infoView.lookup("#neighborsBox")).thenReturn(mock(VBox.class));
+    List.of(0,1,2,3,4,5,6).stream().forEach(i ->
+            when(infoView.lookup("#unitNum"+i)).thenReturn(mock(Label.class)));
+    when(infoView.lookup("#goldProduction")).thenReturn(mock(Label.class));
+    when(infoView.lookup("#foodProduction")).thenReturn(mock(Label.class));
+    when(infoView.lookup("#size")).thenReturn(mock(Label.class));
+    List.of(0,1,2,3).stream().forEach(i ->
+            when(infoView.lookup("#neighbor"+i)).thenReturn(mock(Label.class)));
 
-    gameController.updateTerritoryInfo("UNC");
+    gameController.updateTerritoryInfo("Durham");
   }
 
   @Test
@@ -198,6 +210,8 @@ public class GameControllerTest {
     when(clans.keySet()).thenReturn(set);
     List<Territory> ts = new ArrayList(Arrays.asList(new Territory[] { new BasicTerritory("red") }));
     when(clan.getOccupies()).thenReturn(ts);
+    doNothing().when(gameController).updateClouds();
+    doNothing().when(gameController).updateTerritoryColors();
 
     gameController.initializeGame();
   }
@@ -298,6 +312,7 @@ public class GameControllerTest {
     doNothing().when(gameController).updateTerritoryColors();
     doNothing().when(gameController).set3ActionPanesInvisible();
     doNothing().when(gameController).set3ButtonsUnselected();
+    doNothing().when(gameController).updateClouds();
 
     gameController.displayGame();
   }
@@ -313,6 +328,9 @@ public class GameControllerTest {
     doNothing().when(gameController).set3ActionPanesInvisible();
     doNothing().when(gameController).set3ButtonsUnselected();
     doNothing().when(gameController).isLostOrWin();
+    doNothing().when(gameController).updateClouds();
+    doNothing().when(gameController).nextTurn();
+    doNothing().when(gameController).goToNextTurn();
     gameController.reconnect();
   }
   

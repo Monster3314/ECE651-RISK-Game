@@ -288,7 +288,7 @@
             <Insets left="5.0" right="5.0" />
          </padding></VBox>
       <fx:include fx:id="placementPane" layoutX="37.0" layoutY="184.0" source="placementPane.fxml" />
-      <fx:include fx:id="actionPane" layoutX="37.0" layoutY="184.0" source="ActionPane.fxml" visible="false" />
+      <fx:include fx:id="actionPane" layoutX="37.0" layoutY="184.0" source="actionPane.fxml" visible="false" />
       <fx:include fx:id="upgradePane" layoutX="37.0" layoutY="184.0" source="upgradePane.fxml" visible="false" />
       <fx:include fx:id="topBar" layoutX="17.0" layoutY="-3.0" source="topbar.fxml" />
       <ImageView fx:id="northcloud" fitHeight="206.0" fitWidth="205.0" layoutX="282.0" layoutY="126.0" mouseTransparent="true" opacity="0.5" pickOnBounds="true" preserveRatio="true" rotate="-6.7">
