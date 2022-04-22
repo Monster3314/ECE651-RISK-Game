@@ -63,6 +63,8 @@ public class GameController implements Initializable {
   Label hint;
   @FXML
   Pane helpBox;
+  //@FXML
+  //ImageView cloakBtn;
 
 
   public GameController(GUIPlayer p, GameIO gameIO) {
@@ -117,12 +119,11 @@ public class GameController implements Initializable {
       }
     }
 
-    // TODO set spy
-    //((Label)infoView.lookup("#spyNum"))
-    //        .setText(String.valueOf(guiPlayer.getTerritory(territoryName)));
+    Label spyNum = (Label) infoView.lookup("#spyNum");
+    spyNum.setText(String.valueOf(guiPlayer.getSpyNumOnTerritory(territoryName)));
 
     // set resources
-    //System.out.println(territoryName);
+    System.out.println(territoryName);
     ((Label)infoView.lookup("#goldProduction"))
             .setText(String.valueOf(guiPlayer.getTerritory(territoryName).getProduction().getResourceNum(Resource.GOLD)));
     ((Label)infoView.lookup("#foodProduction"))
@@ -176,6 +177,8 @@ public class GameController implements Initializable {
     } catch (NullPointerException e) {
     } catch (IllegalStateException e) {
       hint.setText("Please click on territory to show correct information.");
+    } catch (IllegalArgumentException e) {
+      hint.setText("Please click on territory to show correct information.");
     }
   }
 
@@ -217,6 +220,7 @@ public class GameController implements Initializable {
         Arrays.asList("nextTurn", "moveButton", "attackButton", "upgradeButton"));
     btns.stream().forEach(s -> scene.lookup("#" + s).setDisable(true));
     topBarController.inactivateLevelUpButton();
+    //cloakBtn.setDisable(true);
   }
 
   /**
@@ -242,6 +246,7 @@ public class GameController implements Initializable {
     btns.stream().forEach(s -> scene.lookup("#" + s).setDisable(false));
     topBarController.activateLevelUpButton();
     scene.lookup("#logout").setDisable(false);
+    activateCloakDevelopButtons();
   }
 
   /**
@@ -249,6 +254,10 @@ public class GameController implements Initializable {
    */
   public void activateButtonsAfterPlacement() {
     activateButtons();
+  }
+
+  public void activateCloakDevelopButtons() {
+    // TODO
   }
 
   /**
@@ -352,7 +361,9 @@ public class GameController implements Initializable {
       protected Object call() throws Exception {
         gameIO.sendActions(guiPlayer.getActionsToSend());
         guiPlayer.clearActionsToSend();
+        System.out.print("actions sent to server");
         guiPlayer.updateGame(gameIO.recvGame());
+        System.out.println("receive actions from server");
         Platform.runLater(new Runnable() {
           @Override
           public void run() {
@@ -458,7 +469,7 @@ public class GameController implements Initializable {
     upgradePaneController.pane = (Pane) scene.lookup("#upgradePane");
     topBarController.gameController = this;
     topBarController.guiPlayer = this.guiPlayer;
-    // TODO playMusic();
+    //playMusic();
   }
 
   public void playMusic() {
