@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import ece651.riskgame.shared.Actable;
 import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.ActionRuleChecker;
 import ece651.riskgame.shared.AdjacentTerritoryChecker;
@@ -17,16 +18,19 @@ import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.EnemyTerritoryChecker;
-import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.MovableSpyChecker;
 import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.MovePathChecker;
+import ece651.riskgame.shared.MoveSpyAction;
 import ece651.riskgame.shared.PlaceAction;
 import ece651.riskgame.shared.Resource;
+import ece651.riskgame.shared.SpyMovePathChecker;
 import ece651.riskgame.shared.SufficientResourceChecker;
 import ece651.riskgame.shared.SufficientUnitChecker;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 import ece651.riskgame.shared.UnitsRuleChecker;
+import ece651.riskgame.shared.UpgradeSpyAction;
 import ece651.riskgame.shared.UpgradeTechAction;
 import ece651.riskgame.shared.UpgradeUnitAction;
 
@@ -64,6 +68,8 @@ public abstract class Player {
     actionCheckers.put(Move.class, new MovePathChecker(new UnitsRuleChecker(new SufficientResourceChecker(null))));
     actionCheckers.put(UpgradeUnitAction.class, new SufficientUnitChecker(new SufficientResourceChecker(null)));
     actionCheckers.put(UpgradeTechAction.class, new SufficientResourceChecker(null));
+    actionCheckers.put(UpgradeSpyAction.class, new SufficientResourceChecker(new SufficientUnitChecker(null)));
+    actionCheckers.put(MoveSpyAction.class, new SpyMovePathChecker(new MovableSpyChecker(new SufficientResourceChecker(null))));
   }
 
   
@@ -81,6 +87,9 @@ public abstract class Player {
     return errorMsg;
   }
 
+  public int getSpyNumOnTerritory(String territoryName) {
+    return theWorld.getClans().get(color).getSpyNumOnTerritory(territoryName);
+  }
   /**
    * get the color of the player
    * @return the color of this player  
@@ -102,7 +111,7 @@ public abstract class Player {
    * @param latestGame is the game recieved from server
    * @throws IllegalArgumentException when latestGame is null or player is not in this game(Not even dead) 
    */
-  public void updateGame(GameInfo latestGame) {
+  public void updateGame(Actable latestGame) {
     if (latestGame == null) {
       throw new IllegalArgumentException("LatestGame can not be null");
     }
@@ -120,27 +129,13 @@ public abstract class Player {
 
     //Update Visible Territory
     for (Territory latestTerritory: latestGame.getBoard().getTerritoriesList()) {
-      if (latestGame.hasVisibilityOf(color, latestTerritory.getName())) {
+      if (hasVisibilityOf(latestTerritory.getName())) {
         theWorld.updateTerritory(latestTerritory);
         theWorld.updateTerritoryOwnership(latestTerritory.getName(), latestGame.getTerritoryOwnership(latestTerritory.getName()));
       }
     }
   }
 
-  /**
-   * spectateGame according to the gameinfo recved from server
-   * @param latestGame is the gameinfo recved from the server
-   * precondition: player is dead  
-   */  
-  public void spectateGame(GameInfo latestGame) {
-    if (latestGame == null) {
-      throw new IllegalArgumentException("LatestGame can not be null");
-    }
-    if (!latestGame.getClans().containsKey(color)) {
-      throw new IllegalArgumentException("Color is not in latest game");
-    }
-    theWorld = new ClientWorld(latestGame);
-  }
   //adapting from list of moves to map(territory string to list of placed units)
   public Map<String, List<Unit>> adaptPlacements(List<PlaceAction> placements) {
     Map<String, List<Unit>> serverPlacements = new HashMap<>();
@@ -256,14 +251,20 @@ public abstract class Player {
   }
 
   /**
-   * Check if player has visibility of certain territory
+   * Check if player has visibility of certain territory, if dead gain all visibility
    * @param territoryName is the name of the territory you want to check
    * @return a boolean that shows if player has the visibility of this territory
    * @throws IllegalArgumentException when unexisted territory name is given
    */
 
   public boolean hasVisibilityOf(String territoryName) throws IllegalArgumentException {
-    return theWorld.hasVisibilityOf(color, territoryName);
+    if (isLost()) {
+      Territory toCheck = getTerritory(territoryName);
+      return true;
+    }
+    else {
+      return theWorld.hasVisibilityOf(color, territoryName);
+    }
   }
 
 }

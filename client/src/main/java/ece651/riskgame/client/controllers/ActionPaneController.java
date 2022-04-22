@@ -3,13 +3,10 @@ package ece651.riskgame.client.controllers;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
-import ece651.riskgame.shared.Action;
-import ece651.riskgame.shared.Attack;
-import ece651.riskgame.shared.BasicUnit;
-import ece651.riskgame.shared.Move;
-import ece651.riskgame.shared.Unit;
+import ece651.riskgame.shared.*;
 import javafx.fxml.FXML;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.TextField;
@@ -38,12 +35,14 @@ public class ActionPaneController {
     MenuButton from = (MenuButton) pane.lookup("#from");
     MenuButton to = (MenuButton) pane.lookup("#to");
     // update two drop down menus
-    gameController.updateMenuButton(from, gameController.guiPlayer.getOccupies().stream().map(t -> gameController.createMenuItem(t.getName(), from)).collect(Collectors.toList()));
-    if (ifMove) {
-      gameController.updateMenuButton(to, gameController.guiPlayer.getOccupies().stream().map(t -> gameController.createMenuItem(t.getName(), to)).collect(Collectors.toList()));
-    } else { // attack
-      gameController.updateMenuButton(to, gameController.guiPlayer.getEnemyTerritoryNames().stream().map(t -> gameController.createMenuItem(t, to)).collect(Collectors.toList()));
-    }
+    //gameController.updateMenuButton(from, gameController.guiPlayer.getOccupies().stream().map(t -> gameController.createMenuItem(t.getName(), from)).collect(Collectors.toList()));
+    gameController.updateMenuButton(from, gameController.guiPlayer.getGame().getBoard().getTerritoryNames().stream().map(t -> gameController.createMenuItem(t, from)).collect(Collectors.toList()));
+//    if (ifMove) {
+//      gameController.updateMenuButton(to, gameController.guiPlayer.getOccupies().stream().map(t -> gameController.createMenuItem(t.getName(), to)).collect(Collectors.toList()));
+//    } else { // attack
+//      gameController.updateMenuButton(to, gameController.guiPlayer.getEnemyTerritoryNames().stream().map(t -> gameController.createMenuItem(t, to)).collect(Collectors.toList()));
+//    }
+    gameController.updateMenuButton(to, gameController.guiPlayer.getGame().getBoard().getTerritoryNames().stream().map(t -> gameController.createMenuItem(t, to)).collect(Collectors.toList()));
     // TODO : advanced feature, adjust unit numbers based on selected territory
   }
 
@@ -95,7 +94,23 @@ public class ActionPaneController {
 
   @FXML
   public void moveSpy() {
-    // TODO move a spy from from to to
+    try {
+      String color = gameController.guiPlayer.getColor();
+      String from = ((MenuButton) pane.lookup("#from")).getText();
+      String to = ((MenuButton) pane.lookup("#to")).getText();
+      MoveSpyAction moveSpyAction = new MoveSpyAction(color, from, to);
+      String result = gameController.guiPlayer.tryApplyAction(moveSpyAction);
+      if (result == null) {
+        gameController.updateHint("Spy moved");
+        gameController.guiPlayer.addActionToSend(moveSpyAction);
+        gameController.updateCurrentTerritoryInfo();
+        gameController.topBarController.updateTopBar();
+      } else {
+        gameController.updateHint(result);
+      }
+    } catch (IllegalArgumentException e) {
+      gameController.updateHint(e.getMessage());
+    }
   }
 
 }
