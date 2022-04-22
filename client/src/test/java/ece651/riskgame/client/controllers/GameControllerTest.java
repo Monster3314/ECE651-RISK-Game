@@ -336,6 +336,7 @@ public class GameControllerTest {
   }
   
   @Test
+  @Disabled
   public void test_idlostorwin() throws IOException, ClassNotFoundException, InterruptedException {
     mockPrepare();
     doNothing().when(gameController).updateHint(any());

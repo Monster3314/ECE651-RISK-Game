@@ -26,9 +26,10 @@ public class RiskGame implements Runnable{
   private ActionRuleChecker upgradeUnitChecker = new SufficientUnitChecker(new SufficientResourceChecker(null));
   private ActionRuleChecker upgradeTechChecker = new SufficientResourceChecker(null);
 
-  private ActionRuleChecker getColakChecker = new SufficientResourceChecker(new AbilityChecker(null));
-
-  private ActionRuleChecker doColakChecker = new SufficientResourceChecker(new AbilityChecker(null));
+  private ActionRuleChecker getCloakChecker = new SufficientResourceChecker(new AbilityChecker(null));
+  private ActionRuleChecker doCloakChecker = new SufficientResourceChecker(new AbilityChecker(null));
+  private ActionRuleChecker upgradeSpyChecker = new SufficientResourceChecker(new SufficientUnitChecker(null));
+  private ActionRuleChecker moveSpyChecker = new SpyMovePathChecker(new SufficientUnitChecker(new MovableSpyChecker(null)));
   private serverRoom roominfo;
   private Logger logger = Logger.getInstance();
 
@@ -216,7 +217,7 @@ public class RiskGame implements Runnable{
 
   private void doGetCloakAction(List<GetCloakAction> getCloakActions) {
     for(GetCloakAction action:getCloakActions) {
-      String checkResult = getColakChecker.checkAction(world, action);
+      String checkResult = getCloakChecker.checkAction(world, action);
       if(checkResult != null) {
         return;
       }
@@ -230,7 +231,7 @@ public class RiskGame implements Runnable{
 
   private void doDoCloakAction(List<DoCloakAction> doCloakActions) {
     for(DoCloakAction action: doCloakActions) {
-      String checkResult = doColakChecker.checkAction(world, action);
+      String checkResult = doCloakChecker.checkAction(world, action);
       if(checkResult != null) {
         //log
         return;
@@ -259,19 +260,25 @@ public class RiskGame implements Runnable{
       if (a.getClass() == Move.class) {
         doMoveAction((Move) a);
       }
+      else if (a.getClass() == MoveSpyAction.class) {
+        doAction(a, moveSpyChecker);
+      }
+      else if (a.getClass() == UpgradeSpyAction.class) {
+        doAction(a, upgradeSpyChecker);
+      }
       else {
-        doUpgradeUnitAction((UpgradeUnitAction) a);
+        doAction(a, upgradeUnitChecker);
       }
     }
   }
 
-  private void doUpgradeUnitAction(UpgradeUnitAction a) {
-    String checkResult = upgradeUnitChecker.checkAction(world, a);
+  private void doAction(Action action, ActionRuleChecker checker) {
+    String checkResult = checker.checkAction(world, action);
     if (checkResult != null) {
       // TODO: log
       return;
     }
-    world.acceptAction(a);
+    world.acceptAction(action);
   }
 
   /**
@@ -331,10 +338,10 @@ public class RiskGame implements Runnable{
 
   private void randomDecResource() {
     Random random = new Random();
-    for(Territory t : world.getBoard().getTerritoriesList()) {
+    for(Map.Entry<String, Clan> i: world.getClans().entrySet()) {
       try {
-        t.getProduction().costGold(random.nextInt(50));
-        t.getProduction().costFood(random.nextInt(100));
+        i.getValue().getResource().costGold(random.nextInt(50));
+        i.getValue().getResource().costFood(random.nextInt(30));
       } catch (Exception e) {
 
       }
