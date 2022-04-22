@@ -28,6 +28,7 @@ import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
 import org.testfx.framework.junit5.Start;
 
+import ece651.riskgame.client.ClientWorld;
 import ece651.riskgame.client.GUIPlayer;
 import ece651.riskgame.client.GameIO;
 import ece651.riskgame.shared.BasicTerritory;
@@ -152,7 +153,7 @@ public class GameControllerTest {
     mockPrepare();
     ObservableList<Node> kids = mock(ObservableList.class);
     when(infoView.getChildren()).thenReturn(kids);
-    GameInfo game = mock(GameInfo.class);
+    ClientWorld game = mock(ClientWorld.class);
     when(guiPlayer.getGame()).thenReturn(game);
     Board borad = mock(Board.class);
     doReturn(borad).when(game).getBoard();
@@ -201,10 +202,10 @@ public class GameControllerTest {
         "upgradeButton", "levelUp");
     btns.stream().forEach(s -> when(scene.lookup("#" + s)).thenReturn(new Label()));
     Map<String, Clan> clans = mock(Map.class);
-    GameInfo gi = mock(GameInfo.class);
+    ClientWorld w = mock(ClientWorld.class);
     Clan clan = mock(Clan.class);
-    when(guiPlayer.getGame()).thenReturn(gi);
-    when(gi.getClans()).thenReturn(clans);
+    when(guiPlayer.getGame()).thenReturn(w);
+    when(w.getClans()).thenReturn(clans);
     when(clans.get(any())).thenReturn(clan);
     Set<String> set = new HashSet(Arrays.asList(new String[] { "Durham" }));
     when(clans.keySet()).thenReturn(set);

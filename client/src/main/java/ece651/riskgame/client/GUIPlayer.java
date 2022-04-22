@@ -21,7 +21,7 @@ public class GUIPlayer extends Player{
    * @param color is the color that represents player's clan
    * @param game is the game the player is playing in    
    */
-  public GUIPlayer(String color, GameInfo game) {
+  public GUIPlayer(String color, ClientWorld game) {
     super(color, game);
     actionsToSend = new ArrayList<>();
   }

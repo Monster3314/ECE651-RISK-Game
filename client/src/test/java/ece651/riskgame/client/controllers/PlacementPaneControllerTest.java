@@ -101,7 +101,7 @@ public class PlacementPaneControllerTest {
     placementPaneController.submitPlacement(null);
 
     // make guiplayer.tryplace fail
-    when(guiPlayer.tryPlace(any(), any())).thenReturn("wrong");
+    //when(guiPlayer.tryPlace(any(), any())).thenReturn("wrong");
     placementPaneController.submitPlacement(null);
 
     // input negative number

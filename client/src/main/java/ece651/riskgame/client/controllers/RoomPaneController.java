@@ -1,5 +1,15 @@
 package ece651.riskgame.client.controllers;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
+import java.net.URL;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
+
+import ece651.riskgame.client.ClientWorld;
 import ece651.riskgame.client.GUIPlayer;
 import ece651.riskgame.client.GameIO;
 import ece651.riskgame.client.Room;
@@ -10,16 +20,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.ConnectException;
-import java.net.Socket;
-import java.net.URL;
-import java.net.UnknownHostException;
-import java.util.HashMap;
-import java.util.Map;
 
 
 public class RoomPaneController {
@@ -153,7 +153,7 @@ public class RoomPaneController {
         gameIO.setSocket(roomSocket);
         String color = gameIO.recvColor();
         GameInfo gi = gameIO.recvGame();
-        GUIPlayer guiPlayer = new GUIPlayer(color, gi);
+        GUIPlayer guiPlayer = new GUIPlayer(color, new ClientWorld(gi));
 
         GameController gameController = new GameController(guiPlayer, gameIO);
 
