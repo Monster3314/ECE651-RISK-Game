@@ -19,16 +19,20 @@ public class MovePathChecker extends ActionRuleChecker {
         Move move = (Move) action;
         String src = move.getFromTerritory();
         String dest = move.getToTerritory();
+        return findPath(src, dest, move.getColor(), actable);
+    }
+
+    public static String findPath(String src, String dest, String color, Actable actable) {
         Board b = actable.getBoard();
 
         if (src.equals(dest)) {
             return "The departure and destination territory are the same territory!";
         }
-        if (!move.getColor().equals(actable.getTerritoryOwnership(src))) {
-            return "The departure territory does not belong to " + move.getColor() + " player.";
+        if (!color.equals(actable.getTerritoryOwnership(src))) {
+            return "The departure territory does not belong to " + color + " player.";
         }
-        if (!move.getColor().equals(actable.getTerritoryOwnership(dest))) {
-            return "The destination territory does not belong to " + move.getColor() + " player.";
+        if (!color.equals(actable.getTerritoryOwnership(dest))) {
+            return "The destination territory does not belong to " + color + " player.";
         }
         // apply a BFS to look for destination
         Queue<Territory> queue = new LinkedList<>();
@@ -40,7 +44,7 @@ public class MovePathChecker extends ActionRuleChecker {
             List<Territory> neighbors = b.getNeighbors(territory);
             for (Territory t : neighbors) {
                 String name = t.getName();
-                if (!visited.contains(name) && actable.getTerritoryOwnership(name).equals(move.getColor())) {
+                if (!visited.contains(name) && actable.getTerritoryOwnership(name).equals(color)) {
                     if (name.equals(dest)) {
                         return null;
                     }
@@ -49,6 +53,6 @@ public class MovePathChecker extends ActionRuleChecker {
                 }
             }
         }
-        return "Failed to find a path from " + move.getFromTerritory() + " to " + move.getToTerritory() + ".";
+        return "Failed to find a path from " + src + " to " + dest + ".";
     }
 }
