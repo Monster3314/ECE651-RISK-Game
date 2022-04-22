@@ -140,6 +140,16 @@ public class GameController implements Initializable {
   }
 
   /**
+   * Method to remove clouds, used in dead player watching the game
+   */
+  public void removeClouds() {
+    territoryNameList.stream().forEach(name -> {
+      //System.out.println(name.toLowerCase()+"cloud");
+      scene.lookup("#"+name.toLowerCase()+"cloud").setVisible(false);
+    });
+  }
+
+  /**
    * Method called to update if a cloud shold show up
    */
   public void updateClouds() {
@@ -397,15 +407,34 @@ public class GameController implements Initializable {
 
   public void isLostOrWin() throws IOException, ClassNotFoundException {
     if (guiPlayer.isLost()) {
+      removeClouds();
       disableButtonsButLogout();
+      set3ButtonsUnselected();
+      set3ActionPanesInvisible();
       updateHint("Woops. You have lost.");
       while (!guiPlayer.isGameOver()) {
-        guiPlayer.updateGame(gameIO.recvGame());
-        // TODO update everything and do 2 threads
+        Thread thread = new Thread(new Task<>() {
+          @Override
+          protected Object call() throws Exception {
+            // call static game
+            guiPlayer.updateGame(gameIO.recvGame());
+            Platform.runLater(new Runnable() {
+              @Override
+              public void run() {
+                topBarController.updateTopBar();
+                updateTerritoryColors();
+                updateCurrentTerritoryInfo();
+              }
+            });
+            return null;
+          }
+        });
+        thread.start();
       }
     } else if (guiPlayer.isGameOver()) { // winner
       updateHint("Congratulations! You are the winner");
       disableButtonsButLogout();
+      removeClouds();
     }
   }
 
