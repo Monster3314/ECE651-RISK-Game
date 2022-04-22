@@ -178,6 +178,7 @@ public class GameControllerTest {
     when(infoView.lookup("#goldProduction")).thenReturn(mock(Label.class));
     when(infoView.lookup("#foodProduction")).thenReturn(mock(Label.class));
     when(infoView.lookup("#size")).thenReturn(mock(Label.class));
+    when(infoView.lookup("#spyNum")).thenReturn(mock(Label.class));
     List.of(0,1,2,3).stream().forEach(i ->
             when(infoView.lookup("#neighbor"+i)).thenReturn(mock(Label.class)));
 
