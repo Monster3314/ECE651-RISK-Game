@@ -11,6 +11,8 @@ import java.util.List;
 public class Clan implements Serializable {
     private final List<Territory> occupies;
     private int techLevel;
+
+    private boolean cloakAbility = false;
     private Resource resource;
     static public int[] COST = new int[] {0, 50, 75, 125, 200, 300};
     static public int MAX_TECH_LEVEL = 6;
@@ -89,5 +91,16 @@ public class Clan implements Serializable {
         for (Territory t : occupies) {
             resource.addResource(t.getProduction());
         }
+    }
+
+    public void getCloakAbility() throws IllegalArgumentException{
+        if(hasCloakAbility()) throw new IllegalArgumentException("Already has cloakability");
+        if(techLevel < 3) throw new IllegalArgumentException("Techlevel is smaller than 3");
+        cloakAbility = true;
+        resource.costGold(100);
+    }
+
+    public boolean hasCloakAbility() {
+        return cloakAbility;
     }
 }

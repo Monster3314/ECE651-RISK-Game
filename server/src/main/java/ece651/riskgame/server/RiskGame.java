@@ -3,7 +3,6 @@ package ece651.riskgame.server;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.*;
 
@@ -26,6 +25,10 @@ public class RiskGame implements Runnable{
   private ActionRuleChecker AttackActionChecker = new UnitsRuleChecker(new EnemyTerritoryChecker(new AdjacentTerritoryChecker(new SufficientResourceChecker(null))));
   private ActionRuleChecker upgradeUnitChecker = new SufficientUnitChecker(new SufficientResourceChecker(null));
   private ActionRuleChecker upgradeTechChecker = new SufficientResourceChecker(null);
+
+  private ActionRuleChecker getColakChecker = new SufficientResourceChecker(new AbilityChecker(null));
+
+  private ActionRuleChecker doColakChecker = new SufficientResourceChecker(new AbilityChecker(null));
   private serverRoom roominfo;
   private Logger logger = Logger.getInstance();
 
@@ -179,6 +182,8 @@ public class RiskGame implements Runnable{
     List<Action> movesAndUpgradeUnits = new ArrayList<>();
     List<Attack> attacks = new ArrayList<>();
     List<UpgradeTechAction> upgradeTechActions = new ArrayList<>();
+    List<GetCloakAction> getCloakActions = new ArrayList<>();
+    List<DoCloakAction> doCloakActions = new ArrayList<>();
 
     for (Action a : Actions) {
       if (a.getClass() == Attack.class) {
@@ -187,17 +192,55 @@ public class RiskGame implements Runnable{
       else if (a.getClass() == UpgradeTechAction.class) {
         upgradeTechActions.add((UpgradeTechAction) a);
       }
+      else if (a.getClass() == GetCloakAction.class) {
+        getCloakActions.add((GetCloakAction) a);
+      }
+      else if (a.getClass() == DoCloakAction.class) {
+        doCloakActions.add((DoCloakAction) a);
+      }
       else { // for coverage
         movesAndUpgradeUnits.add(a);
       }
     }
 
+    doGetCloakAction(getCloakActions);
+    doDoCloakAction(doCloakActions);
     doMoveAndUpgradeUnitAction(movesAndUpgradeUnits);
     doAttackAction(attacks);
     doUpgradeLevelAction(upgradeTechActions);
 
+
     // TODO: Send to players before flushing
     logger.flushBuffer();
+  }
+
+  private void doGetCloakAction(List<GetCloakAction> getCloakActions) {
+    for(GetCloakAction action:getCloakActions) {
+      String checkResult = getColakChecker.checkAction(world, action);
+      if(checkResult != null) {
+        return;
+      }
+      try {
+        world.acceptAction(action);
+      } catch (Exception e) {
+        //logger.writeLog("");
+      }
+    }
+  }
+
+  private void doDoCloakAction(List<DoCloakAction> doCloakActions) {
+    for(DoCloakAction action: doCloakActions) {
+      String checkResult = doColakChecker.checkAction(world, action);
+      if(checkResult != null) {
+        //log
+        return;
+      }
+      try {
+        world.acceptAction(action);
+      } catch (Exception e) {
+        //TODO:log
+      }
+    }
   }
 
   private void doUpgradeLevelAction(List<UpgradeTechAction> upgradeTechActions) {
@@ -275,10 +318,37 @@ public class RiskGame implements Runnable{
   private void afterTurn() {
     for (Territory t : world.getBoard().getTerritoriesList()) {
       t.addUnit(new BasicUnit(1));
+      t.decCloakNum();
     }
     for (Clan clan : world.getClans().values()) {
       if (clan.isActive()) {
         clan.getTerritoryProduction();
+      }
+    }
+    randomDecResource();
+    randomDecTroops();
+  }
+
+  private void randomDecResource() {
+    Random random = new Random();
+    for(Territory t : world.getBoard().getTerritoriesList()) {
+      try {
+        t.getProduction().costGold(random.nextInt(50));
+        t.getProduction().costFood(random.nextInt(100));
+      } catch (Exception e) {
+
+      }
+    }
+  }
+
+  private void randomDecTroops() {
+    Random random = new Random();
+    for(Territory t: world.getBoard().getTerritoriesList()) {
+      try {
+        int index = random.nextInt(t.getUnits().size());
+        t.getUnits().get(index).decSoldiers(1);
+      } catch (Exception e) {
+
       }
     }
   }

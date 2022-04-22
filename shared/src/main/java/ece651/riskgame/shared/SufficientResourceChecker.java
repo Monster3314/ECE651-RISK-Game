@@ -31,6 +31,16 @@ public class SufficientResourceChecker extends ActionRuleChecker {
                 cost = Unit.getLevelUpCost(uua.getBaseLevel(), uua.getTargetLevel()) * uua.getNum();
                 color = uua.getColor();
             }
+            else if(action.getClass() == GetCloakAction.class) {
+                GetCloakAction gca = (GetCloakAction) action;
+                cost = 100;
+                color = gca.getColor();
+            }
+            else if(action.getClass() == DoCloakAction.class) {
+                DoCloakAction dca = (DoCloakAction) action;
+                cost = 20;
+                color = dca.getColor();
+            }
             else {
                 UpgradeTechAction uta = (UpgradeTechAction) action;
                 cost = Clan.COST[actable.getClans().get(uta.getColor()).getTechLevel()];
