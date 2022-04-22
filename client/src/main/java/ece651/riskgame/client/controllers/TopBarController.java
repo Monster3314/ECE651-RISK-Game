@@ -45,15 +45,14 @@ public class TopBarController {
 
   public void activateLevelUpButton() {
     // TODO do not activate if level 6
-    levelUp.setDisable(false);
+    if (guiPlayer.getTechLevel() < 6)
+      levelUp.setDisable(false);
   }
 
   /**
    * Update food, gold, food
    */
   public void updateTopBar() {
-    System.out.println("topbar update");
-    System.out.println(guiPlayer.getFood());
     playerFood.setText("Food: " + Integer.toString(guiPlayer.getFood()));
     playerGold.setText("Gold: " + Integer.toString(guiPlayer.getGold()));
     playerLevel.setText("Level: " + Integer.toString(guiPlayer.getTechLevel()));

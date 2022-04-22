@@ -66,26 +66,23 @@ public class PlayerTest {
     ClientWorld game = getDefaultWorld();
     TextPlayer redPlayer = new TextPlayer("Red", game);
   }
-  @Disabled
   @Test
-  public void test_spectateGame() {
-    Map<String, Clan> validClans = mock(Map.class);
-    when(validClans.containsKey("Red")).thenReturn(true);
-    Map<String, Clan> invalidClans = mock(Map.class);
-    when(invalidClans.containsKey("Red")).thenReturn(false);
-    GameInfo oldGame = mock(GameInfo.class);
-    when(oldGame.getClans()).thenReturn(validClans);
-    GameInfo newGame = mock(GameInfo.class);
-    when(newGame.getClans()).thenReturn(validClans);
+  public void test_updateGame() {
+    ClientWorld w = getDefaultWorld();
+    Player p = new TextPlayer("Red", w);
+    GameInfo newGame = getGameUpdate();
+    //p.updateGame(getGameUpdate());
+    //assertEquals(newGame.getBoard(), p.getGame().getBoard());
+    //assertEquals(newGame.getClans(), p.getGame().getClans());
+
+    assertThrows(IllegalArgumentException.class, ()->p.updateGame(null));
     
+    Map<String, Clan> invalidClans = mock(Map.class);
     GameInfo invalidGame = mock(GameInfo.class);
+    when(invalidClans.containsKey("Red")).thenReturn(false);
     when(invalidGame.getClans()).thenReturn(invalidClans);
-    //Player p = new TextPlayer("Red", oldGame);
-    //assertEquals(p.getGame(), oldGame);
-    //p.updateGame(newGame);
-    //assertEquals(p.getGame(), newGame);
-    //assertThrows(IllegalArgumentException.class, ()->p.updateGame(null));
-    //assertThrows(IllegalArgumentException.class, ()->p.updateGame(invalidGame));
+    assertThrows(IllegalArgumentException.class, ()->p.updateGame(invalidGame));
+    
   }
   @Test
   public void test_getters() {
@@ -291,20 +288,45 @@ public class PlayerTest {
     return w;
   }
   public static ClientWorld getFourPlayerWorld() {
-    Board b = new Board();
+   
     Map<String, Clan> clans = new HashMap<String, Clan>();
-    Territory t1 = new BasicTerritory("Jiangsu");
-    Territory t2 = new BasicTerritory("Zhejiang");
-    Territory t3 = new BasicTerritory("Shanghai");
-    Territory t4 = new BasicTerritory("Anhui");
-    Clan c1 = new Clan(new LinkedList<Territory>(Arrays.asList(t1)));
-    Clan c2 = new Clan(new LinkedList<Territory>(Arrays.asList(t2)));
-    Clan c3 = new Clan(new LinkedList<Territory>(Arrays.asList(t3)));
-    Clan c4 = new Clan(new LinkedList<Territory>(Arrays.asList(t4)));
+    Board b = getChinaBoard();
+    Clan c1 = new Clan(new LinkedList<Territory>(Arrays.asList(b.getTerritory("Jiangsu"))));
+    Clan c2 = new Clan(new LinkedList<Territory>(Arrays.asList(b.getTerritory("Zhejiang"))));
+    Clan c3 = new Clan(new LinkedList<Territory>(Arrays.asList(b.getTerritory("Shanghai"))));
+    Clan c4 = new Clan(new LinkedList<Territory>(Arrays.asList(b.getTerritory("Anhui"))));
     clans.put("Red", c1);
     clans.put("Blue", c2);
     clans.put("Yellow", c3);
     clans.put("Green", c4);
+
+
+    return new ClientWorld(b, clans);
+  }
+  
+  public static Board getNCBoard() {
+    Board b = new Board();
+    Territory t1 = new BasicTerritory("Jiangsu");
+    Territory t2 = new BasicTerritory("Zhejiang");
+    Territory t3 = new BasicTerritory("Shanghai");
+    Territory t4 = new BasicTerritory("Anhui");
+    b.addTerritory(t1);
+    b.putEntry(t1, new LinkedList<Territory>(Arrays.asList(t3, t4)));
+    b.addTerritory(t2);
+    b.putEntry(t2, new LinkedList<Territory>(Arrays.asList(t3)));
+    b.addTerritory(t3);
+    b.putEntry(t3, new LinkedList<Territory>(Arrays.asList(t1, t2)));
+    b.addTerritory(t4);
+    b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
+    return b;
+  }
+
+  public static Board getChinaBoard() {
+    Board b = new Board();
+    Territory t1 = new BasicTerritory("Jiangsu");
+    Territory t2 = new BasicTerritory("Zhejiang");
+    Territory t3 = new BasicTerritory("Shanghai");
+    Territory t4 = new BasicTerritory("Anhui");
     t1.addUnit(new BasicUnit(4));
     t2.addUnit(new BasicUnit(3));
     t3.addUnit(new BasicUnit(1));
@@ -316,7 +338,7 @@ public class PlayerTest {
     b.putEntry(t3, new LinkedList<Territory>(Arrays.asList(t1, t2)));
     b.addTerritory(t4);
     b.putEntry(t4, new LinkedList<Territory>(Arrays.asList(t1)));
-    return new ClientWorld(b, clans);
+    return b;
   }
 
 }

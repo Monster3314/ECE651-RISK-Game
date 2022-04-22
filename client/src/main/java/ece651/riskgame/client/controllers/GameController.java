@@ -35,6 +35,8 @@ import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
+import javax.swing.text.html.ImageView;
+
 public class GameController implements Initializable {
 
   final List<String> territoryNameList = List.of("North", "Dorne", "Vale", "Stormlands", "Riverlands", "Reach", "Asshai", "Qarth", "Slaverbay", "Freecities", "Crownlands", "Beyondthewall", "Westerlands", "Dothrakisea", "Ironislands");
@@ -59,6 +61,8 @@ public class GameController implements Initializable {
   Parent scene;
   @FXML
   Label hint;
+  @FXML
+  Pane helpBox;
 
 
   public GameController(GUIPlayer p, GameIO gameIO) {
@@ -373,7 +377,7 @@ public class GameController implements Initializable {
     hint.setText("New Turn! Do your actions!");
     updateClouds();
     updateTerritoryColors();
-    updateCurrentTerritoryInfo();
+    //updateCurrentTerritoryInfo();
     topBarController.updateTopBar();
     activateButtons();
     isLostOrWin();
@@ -407,34 +411,40 @@ public class GameController implements Initializable {
 
   public void isLostOrWin() throws IOException, ClassNotFoundException {
     if (guiPlayer.isLost()) {
-      removeClouds();
       disableButtonsButLogout();
       set3ButtonsUnselected();
       set3ActionPanesInvisible();
       updateHint("Woops. You have lost.");
-      while (!guiPlayer.isGameOver()) {
-        Thread thread = new Thread(new Task<>() {
-          @Override
-          protected Object call() throws Exception {
-            // call static game
+      Thread thread = new Thread(new Task<>() {
+        @Override
+        protected Object call() throws Exception {
+          while (!guiPlayer.isGameOver()) {
             guiPlayer.updateGame(gameIO.recvGame());
+            System.out.println("Received game from server");
             Platform.runLater(new Runnable() {
               @Override
               public void run() {
+                hint.setText("Game updated");
                 topBarController.updateTopBar();
                 updateTerritoryColors();
-                updateCurrentTerritoryInfo();
               }
             });
-            return null;
           }
-        });
-        thread.start();
-      }
+          Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+              hint.setText("Game Over");
+            }
+          });
+          return null;
+        }
+      });
+      thread.setDaemon(true);
+      thread.start();
+      System.out.println("thread starts");
     } else if (guiPlayer.isGameOver()) { // winner
       updateHint("Congratulations! You are the winner");
       disableButtonsButLogout();
-      removeClouds();
     }
   }
 
@@ -495,4 +505,13 @@ public class GameController implements Initializable {
     }
   }
 
+  @FXML
+  public void showHelp() {
+    helpBox.setVisible(true);
+  }
+
+  @FXML
+  public void hideHelp() {
+    helpBox.setVisible(false);
+  }
 }

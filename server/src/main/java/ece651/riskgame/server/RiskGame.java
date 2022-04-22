@@ -340,7 +340,7 @@ public class RiskGame implements Runnable{
     Random random = new Random();
     for(Map.Entry<String, Clan> i: world.getClans().entrySet()) {
       try {
-        i.getValue().getResource().costGold(random.nextInt(50));
+        i.getValue().getResource().costGold(random.nextInt(50)); // TODO
         i.getValue().getResource().costFood(random.nextInt(30));
       } catch (Exception e) {
 
