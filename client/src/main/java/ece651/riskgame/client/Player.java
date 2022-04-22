@@ -1,4 +1,4 @@
-package ece651.riskgame.client;
+ package ece651.riskgame.client;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import ece651.riskgame.shared.AbilityChecker;
 import ece651.riskgame.shared.Actable;
 import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.ActionRuleChecker;
@@ -17,7 +18,9 @@ import ece651.riskgame.shared.Attack;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
+import ece651.riskgame.shared.DoCloakAction;
 import ece651.riskgame.shared.EnemyTerritoryChecker;
+import ece651.riskgame.shared.GetCloakAction;
 import ece651.riskgame.shared.MovableSpyChecker;
 import ece651.riskgame.shared.Move;
 import ece651.riskgame.shared.MovePathChecker;
@@ -69,7 +72,9 @@ public abstract class Player {
     actionCheckers.put(UpgradeUnitAction.class, new SufficientUnitChecker(new SufficientResourceChecker(null)));
     actionCheckers.put(UpgradeTechAction.class, new SufficientResourceChecker(null));
     actionCheckers.put(UpgradeSpyAction.class, new SufficientResourceChecker(new SufficientUnitChecker(null)));
-    actionCheckers.put(MoveSpyAction.class, new SpyMovePathChecker(new SufficientUnitChecker(new MovableSpyChecker(null)))); 
+    actionCheckers.put(MoveSpyAction.class, new SpyMovePathChecker(new SufficientUnitChecker(new MovableSpyChecker(null))));
+    actionCheckers.put(GetCloakAction.class, new SufficientResourceChecker(new AbilityChecker(null)));
+    actionCheckers.put(DoCloakAction.class, new SufficientResourceChecker(new AbilityChecker(null)));
   }
 
   
@@ -98,6 +103,14 @@ public abstract class Player {
     return color;
   }
 
+  /**
+   * check if player has gained cloak ability
+   * @return a boolean that shows if it has cloak ability  
+   */  
+  public boolean hasCloakAbility() {
+    return theWorld.getClans().get(color).hasCloakAbility();
+  }
+  
   /**
    * get current game model
    * @return the latest game model on server side 
