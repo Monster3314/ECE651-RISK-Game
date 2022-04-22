@@ -56,11 +56,6 @@ class TopBarControllerTest {
     when(guiPlayer.tryApplyAction(any())).thenReturn("good");
     topBarController.levelUp(mock(MouseEvent.class));
     verify(gameController).updateHint(any());
-
-    //when(guiPlayer.tryApplyAction(any())).thenReturn(null);
-    //topBarController.levelUp(mock(MouseEvent.class));
-    //verify(gameController, times(2)).updateHint(any());
-    //verify(guiPlayer).addActionToSend(any());
   }
 
   @Test

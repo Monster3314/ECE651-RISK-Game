@@ -9,6 +9,7 @@ import java.util.Map;
 import ece651.riskgame.shared.BasicUnit;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
+import javafx.application.Platform;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.scene.control.Label;
@@ -63,7 +64,18 @@ public class PlacementPaneController {
             gameController.gameIO.sendPlacements(placements);
             // update map
             gameController.guiPlayer.updateGame(gameController.gameIO.recvGame());
-            updatePlacementToAction();
+            Platform.runLater(new Runnable() {
+              @Override
+              public void run() {
+                try {
+                  updatePlacementToAction();
+                } catch (IOException e) {
+                  e.printStackTrace();
+                } catch (ClassNotFoundException e) {
+                  e.printStackTrace();
+                }
+              }
+            });
             return null;
           }
         });
