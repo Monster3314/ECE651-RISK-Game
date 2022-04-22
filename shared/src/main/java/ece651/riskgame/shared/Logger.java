@@ -1,4 +1,4 @@
-package ece651.riskgame.server;
+package ece651.riskgame.shared;
 
 import java.io.FileWriter;
 import java.io.IOException;
