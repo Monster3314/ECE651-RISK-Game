@@ -46,6 +46,7 @@ public class ActionPaneControllerTest {
   }
 
   @Test
+  @Disabled
   public void test_updateActionPane() {
     MenuButton mb = new MenuButton();
     mb.setId("from");
