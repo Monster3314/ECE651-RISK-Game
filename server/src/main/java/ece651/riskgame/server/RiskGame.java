@@ -29,7 +29,7 @@ public class RiskGame implements Runnable{
   private ActionRuleChecker getCloakChecker = new SufficientResourceChecker(new AbilityChecker(null));
   private ActionRuleChecker doCloakChecker = new SufficientResourceChecker(new AbilityChecker(null));
   private ActionRuleChecker upgradeSpyChecker = new SufficientResourceChecker(new SufficientUnitChecker(null));
-  private ActionRuleChecker moveSpyChecker = new SpyMovePathChecker(new SufficientUnitChecker(new MovableSpyChecker(null)));
+  private ActionRuleChecker moveSpyChecker = new SpyMovePathChecker(new MovableSpyChecker(new SufficientResourceChecker(null)));
   private serverRoom roominfo;
   private Logger logger = Logger.getInstance();
 
@@ -264,7 +264,6 @@ public class RiskGame implements Runnable{
         doAction(a, moveSpyChecker);
       }
       else if (a.getClass() == UpgradeSpyAction.class) {
-        System.out.println("Receive UpgradeSpyAction.");
         doAction(a, upgradeSpyChecker);
       }
       else {

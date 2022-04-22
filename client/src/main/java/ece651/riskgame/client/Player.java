@@ -69,7 +69,7 @@ public abstract class Player {
     actionCheckers.put(UpgradeUnitAction.class, new SufficientUnitChecker(new SufficientResourceChecker(null)));
     actionCheckers.put(UpgradeTechAction.class, new SufficientResourceChecker(null));
     actionCheckers.put(UpgradeSpyAction.class, new SufficientResourceChecker(new SufficientUnitChecker(null)));
-    actionCheckers.put(MoveSpyAction.class, new SpyMovePathChecker(new SufficientUnitChecker(new MovableSpyChecker(null)))); 
+    actionCheckers.put(MoveSpyAction.class, new SpyMovePathChecker(new MovableSpyChecker(new SufficientResourceChecker(null))));
   }
 
   

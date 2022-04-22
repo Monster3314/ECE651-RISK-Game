@@ -26,7 +26,6 @@ public class UpgradeSpyAction implements Action, Serializable {
         Territory territory = world.getBoard().getTerritory(territoryName);
         territory.decUnit(new BasicUnit());
         clan.addSpy(new Spy(territoryName));
-        System.out.println("UpgradeSpyAction executed.");
     }
 
     @Override
