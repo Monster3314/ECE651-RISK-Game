@@ -21,9 +21,7 @@ public class World extends Actable{
    * Create board and clans, but only initialize board.
    */
   public World(int playerNum, String territoryList, String adjacencyList) throws IOException {
-    board = new Board();
-    clans = new HashMap<>();
-
+    super(new Board(), new HashMap<>());
     mapGenerator = new MapGenerator(territoryList, adjacencyList);
     mapGenerator.apply(getBoard(), playerNum);
 
