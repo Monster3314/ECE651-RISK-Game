@@ -13,6 +13,7 @@ public class Clan implements Serializable {
     private int techLevel;
     private final Resource resource;
     private final List<Spy> spies;
+    private boolean cloakAbility = false;
     static public int[] COST = new int[] {0, 50, 75, 125, 200, 300};
     static public int MAX_TECH_LEVEL = 6;
     static public int INITIAL_FOOD = 40;
@@ -117,5 +118,16 @@ public class Clan implements Serializable {
             }
         }
         return null;
+    }
+
+    public void getCloakAbility() throws IllegalArgumentException{
+        if(hasCloakAbility()) throw new IllegalArgumentException("Already has cloakability");
+        if(techLevel < 3) throw new IllegalArgumentException("Techlevel is smaller than 3");
+        cloakAbility = true;
+        resource.costGold(100);
+    }
+
+    public boolean hasCloakAbility() {
+        return cloakAbility;
     }
 }

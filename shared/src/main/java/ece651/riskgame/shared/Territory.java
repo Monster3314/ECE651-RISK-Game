@@ -10,6 +10,7 @@ public abstract class Territory implements Serializable {
   protected List<Unit> units;
   protected Resource production;
   protected int size;
+  protected int cloakNum = 0;
 
   public Territory(String name) {
     this(name, 0, new Resource(new int[]{0, 0}));
@@ -173,5 +174,19 @@ public abstract class Territory implements Serializable {
     }
     return true;
 
+  }
+
+  public void setCloakNum(int cloakNum) {
+    this.cloakNum = cloakNum;
+  }
+
+  public void decCloakNum() {
+    if(cloakNum != 0) {
+      cloakNum -= 1;
+    }
+  }
+
+  public int getCloakNum() {
+    return cloakNum;
   }
 }

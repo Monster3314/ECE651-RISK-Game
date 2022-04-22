@@ -10,14 +10,19 @@ public class GetCloakAction implements Action, Serializable {
         this.color = color;
     }
 
+    public String getColor() {
+        return color;
+    }
+
 
     @Override
     public void apply(Actable world) {
-
+        Clan clan = world.getClans().get(color);
+        clan.getCloakAbility();
     }
 
     @Override
     public void clientApply(Actable game) {
-
+        apply(game);
     }
 }
