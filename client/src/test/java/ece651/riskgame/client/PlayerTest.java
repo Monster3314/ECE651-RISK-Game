@@ -68,7 +68,7 @@ public class PlayerTest {
   }
   @Disabled
   @Test
-  public void test_updateGame() {
+  public void test_spectateGame() {
     Map<String, Clan> validClans = mock(Map.class);
     when(validClans.containsKey("Red")).thenReturn(true);
     Map<String, Clan> invalidClans = mock(Map.class);
