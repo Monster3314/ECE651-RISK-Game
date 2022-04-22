@@ -54,7 +54,7 @@ public class UpgradeUnitAction implements Action, Serializable {
         Unit targetUnit = new BasicUnit(num, targetLevel);
         territory.decUnit(baseUnit);
         territory.addUnit(targetUnit);
-        logger.writeLog("[RiscGame Room] : " + color + " upgrade " + num + " units from " + baseLevel + " level to " + targetLevel + " level");
+        logger.writeLog("[RiscGame Room] : " + color + " upgrade " + num + " units from " + baseLevel + " level to " + targetLevel + " level. Cost gold " + cost);
     }
 
     @Override

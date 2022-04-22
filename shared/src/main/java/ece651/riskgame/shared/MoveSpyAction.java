@@ -31,16 +31,21 @@ public class MoveSpyAction implements Action, Serializable {
         Clan clan = world.getClans().get(color);
         Spy spy = clan.getSpy(fromTerritory, true);
         spy.moveTo(toTerritory);
-        logger.writeLog("[RiscGame Room] : " + color + " mvoe his Spy from " + fromTerritory + " to " + toTerritory);
+        String s = "[RiscGame Room] : " + color + " mvoe his Spy from " + fromTerritory + " to " + toTerritory;
         // cost resource
         if (world.getTerritoryOwnership(fromTerritory).equals(color) && world.getTerritoryOwnership(toTerritory).equals(color)) {
-            clan.getResource().costFood(world.getUnitMoveCost(fromTerritory, color).get(toTerritory));
+            int cost = world.getUnitMoveCost(fromTerritory, color).get(toTerritory);
+            clan.getResource().costFood(cost);
+            s += ". Cost food " + cost;
         }
         else {
             Board board = world.getBoard();
-            clan.getResource().costFood(board.getTerritory(fromTerritory).getSize() + board.getTerritory(toTerritory).getSize());
+            int cost = board.getTerritory(fromTerritory).getSize() + board.getTerritory(toTerritory).getSize();
+            clan.getResource().costFood(cost);
+            s += ". Cost food " + cost;
             spy.setCanMove(false);
         }
+        logger.writeLog(s);
     }
 
     @Override

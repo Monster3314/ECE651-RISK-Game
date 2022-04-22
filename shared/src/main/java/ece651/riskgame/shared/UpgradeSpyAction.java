@@ -28,7 +28,7 @@ public class UpgradeSpyAction implements Action, Serializable {
         Territory territory = world.getBoard().getTerritory(territoryName);
         territory.decUnit(new BasicUnit());
         clan.addSpy(new Spy(territoryName));
-        logger.writeLog("[RiscGame Room] : " + color + " upgrade a Spy on " + territoryName);
+        logger.writeLog("[RiscGame Room] : " + color + " upgrade a Spy on " + territoryName + ". Cost gold 20");
     }
 
     @Override

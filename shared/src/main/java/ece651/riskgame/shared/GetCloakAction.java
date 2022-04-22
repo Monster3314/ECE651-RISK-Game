@@ -20,7 +20,7 @@ public class GetCloakAction implements Action, Serializable {
     public void apply(Actable world) {
         Clan clan = world.getClans().get(color);
         clan.getCloakAbility();
-        logger.writeLog("[RiscGame Room] : " + color + " get cloak ability");
+        logger.writeLog("[RiscGame Room] : " + color + " get cloak ability. Cost 100 gold");
     }
 
     @Override

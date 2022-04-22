@@ -19,7 +19,7 @@ public class UpgradeTechAction implements Action, Serializable {
     public void apply(Actable world) {
         Clan clan = world.getClans().get(color);
         clan.upgradeLevel();
-        logger.writeLog("[RiscGame Room] : " + color + " Upgrade his Tech level");
+        logger.writeLog("[RiscGame Room] : " + color + " Upgrade his Tech level.");
     }
 
     @Override

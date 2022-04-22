@@ -113,7 +113,6 @@ public class RiskGame implements Runnable{
         online.put(player.getValue(), false);
         logger.writeLog("[RiscGame Room] : Player " + player.getValue() + " disconnect");
       }
-
     }
   }
 
@@ -310,7 +309,6 @@ public class RiskGame implements Runnable{
     }
     try {
       world.acceptAction(a);
-      logger.writeLog(a.getColor() + " player moves " + a.getUnit() + " from " + a.getFromTerritory() + " to " + a.getToTerritory() + ".");
     } catch (Exception e) {
       logger.writeLog("[RiscGame Room] : failed to apply moveAction");
     }
@@ -333,7 +331,7 @@ public class RiskGame implements Runnable{
       }
       attack.onTheWay(world);
       validAttacks.add(attack);
-      logger.writeLog("[RiscGame Room] : " + attack.getColor() + " player attacks " + attack.getToTerritory() + " from " + attack.getFromTerritory() + " by " + attack.getUnit() + ".");
+      logger.writeLog("[RiscGame Room] : " + attack.getColor() + " player attacks " + attack.getToTerritory() + " from " + attack.getFromTerritory() + " by " + attack.getUnit() + ". Cost food " + attack.getTotalUnits());
     }
 
     for (Attack attack : validAttacks) {
@@ -450,6 +448,7 @@ public class RiskGame implements Runnable{
         afterTurn();
         gi = getCurrentGameInfo();
         sendGameInfo(gi);
+        world.clearMesg();
       }
       roominfo.close_status = true;
       closeSockets();

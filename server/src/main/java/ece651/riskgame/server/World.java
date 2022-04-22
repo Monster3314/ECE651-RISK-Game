@@ -50,7 +50,7 @@ public class World extends Actable{
   }
 
   public GameInfo getGameInfo() {
-    return new GameInfo(board, clans);
+    return new GameInfo(board, clans, mesg);
   }
 
   /**
