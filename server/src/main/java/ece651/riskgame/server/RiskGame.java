@@ -264,6 +264,7 @@ public class RiskGame implements Runnable{
         doAction(a, moveSpyChecker);
       }
       else if (a.getClass() == UpgradeSpyAction.class) {
+        System.out.println("Receive UpgradeSpyAction.");
         doAction(a, upgradeSpyChecker);
       }
       else {
