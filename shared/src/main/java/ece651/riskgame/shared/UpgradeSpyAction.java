@@ -11,6 +11,14 @@ public class UpgradeSpyAction implements Action, Serializable {
         this.territoryName = territory;
     }
 
+    public String getColor() {
+        return color;
+    }
+
+    public String getTerritoryName() {
+        return territoryName;
+    }
+
     @Override
     public void apply(Actable world) {
         Clan clan = world.getClans().get(color);
