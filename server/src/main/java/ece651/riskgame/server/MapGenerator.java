@@ -97,7 +97,7 @@ public class MapGenerator {
     int numTer = 3 * playerNum;
     // add board names
     for (int i = 0; i < numTer; i++) {
-      Territory t = new BasicTerritory(territoryNameList.get(i), 2, new Resource(new int[] {20, 50}));
+      Territory t = new BasicTerritory(territoryNameList.get(i), 2, new Resource(new int[] {20, 50})); // TODO
       board.addTerritory(t);
       addedTerritories.add(t);
     }
