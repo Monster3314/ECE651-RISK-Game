@@ -372,10 +372,19 @@
             <Image url="@../img/surprise.jpeg" />
          </image>
       </ImageView>
-      <ImageView fitHeight="53.0" fitWidth="40.0" layoutX="744.0" layoutY="761.0" onMouseClicked="#showHelp" pickOnBounds="true" preserveRatio="true">
+      <ImageView fitHeight="50.0" fitWidth="56.0" layoutX="1079.0" layoutY="758.0" onMouseClicked="#showHelp" pickOnBounds="true" preserveRatio="true">
          <image>
             <Image url="@../img/help.png" />
          </image>
       </ImageView>
+      <Pane fx:id="helpBox" layoutX="856.0" layoutY="508.0" onMouseClicked="#hideHelp" prefHeight="300.0" prefWidth="216.0" visible="false">
+         <children>
+            <ImageView fitHeight="304.0" fitWidth="241.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../img/helpBox.jpeg" />
+               </image>
+            </ImageView>
+         </children>
+      </Pane>
    </children>
 </Pane>

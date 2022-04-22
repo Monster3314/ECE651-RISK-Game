@@ -52,8 +52,6 @@ public class TopBarController {
    * Update food, gold, food
    */
   public void updateTopBar() {
-    System.out.println("topbar update");
-    System.out.println(guiPlayer.getFood());
     playerFood.setText("Food: " + Integer.toString(guiPlayer.getFood()));
     playerGold.setText("Gold: " + Integer.toString(guiPlayer.getGold()));
     playerLevel.setText("Level: " + Integer.toString(guiPlayer.getTechLevel()));
