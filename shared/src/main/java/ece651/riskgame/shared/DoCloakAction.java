@@ -6,6 +6,8 @@ public class DoCloakAction implements Action, Serializable {
     private String color;
     private String territoryName;
 
+    private Logger logger = Logger.getInstance();
+
     public DoCloakAction(String color, String territoryName) {
         this.color = color;
         this.territoryName = territoryName;
@@ -25,6 +27,7 @@ public class DoCloakAction implements Action, Serializable {
         clan.getResource().costGold(20);
         Territory t = world.getBoard().getTerritory(territoryName);
         t.setCloakNum(4);
+        logger.writeLog("[RiscGame Room] : " + color + " cloak the territory " + territoryName);
     }
 
     @Override

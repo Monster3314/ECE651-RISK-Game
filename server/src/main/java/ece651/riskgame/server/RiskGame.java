@@ -66,7 +66,7 @@ public class RiskGame implements Runnable{
    * Initialize each connected player, send color to client
    */
   private void initPlayers() throws IOException{
-    logger.writeLog("Begin to initialize players information.");
+    logger.writeLog("[RiscGame Room] : Begin to initialize players information.");
     for (Socket socket: sockets.keySet()) {
       String color = world.addClan();
       sockets.put(socket, color);
@@ -83,7 +83,7 @@ public class RiskGame implements Runnable{
    * Wait for players to connect
    */
   private void waitForPlayers(int playerNum) throws IOException {
-    logger.writeLog("Begin to wait for " + playerNum + " players.");
+    logger.writeLog("[RiscGame Room] : Begin to wait for " + playerNum + " players.");
     while(sockets.size() != playerNum);  //TODO: selfspin
     logger.flushBuffer();
   }
@@ -111,7 +111,7 @@ public class RiskGame implements Runnable{
         oosMap.remove(player.getKey());
         oisMap.remove(player.getKey());
         online.put(player.getValue(), false);
-        logger.writeLog("Player " + player.getValue() + " disconnect");
+        logger.writeLog("[RiscGame Room] : Player " + player.getValue() + " disconnect");
       }
 
     }
@@ -140,7 +140,7 @@ public class RiskGame implements Runnable{
       for (Territory t : clan.getOccupies()) {
         if (assignResult.containsKey(t.getName())) {
           List<Unit> units = assignResult.get(t.getName());
-          logger.writeLog(player.getValue() + " player added " + units + " to " + t.getName() + ".");
+          logger.writeLog("[RiscGame Room] : " + player.getValue() + " player added " + units + " to " + t.getName() + ".");
           t.addUnitList(units);
         }
       }
@@ -166,7 +166,7 @@ public class RiskGame implements Runnable{
         oosMap.remove(player.getKey());
         oisMap.remove(player.getKey());
         online.put(player.getValue(), false);
-        logger.writeLog("Player " + player.getValue() + " disconnect");
+        logger.writeLog("[RiscGame Room] : Player " + player.getValue() + " disconnect");
       }
     }
     return Actions;
@@ -219,12 +219,14 @@ public class RiskGame implements Runnable{
     for(GetCloakAction action:getCloakActions) {
       String checkResult = getCloakChecker.checkAction(world, action);
       if(checkResult != null) {
+        logger.writeLog("[RiscGame Room] : " + action.getColor() + "'s getcloakAction " + checkResult);
+        world.writeMesg(action.getColor(), "[GetCloak] : " + checkResult);
         return;
       }
       try {
         world.acceptAction(action);
       } catch (Exception e) {
-        //logger.writeLog("");
+        logger.writeLog("[RiscGame Room] : failed to apply getcloakAction");
       }
     }
   }
@@ -233,13 +235,14 @@ public class RiskGame implements Runnable{
     for(DoCloakAction action: doCloakActions) {
       String checkResult = doCloakChecker.checkAction(world, action);
       if(checkResult != null) {
-        //log
+        logger.writeLog("[RiscGame Room] : " + action.getColor() + "'s docloakAction " + checkResult);
+        world.writeMesg(action.getColor(), "[DoCloak] : " + checkResult);
         return;
       }
       try {
         world.acceptAction(action);
       } catch (Exception e) {
-        //TODO:log
+        logger.writeLog("[RiscGame Room] : failed to apply docloakAction");
       }
     }
   }
@@ -248,10 +251,16 @@ public class RiskGame implements Runnable{
     for (UpgradeTechAction action : upgradeTechActions) {
       String checkResult = upgradeTechChecker.checkAction(world, action);
       if (checkResult != null) {
-        // TODO: log
+        logger.writeLog("[RiscGame Room] : " + action.getColor() + "'s upgradeLevelAction " + checkResult);
+        world.writeMesg(action.getColor(), "[UpgradeLevel] : " + checkResult);
         return;
       }
-      world.acceptAction(action);
+      try {
+        world.acceptAction(action);
+      } catch (Exception e) {
+        logger.writeLog("[RiscGame Room] : failed to apply upgradelevelAction");
+      }
+
     }
   }
 
@@ -275,10 +284,16 @@ public class RiskGame implements Runnable{
   private void doAction(Action action, ActionRuleChecker checker) {
     String checkResult = checker.checkAction(world, action);
     if (checkResult != null) {
-      // TODO: log
+      logger.writeLog("[RiscGame Room] : " + action.getColor() + "'s moveandupgradeAction " + checkResult);
+      world.writeMesg(action.getColor(), "[MoveandUpgradeAction] : " + checkResult);
       return;
     }
-    world.acceptAction(action);
+    try {
+      world.acceptAction(action);
+    } catch (Exception e) {
+      logger.writeLog("[RiscGame Room] : failed to apply moveandupgradeAction");
+    }
+
   }
 
   /**
@@ -288,12 +303,17 @@ public class RiskGame implements Runnable{
   private void doMoveAction(Move a) {
     String checkResult = MoveActionChecker.checkAction(world, a);
     if (checkResult != null) {
-      logger.writeLog("Discard " + a.getColor() + "'s move" + "(" + a.getFromTerritory() + ", " + a.getToTerritory()
+      logger.writeLog("[RiscGame Room] : " + "Discard " + a.getColor() + "'s move" + "(" + a.getFromTerritory() + ", " + a.getToTerritory()
               + ", " + a.getUnit() + ") for reason: " + checkResult);
+      world.writeMesg(a.getColor(), "[MoveAction] : " + checkResult);
       return;
     }
-    world.acceptAction(a);
-    logger.writeLog(a.getColor() + " player moves " + a.getUnit() + " from " + a.getFromTerritory() + " to " + a.getToTerritory() + ".");
+    try {
+      world.acceptAction(a);
+      logger.writeLog(a.getColor() + " player moves " + a.getUnit() + " from " + a.getFromTerritory() + " to " + a.getToTerritory() + ".");
+    } catch (Exception e) {
+      logger.writeLog("[RiscGame Room] : failed to apply moveAction");
+    }
   }
 
   /**
@@ -306,17 +326,24 @@ public class RiskGame implements Runnable{
     for (Attack attack : attackActions) {
       String checkResult = AttackActionChecker.checkAction(world, attack);
       if (checkResult != null) {
-        logger.writeLog("Discard " + attack.getColor() + "'s attack" + "(" + attack.getFromTerritory() + ", " + attack.getToTerritory()
+        logger.writeLog("[RiscGame Room] : " + "Discard " + attack.getColor() + "'s attack" + "(" + attack.getFromTerritory() + ", " + attack.getToTerritory()
                         + ", " + attack.getUnit() + ") for reason: " + checkResult);
+        world.writeMesg(attack.getColor(), "[AttackAction] : " + checkResult);
         continue;
       }
       attack.onTheWay(world);
       validAttacks.add(attack);
-      logger.writeLog(attack.getColor() + " player attacks " + attack.getToTerritory() + " from " + attack.getFromTerritory() + " by " + attack.getUnit() + ".");
+      logger.writeLog("[RiscGame Room] : " + attack.getColor() + " player attacks " + attack.getToTerritory() + " from " + attack.getFromTerritory() + " by " + attack.getUnit() + ".");
     }
 
-    for (Attack attack : validAttacks)
-      world.acceptAction(attack);
+    for (Attack attack : validAttacks) {
+      try {
+        world.acceptAction(attack);
+      } catch (Exception e) {
+        logger.writeLog("[RiscGame Room] : failed to apply AttackAction");
+      }
+    }
+
   }
 
   /**
@@ -340,10 +367,16 @@ public class RiskGame implements Runnable{
     Random random = new Random();
     for(Map.Entry<String, Clan> i: world.getClans().entrySet()) {
       try {
-        i.getValue().getResource().costGold(random.nextInt(50));
-        i.getValue().getResource().costFood(random.nextInt(30));
+        int goldrec = random.nextInt(50);
+        i.getValue().getResource().costGold(goldrec);
+        world.writeMesg(i.getKey(), "[Recession] : You Lost " + goldrec + " Gold!!!");
+        logger.writeLog("[RiscGame Room] : " + i.getKey() + " lost " + goldrec + " gold");
+        int foodrec = random.nextInt(30);
+        i.getValue().getResource().costFood(foodrec);
+        world.writeMesg(i.getKey(), "[Disaster] : You Lost " + foodrec + " Food!!!");
+        logger.writeLog("[RiscGame Room] : " + i.getKey() + " lost " + foodrec + " food");
       } catch (Exception e) {
-
+        logger.writeLog("[RiscGame Room] : " + i.getKey() + " doesn't have enough food or gold to lost");
       }
     }
   }
@@ -354,8 +387,10 @@ public class RiskGame implements Runnable{
       try {
         int index = random.nextInt(t.getUnits().size());
         t.getUnits().get(index).decSoldiers(1);
+        world.writeMesg(world.getTerritoryOwnership(t.getName()), "[COVID] : You Lost 1 unit of Your " + Unit.NAME[t.getUnits().get(index).getLevel()]);
+        logger.writeLog("[RiscGame Room] : " + t.getName() + " lost " + Unit.NAME[t.getUnits().get(index).getLevel()]);
       } catch (Exception e) {
-
+        logger.writeLog("[RiscGame Room] : " + t.getName() + " doesn't have enough troops");
       }
     }
   }

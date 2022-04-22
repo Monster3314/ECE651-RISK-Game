@@ -17,6 +17,8 @@ public class World extends Actable{
   private int colorUsed;
   private int playerNum;
 
+  private Map<String, List<String>> mesg = new HashMap<>();
+
   /**
    * Create board and clans, but only initialize board.
    */
@@ -67,6 +69,19 @@ public class World extends Actable{
    */
   public void acceptAction(Action action) {
     action.apply(this);
+  }
+
+  public void writeMesg(String color, String log) {
+    if(!mesg.containsKey(color)) {
+      mesg.put(color, new ArrayList<>());
+    }
+    mesg.get(color).add(log);
+  }
+
+  public void clearMesg() {
+    for(String s : mesg.keySet()) {
+      mesg.put(s, new ArrayList<>());
+    }
   }
 
 }

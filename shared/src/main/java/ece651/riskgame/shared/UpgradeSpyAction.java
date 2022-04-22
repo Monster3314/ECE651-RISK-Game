@@ -6,6 +6,8 @@ public class UpgradeSpyAction implements Action, Serializable {
     private final String color;
     private final String territoryName;
 
+    private Logger logger = Logger.getInstance();
+
     public UpgradeSpyAction(String color, String territory) {
         this.color = color;
         this.territoryName = territory;
@@ -26,6 +28,7 @@ public class UpgradeSpyAction implements Action, Serializable {
         Territory territory = world.getBoard().getTerritory(territoryName);
         territory.decUnit(new BasicUnit());
         clan.addSpy(new Spy(territoryName));
+        logger.writeLog("[RiscGame Room] : " + color + " upgrade a Spy on " + territoryName);
     }
 
     @Override

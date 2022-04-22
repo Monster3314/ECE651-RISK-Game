@@ -7,6 +7,7 @@ public class MoveSpyAction implements Action, Serializable {
     private final String fromTerritory;
     private final String toTerritory;
 
+    private Logger logger = Logger.getInstance();
     public MoveSpyAction(String color, String fromTerritory, String toTerritory) {
         this.color = color;
         this.fromTerritory = fromTerritory;
@@ -30,6 +31,7 @@ public class MoveSpyAction implements Action, Serializable {
         Clan clan = world.getClans().get(color);
         Spy spy = clan.getSpy(fromTerritory, true);
         spy.moveTo(toTerritory);
+        logger.writeLog("[RiscGame Room] : " + color + " mvoe his Spy from " + fromTerritory + " to " + toTerritory);
         // cost resource
         if (world.getTerritoryOwnership(fromTerritory).equals(color) && world.getTerritoryOwnership(toTerritory).equals(color)) {
             clan.getResource().costFood(world.getUnitMoveCost(fromTerritory, color).get(toTerritory));

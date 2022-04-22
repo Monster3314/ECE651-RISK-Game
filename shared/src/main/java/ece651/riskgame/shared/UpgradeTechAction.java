@@ -5,6 +5,8 @@ import java.io.Serializable;
 public class UpgradeTechAction implements Action, Serializable {
     private final String color;
 
+    private Logger logger = Logger.getInstance();
+
     public UpgradeTechAction(String color) {
         this.color = color;
     }
@@ -17,6 +19,7 @@ public class UpgradeTechAction implements Action, Serializable {
     public void apply(Actable world) {
         Clan clan = world.getClans().get(color);
         clan.upgradeLevel();
+        logger.writeLog("[RiscGame Room] : " + color + " Upgrade his Tech level");
     }
 
     @Override
