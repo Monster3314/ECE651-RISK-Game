@@ -45,7 +45,8 @@ public class TopBarController {
 
   public void activateLevelUpButton() {
     // TODO do not activate if level 6
-    levelUp.setDisable(false);
+    if (guiPlayer.getTechLevel() < 6)
+      levelUp.setDisable(false);
   }
 
   /**

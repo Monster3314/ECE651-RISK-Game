@@ -415,11 +415,12 @@ public class GameController implements Initializable {
       set3ButtonsUnselected();
       set3ActionPanesInvisible();
       updateHint("Woops. You have lost.");
-      while (!guiPlayer.isGameOver()) {
-        Thread thread = new Thread(new Task<>() {
-          @Override
-          protected Object call() throws Exception {
-            guiPlayer.spectateGame(gameIO.recvGame());
+      Thread thread = new Thread(new Task<>() {
+        @Override
+        protected Object call() throws Exception {
+          while (!guiPlayer.isGameOver()) {
+            guiPlayer.updateGame(gameIO.recvGame());
+            System.out.println("Received game from server");
             Platform.runLater(new Runnable() {
               @Override
               public void run() {
@@ -428,11 +429,19 @@ public class GameController implements Initializable {
                 updateTerritoryColors();
               }
             });
-            return null;
           }
-        });
-        thread.start();
-      }
+          Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+              hint.setText("Game Over");
+            }
+          });
+          return null;
+        }
+      });
+      thread.setDaemon(true);
+      thread.start();
+      System.out.println("thread starts");
     } else if (guiPlayer.isGameOver()) { // winner
       updateHint("Congratulations! You are the winner");
       disableButtonsButLogout();
