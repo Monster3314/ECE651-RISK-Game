@@ -13,7 +13,7 @@ public class RoomManager implements Runnable{
     private serverRoom latestRoom;
     private int latestRoomNum;
     private Map<Integer, serverRoom> gameRooms;
-    private int playerNum = 3;
+    private int playerNum = 2;
 
     public RoomManager(int port) throws IOException {
         this.port = port;
