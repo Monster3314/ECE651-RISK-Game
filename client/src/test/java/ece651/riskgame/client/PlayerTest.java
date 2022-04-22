@@ -66,26 +66,23 @@ public class PlayerTest {
     ClientWorld game = getDefaultWorld();
     TextPlayer redPlayer = new TextPlayer("Red", game);
   }
-  @Disabled
   @Test
   public void test_spectateGame() {
-    Map<String, Clan> validClans = mock(Map.class);
-    when(validClans.containsKey("Red")).thenReturn(true);
-    Map<String, Clan> invalidClans = mock(Map.class);
-    when(invalidClans.containsKey("Red")).thenReturn(false);
-    GameInfo oldGame = mock(GameInfo.class);
-    when(oldGame.getClans()).thenReturn(validClans);
-    GameInfo newGame = mock(GameInfo.class);
-    when(newGame.getClans()).thenReturn(validClans);
+    ClientWorld w = getDefaultWorld();
+    Player p = new TextPlayer("Red", w);
+    GameInfo newGame = getGameUpdate();
+    p.spectateGame(newGame);
+    assertEquals(newGame.getBoard(), p.getGame().getBoard());
+    assertEquals(newGame.getClans(), p.getGame().getClans());
+
+    assertThrows(IllegalArgumentException.class, ()->p.spectateGame(null));
     
+    Map<String, Clan> invalidClans = mock(Map.class);
     GameInfo invalidGame = mock(GameInfo.class);
+    when(invalidClans.containsKey("Red")).thenReturn(false);
     when(invalidGame.getClans()).thenReturn(invalidClans);
-    //Player p = new TextPlayer("Red", oldGame);
-    //assertEquals(p.getGame(), oldGame);
-    //p.updateGame(newGame);
-    //assertEquals(p.getGame(), newGame);
-    //assertThrows(IllegalArgumentException.class, ()->p.updateGame(null));
-    //assertThrows(IllegalArgumentException.class, ()->p.updateGame(invalidGame));
+    assertThrows(IllegalArgumentException.class, ()->p.spectateGame(invalidGame));
+    
   }
   @Test
   public void test_getters() {
