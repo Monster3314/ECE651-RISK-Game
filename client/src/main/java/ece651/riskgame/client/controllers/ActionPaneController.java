@@ -80,10 +80,10 @@ public class ActionPaneController {
       } else {
         gameController.guiPlayer.addActionToSend(act);                
         gameController.updateCurrentTerritoryInfo();
-        gameController.updateTopBar();
+        gameController.topBarController.updateTopBar();
         gameController.updateHint("Action submitted!");
       }
-      gameController.updateTopBar();
+      gameController.topBarController.updateTopBar();
     } // end try
     catch (NumberFormatException e) { // both non-digit and negative number go here
       gameController.updateHint("Type positive number only");
@@ -91,6 +91,11 @@ public class ActionPaneController {
     catch (IllegalArgumentException e) {
       gameController.updateHint(e.getMessage());
     }    
+  }
+
+  @FXML
+  public void moveSpy() {
+    // TODO move a spy from from to to
   }
 
 }

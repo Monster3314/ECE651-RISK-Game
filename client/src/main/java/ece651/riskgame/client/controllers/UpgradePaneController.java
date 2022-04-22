@@ -73,7 +73,7 @@ public class UpgradePaneController {
         gameController.guiPlayer.addActionToSend(act);
         gameController.updateHint("Upgrade successfully");
         gameController.updateCurrentTerritoryInfo();
-        gameController.updateTopBar();
+        gameController.topBarController.updateTopBar();
       }
       else {
         gameController.updateHint(result);

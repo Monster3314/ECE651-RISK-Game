@@ -12,18 +12,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import org.assertj.core.util.Arrays;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.AfterEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.testfx.api.FxRobot;
 import org.testfx.framework.junit5.ApplicationExtension;
@@ -66,6 +65,7 @@ public class GameControllerTest {
   private ActionPaneController actionPaneController;
   private PlacementPaneController placementPaneController;
   private UpgradePaneController upgradePaneController;
+  private TopBarController topBarController;
 
   private void mockPrepare() {
     gameIO = mock(GameIO.class);
@@ -80,9 +80,18 @@ public class GameControllerTest {
     placementPaneController = mock(PlacementPaneController.class);
     actionPaneController = mock(ActionPaneController.class);
     upgradePaneController = mock(UpgradePaneController.class);
+    topBarController = mock(TopBarController.class);
     gameController.placementPaneController = placementPaneController;
     gameController.actionPaneController = actionPaneController;
     gameController.upgradePaneController = upgradePaneController;
+    gameController.topBarController = topBarController;
+    try {
+      doNothing().when(gameController).goToNextTurn();
+    } catch (IOException e) {
+      e.printStackTrace();
+    } catch (ClassNotFoundException e) {
+      e.printStackTrace();
+    }
   }
 
   @AfterEach
@@ -129,19 +138,6 @@ public class GameControllerTest {
   }
 
   @Test
-  public void test_levelUp() {
-    mockPrepare();
-    when(scene.lookup(any())).thenReturn(new Button());
-    doNothing().when(gameController).updateHint(any());
-    doNothing().when(gameController).updateTopBar();
-    gameController.levelUp(null);
-
-    // result not null
-    doReturn("wow").when(guiPlayer).tryApplyAction(any());
-    gameController.levelUp(null);
-  }
-
-  @Test
   public void test_showTerritoryInfoInPlacement(FxRobot robot)
       throws IOException, ClassNotFoundException, InterruptedException {
     mockPrepare();
@@ -174,8 +170,17 @@ public class GameControllerTest {
 
     List<Territory> neighbors = List.of(new BasicTerritory("Durham"));
     when(borad.getNeighbors(any())).thenReturn(neighbors);
+    when(infoView.lookup("#territoryName")).thenReturn(mock(Label.class));
+    when(infoView.lookup("#neighborsBox")).thenReturn(mock(VBox.class));
+    List.of(0,1,2,3,4,5,6).stream().forEach(i ->
+            when(infoView.lookup("#unitNum"+i)).thenReturn(mock(Label.class)));
+    when(infoView.lookup("#goldProduction")).thenReturn(mock(Label.class));
+    when(infoView.lookup("#foodProduction")).thenReturn(mock(Label.class));
+    when(infoView.lookup("#size")).thenReturn(mock(Label.class));
+    List.of(0,1,2,3).stream().forEach(i ->
+            when(infoView.lookup("#neighbor"+i)).thenReturn(mock(Label.class)));
 
-    gameController.updateTerritoryInfo("UNC");
+    gameController.updateTerritoryInfo("Durham");
   }
 
   @Test
@@ -205,6 +210,8 @@ public class GameControllerTest {
     when(clans.keySet()).thenReturn(set);
     List<Territory> ts = new ArrayList(Arrays.asList(new Territory[] { new BasicTerritory("red") }));
     when(clan.getOccupies()).thenReturn(ts);
+    doNothing().when(gameController).updateClouds();
+    doNothing().when(gameController).updateTerritoryColors();
 
     gameController.initializeGame();
   }
@@ -300,13 +307,12 @@ public class GameControllerTest {
     mockPrepare();
     doNothing().when(gameController).disableButtonsButLogout();
     doNothing().when(gameController).activateButtons();
-    doNothing().when(gameController).setUsername(any(), any());
     doNothing().when(gameController).setAvailableTerritories(any(), any());
     doNothing().when(gameController).setHint();
-    doNothing().when(gameController).updateTopBar();
     doNothing().when(gameController).updateTerritoryColors();
     doNothing().when(gameController).set3ActionPanesInvisible();
     doNothing().when(gameController).set3ButtonsUnselected();
+    doNothing().when(gameController).updateClouds();
 
     gameController.displayGame();
   }
@@ -316,14 +322,15 @@ public class GameControllerTest {
     mockPrepare();
     doNothing().when(gameController).disableButtonsButLogout();
     doNothing().when(gameController).activateButtons();
-    doNothing().when(gameController).setUsername(any(), any());
     doNothing().when(gameController).setAvailableTerritories(any(), any());
     doNothing().when(gameController).setHint();
-    doNothing().when(gameController).updateTopBar();
     doNothing().when(gameController).updateTerritoryColors();
     doNothing().when(gameController).set3ActionPanesInvisible();
     doNothing().when(gameController).set3ButtonsUnselected();
     doNothing().when(gameController).isLostOrWin();
+    doNothing().when(gameController).updateClouds();
+    doNothing().when(gameController).nextTurn();
+    doNothing().when(gameController).goToNextTurn();
     gameController.reconnect();
   }
   
@@ -368,4 +375,11 @@ public class GameControllerTest {
     when(scene.lookupAll("Button")).thenReturn(Set.of(btn));
     gameController.setAvailableTerritories(btn, Set.of("22"));
   }
+
+  /*@Test
+  public void test_music() throws URISyntaxException {
+    Media media = new Media(getClass().getResource("/maintitle.mp3").toURI().toString());
+    MediaPlayer mediaPlayer = new MediaPlayer(media);
+    mediaPlayer.play();
+  }*/
 }

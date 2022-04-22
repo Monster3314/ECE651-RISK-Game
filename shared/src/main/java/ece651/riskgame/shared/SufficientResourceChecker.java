@@ -23,6 +23,23 @@ public class SufficientResourceChecker extends ActionRuleChecker {
                 return "Insufficient Food!";
             }
         }
+        else if (action.getClass() == MoveSpyAction.class) {
+            MoveSpyAction msa = (MoveSpyAction) action;
+            int cost;
+            if (actable.getTerritoryOwnership(msa.getFromTerritory()).equals(msa.getColor()) && actable.getTerritoryOwnership(msa.getToTerritory()).equals(msa.getColor())) {
+                cost = actable.getUnitMoveCost(msa.getFromTerritory(), msa.getColor()).get(msa.getToTerritory());
+            }
+            else {
+                Board board = actable.getBoard();
+                cost = board.getTerritory(msa.getFromTerritory()).getSize() + board.getTerritory(msa.getToTerritory()).getSize();
+            }
+            if (actable.getClans().get(msa.getColor()).getResource().getResourceNum(Resource.FOOD) > cost) {
+                return null;
+            }
+            else {
+                return "Insufficient Food!";
+            }
+        }
         else {
             int cost;
             String color;
@@ -30,6 +47,11 @@ public class SufficientResourceChecker extends ActionRuleChecker {
                 UpgradeUnitAction uua = (UpgradeUnitAction) action;
                 cost = Unit.getLevelUpCost(uua.getBaseLevel(), uua.getTargetLevel()) * uua.getNum();
                 color = uua.getColor();
+            }
+            else if (action.getClass() == UpgradeSpyAction.class) {
+                UpgradeSpyAction usa = (UpgradeSpyAction) action;
+                color = usa.getColor();
+                cost = 20;
             }
             else if(action.getClass() == GetCloakAction.class) {
                 GetCloakAction gca = (GetCloakAction) action;

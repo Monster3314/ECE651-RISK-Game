@@ -1,12 +1,9 @@
 package ece651.riskgame.client.controllers;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.ResourceBundle;
-import java.util.Set;
+import java.util.*;
 
 import ece651.riskgame.client.GUIPlayer;
 import ece651.riskgame.client.GameIO;
@@ -15,7 +12,9 @@ import ece651.riskgame.shared.Resource;
 import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 import ece651.riskgame.shared.UpgradeTechAction;
+import javafx.application.Platform;
 import javafx.collections.ObservableList;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
@@ -31,10 +30,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 
 public class GameController implements Initializable {
+
+  final List<String> territoryNameList = List.of("North", "Dorne", "Vale", "Stormlands", "Riverlands", "Reach", "Asshai", "Qarth", "Slaverbay", "Freecities", "Crownlands", "Beyondthewall", "Westerlands", "Dothrakisea", "Ironislands");
 
   @FXML
   VBox infoView;
@@ -45,8 +48,9 @@ public class GameController implements Initializable {
   ActionPaneController actionPaneController;
   @FXML
   UpgradePaneController upgradePaneController;
+  @FXML
+  TopBarController topBarController;
 
-  String username;
   GUIPlayer guiPlayer;
   GameIO gameIO;
   Parent roomPane;
@@ -56,15 +60,14 @@ public class GameController implements Initializable {
   @FXML
   Label hint;
 
+
   public GameController(GUIPlayer p, GameIO gameIO) {
     guiPlayer = p;
     this.gameIO = gameIO;
-    username = p.getColor();
   }
 
   public GameController(GUIPlayer p) {
     guiPlayer = p;
-    username = p.getColor();
   }
 
   public void setGameIO(GameIO gameIO) {
@@ -88,28 +91,6 @@ public class GameController implements Initializable {
   }
 
   @FXML
-  public void levelUp(MouseEvent me) {
-    Action lu = new UpgradeTechAction(guiPlayer.getColor());
-    String result = guiPlayer.tryApplyAction(lu);
-    if (result != null) {
-      updateHint(result);
-    } else {
-      updateHint("Level up!");
-      updateTopBar();
-      guiPlayer.addActionToSend(lu);
-      disableLevelUpButton();
-    }
-  }
-
-  public void disableLevelUpButton() {
-    ((Button) scene.lookup("#levelUp")).setDisable(true);
-  }
-
-  public void activateLevelUpButton() {
-    ((Button) scene.lookup("#levelUp")).setDisable(false);
-  }
-
-  @FXML
   public void showTerritoryInfo(MouseEvent me) {
     String territoryName = ((Button) me.getSource()).getText();
     updateTerritoryInfo(territoryName);
@@ -119,86 +100,59 @@ public class GameController implements Initializable {
    * Method to update territoryinfo pane according given territory name
    */
   public void updateTerritoryInfo(String territoryName) {
-    ObservableList<Node> children = infoView.getChildren();
-    children.clear();
-    infoView.setAlignment(Pos.TOP_CENTER);
-    // territory name
-    Label label = new Label(territoryName);
-    label.setTextAlignment(TextAlignment.CENTER);
-    label.setFont(new Font(20));
-    label.setId("territoryName");
-    children.add(label);
+    Label territoryNameLabel = (Label) infoView.lookup("#territoryName");
+    territoryNameLabel.setText(territoryName);
     // territory units
     for (int i = 0; i < 7; i++) {
-      String armyName = Unit.NAME[i];
-      HBox hbox = new HBox();
-      Label labelUnit = new Label(armyName);
-      labelUnit.setMaxWidth(Double.MAX_VALUE);
-      labelUnit.setAlignment(Pos.CENTER_LEFT);
-      labelUnit.setFont(new Font(15));
-
-      Label text = new Label("0");
-      text.setMaxWidth(Double.MAX_VALUE);
-      text.setAlignment(Pos.CENTER_RIGHT);
-      text.setFont(new Font(15));
+      Label numLabel = (Label)infoView.lookup("#unitNum"+i);
+      numLabel.setText("0");
       try {
         int unitNum = guiPlayer.getTerritory(territoryName).getUnitByLevel(i).getNum();
-        text.setText(Integer.toString(unitNum));
+        numLabel.setText(Integer.toString(unitNum));
       } catch (Exception e) {
       }
-      hbox.getChildren().addAll(labelUnit, text);
-      HBox.setHgrow(labelUnit, Priority.ALWAYS);
-      HBox.setHgrow(text, Priority.ALWAYS);
-      children.add(hbox);
-    }
-    // resource production
-    Label title2 = new Label("Resource Production");
-    title2.setTextAlignment(TextAlignment.CENTER);
-    title2.setFont(new Font(20));
-    children.add(title2);
-    
-    for (String resourceName : new String[] { Resource.FOOD, Resource.GOLD }) {
-      HBox hbox = new HBox();
-      Label labelUnit = new Label(resourceName);
-      labelUnit.setMaxWidth(Double.MAX_VALUE);
-      labelUnit.setAlignment(Pos.CENTER);
-      labelUnit.setFont(new Font(15));
-     
-      Label text = new Label(Integer.toString(
-          guiPlayer.getTerritory(territoryName).getProduction().getResourceNum(resourceName)));
-      text.setMaxWidth(Double.MAX_VALUE);
-      text.setAlignment(Pos.CENTER);
-      text.setFont(new Font(15));
-      hbox.getChildren().addAll(labelUnit, text);
-      HBox.setHgrow(labelUnit, Priority.ALWAYS);
-      HBox.setHgrow(text, Priority.ALWAYS);
-      children.add(hbox);            
     }
 
-    // territory size
-    Label titleSize = new Label("Territory Size(Food Consumption)");
-    titleSize.setTextAlignment(TextAlignment.CENTER);
-    titleSize.setFont(new Font(20));
-    children.add(titleSize);
-    Label size = new Label(Integer.toString(guiPlayer.getTerritory(territoryName).getSize()));
-    size.setTextAlignment(TextAlignment.CENTER);
-    size.setFont(new Font(15));
-    children.add(size);
-    
+    // TODO set spy
+    //((Label)infoView.lookup("#spyNum"))
+    //        .setText(String.valueOf(guiPlayer.getTerritory(territoryName)));
+
+    // set resources
+    //System.out.println(territoryName);
+    ((Label)infoView.lookup("#goldProduction"))
+            .setText(String.valueOf(guiPlayer.getTerritory(territoryName).getProduction().getResourceNum(Resource.GOLD)));
+    ((Label)infoView.lookup("#foodProduction"))
+            .setText(String.valueOf(guiPlayer.getTerritory(territoryName).getProduction().getResourceNum(Resource.FOOD)));
+    ((Label)infoView.lookup("#size"))
+            .setText(String.valueOf(guiPlayer.getTerritory(territoryName).getSize()));
 
     // neighbors
-    // This should be removed in the future
-    Label title3 = new Label("Neighbors");
-    title3.setTextAlignment(TextAlignment.CENTER);
-    title3.setFont(new Font(20));
-    children.add(title3);
-
+    VBox neighborBox = (VBox) infoView.lookup("#neighborsBox");
+    List.of(0,1,2,3).stream().forEach(i -> ((Label)infoView.lookup("#neighbor"+i)).setText(""));
+    int i = 0;
     for (Territory neighbor : guiPlayer.getGame().getBoard()
         .getNeighbors(guiPlayer.getTerritory(territoryName))) {
-      Label neigh = new Label(neighbor.getName());
-      neigh.setTextAlignment(TextAlignment.CENTER);
-      neigh.setFont(new Font(15));
-      children.add(neigh);
+      ((Label)infoView.lookup("#neighbor"+i)).setText(neighbor.getName());
+      i++;
+    }
+
+    // TODO cloak thing
+  }
+
+  /**
+   * Method called to update if a cloud shold show up
+   */
+  public void updateClouds() {
+    territoryNameList.stream().forEach(name -> {
+      //System.out.println(name.toLowerCase()+"cloud");
+      scene.lookup("#"+name.toLowerCase()+"cloud").setVisible(false);
+    });
+    for (String territoryName: territoryNameList) {
+      if (guiPlayer.getGame().getBoard().containsTerritory(territoryName)) {
+        if (!guiPlayer.hasVisibilityOf(territoryName)) {
+          scene.lookup("#"+territoryName.toLowerCase()+"cloud").setVisible(true);
+        }
+      }
     }
   }
 
@@ -206,36 +160,26 @@ public class GameController implements Initializable {
     try {
       updateTerritoryInfo(((Label) infoView.lookup("#territoryName")).getText());
     } catch (NullPointerException e) {
+    } catch (IllegalStateException e) {
+      hint.setText("Please click on territory to show correct information.");
     }
   }
 
+  /**
+   * Method called at the beginning of the game
+   * @throws IOException
+   * @throws ClassNotFoundException
+   */
   public void initializeGame() throws IOException, ClassNotFoundException {
-    setUsername(scene, guiPlayer.getColor());
+    topBarController.setUsername(guiPlayer.getColor());
     setAvailableTerritories(scene, guiPlayer.getTerritoryNames());
     disableButtonsInPlacement();
     placementPaneController.setPlacementPaneLabels();
     upgradePaneController.setUpgradePane();
     setHint();
 
+    updateClouds();
     updateTerritoryColors();
-  }
-
-  /**
-   * Set username of the game
-   */
-  public void setUsername(Parent scene, String name) {
-    ((Labeled) scene.lookup("#playerName")).setText(name);
-  }
-
-  /**
-   * Update food, gold, food
-   */
-  public void updateTopBar() {
-    System.out.println("topbar update");
-    System.out.println(guiPlayer.getFood());
-    ((Label) scene.lookup("#playerFood")).setText("Food: " + Integer.toString(guiPlayer.getFood()));
-    ((Label) scene.lookup("#playerGold")).setText("Gold: " + Integer.toString(guiPlayer.getGold()));
-    ((Label) scene.lookup("#playerLevel")).setText("Level: " + Integer.toString(guiPlayer.getTechLevel()));
   }
 
   /**
@@ -256,8 +200,9 @@ public class GameController implements Initializable {
    */
   public void disableButtonsButLogout() {
     List<String> btns = new ArrayList<>(
-        Arrays.asList("nextTurn", "moveButton", "attackButton", "upgradeButton", "levelUp"));
+        Arrays.asList("nextTurn", "moveButton", "attackButton", "upgradeButton"));
     btns.stream().forEach(s -> scene.lookup("#" + s).setDisable(true));
+    topBarController.inactivateLevelUpButton();
   }
 
   /**
@@ -267,14 +212,43 @@ public class GameController implements Initializable {
     disableButtonsButLogout();
   }
 
+  public void disableActableButtons() {
+    set3ActionPanesInvisible();
+    set3ButtonsUnselected();
+    disableButtonsButLogout();
+    scene.lookup("#logout").setDisable(true);
+  }
+
+  /**
+   * Active button after placement phase
+   */
+  public void activateButtons() {
+    List<String> btns = new ArrayList<>(
+            Arrays.asList("nextTurn", "logout", "moveButton", "attackButton", "upgradeButton"));
+    btns.stream().forEach(s -> scene.lookup("#" + s).setDisable(false));
+    topBarController.activateLevelUpButton();
+    scene.lookup("#logout").setDisable(false);
+  }
+
+  /**
+   * Active button after placement phase
+   */
+  public void activateButtonsAfterPlacement() {
+    activateButtons();
+  }
+
   /**
    * Update Territory colors, called at the beginning of each round
    */
   public void updateTerritoryColors() {
     for (String color : guiPlayer.getGame().getClans().keySet()) {
       for (Territory t : guiPlayer.getGame().getClans().get(color).getOccupies()) {
-        System.out.println(t.getName());
-        ((Button) scene.lookup("#" + t.getName() + "Territory")).setStyle("-fx-background-color:" + color);
+        Button target = ((Button) scene.lookup("#" + t.getName() + "Territory"));
+        if (!scene.lookup("#"+t.getName().toLowerCase()+"cloud").isVisible()) {
+          target.setStyle("-fx-background-color:" + color);
+        } else {
+          target.setStyle("");
+        }
       }
     }
   }
@@ -299,27 +273,12 @@ public class GameController implements Initializable {
    * Helper function to call function from placement phase to action phase
    */
   public void fromPlacementToAction() throws IOException, ClassNotFoundException {
+    updateClouds();
     updateTerritoryColors();
     activateButtonsAfterPlacement();
     set3ButtonsUnselected();
     set3ActionPanesInvisible();
-    updateTopBar();
-  }
-
-  /**
-   * Active button after placement phase
-   */
-  public void activateButtons() {
-    List<String> btns = new ArrayList<>(
-        Arrays.asList("nextTurn", "logout", "moveButton", "attackButton", "upgradeButton", "levelUp"));
-    btns.stream().forEach(s -> scene.lookup("#" + s).setDisable(false));
-  }
-
-  /**
-   * Active button after placement phase
-   */
-  public void activateButtonsAfterPlacement() {
-    activateButtons();
+    topBarController.updateTopBar();
   }
 
   @FXML
@@ -372,17 +331,41 @@ public class GameController implements Initializable {
 
   @FXML
   public void nextTurn() throws IOException, ClassNotFoundException {
-    gameIO.sendActions(guiPlayer.getActionsToSend());
-    guiPlayer.clearActionsToSend();
-    guiPlayer.updateGame(gameIO.recvGame());
+    disableActableButtons();
+    hint.setText("Your turn ends. Wait for other players...");
+    Thread th = new Thread(new Task() {
+      @Override
+      protected Object call() throws Exception {
+        gameIO.sendActions(guiPlayer.getActionsToSend());
+        guiPlayer.clearActionsToSend();
+        guiPlayer.updateGame(gameIO.recvGame());
+        Platform.runLater(new Runnable() {
+          @Override
+          public void run() {
+            try {
+              goToNextTurn();
+            } catch (IOException e) {
+              e.printStackTrace();
+            } catch (ClassNotFoundException e) {
+              e.printStackTrace();
+            }
+          }
+        });
+        return null;
+      }
+    });
+    th.setDaemon(true);
+    th.start();
+  }
+
+  public void goToNextTurn() throws IOException, ClassNotFoundException {
     // update game
+    hint.setText("New Turn! Do your actions!");
+    updateClouds();
     updateTerritoryColors();
-    set3ActionPanesInvisible();
-    set3ButtonsUnselected();
     updateCurrentTerritoryInfo();
-    updateTopBar();
-    activateLevelUpButton();
-    // TODO update level
+    topBarController.updateTopBar();
+    activateButtons();
     isLostOrWin();
   }
 
@@ -391,13 +374,14 @@ public class GameController implements Initializable {
    */
   public void displayGame() {
     disableButtonsButLogout();
-    setUsername(scene, guiPlayer.getColor());
+    topBarController.setUsername(guiPlayer.getColor());
     setAvailableTerritories(scene, guiPlayer.getTerritoryNames());
     setHint();
 
     upgradePaneController.setUpgradePane();
     // update/display information
-    updateTopBar();
+    topBarController.updateTopBar();
+    updateClouds();
     updateTerritoryColors();
     set3ActionPanesInvisible();
     set3ButtonsUnselected();
@@ -433,6 +417,44 @@ public class GameController implements Initializable {
     actionPaneController.pane = (Pane) scene.lookup("#actionPane");
     upgradePaneController.gameController = this;
     upgradePaneController.pane = (Pane) scene.lookup("#upgradePane");
+    topBarController.gameController = this;
+    topBarController.guiPlayer = this.guiPlayer;
+    // TODO playMusic();
+  }
+
+  public void playMusic() {
+    Thread thread = new Thread(new Runnable() {
+      @Override
+      public void run() {
+        Media media = null;
+        try {
+          media = new Media(getClass().getResource("/maintitle.mp3").toURI().toString());
+          MediaPlayer mediaPlayer = new MediaPlayer(media);
+          mediaPlayer.play();
+        } catch (URISyntaxException e) {
+          e.printStackTrace();
+        } catch (NullPointerException e) {
+          System.out.println("Cannot find music lol");
+          e.printStackTrace();
+        }
+      }
+    });
+    thread.start();
+  }
+
+  @FXML
+  public void cloak() {
+    // TODO what happens after clicking on the cloak
+  }
+
+  @FXML
+  public void surprise() {
+    scene.lookup("#surpriseImg").setVisible(true);
+  }
+
+  @FXML
+  public void hideSurprise() {
+    scene.lookup("#surpriseImg").setVisible(false);
   }
 
   @FXML

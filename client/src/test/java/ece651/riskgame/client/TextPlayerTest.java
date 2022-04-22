@@ -46,8 +46,9 @@ public class TextPlayerTest extends PlayerTest{
    TextPlayer player = createTextPlayer(input, bytes);
    player.doOneSpectation();
   }
+  //@Override
   @Test
-  public void test_update() {
+  public void test_updateGame() {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     String input = "";
     GameInfo oldGame = getDefaultGame();
@@ -71,7 +72,6 @@ public class TextPlayerTest extends PlayerTest{
     player = createTextPlayer(input, bytes);
     assertFalse(player.isLost());
   }
-
   @Test
   public void test_doGameOverPhase() throws IOException{
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -381,19 +381,19 @@ public class TextPlayerTest extends PlayerTest{
 
 
 
-  protected TextPlayer createTextPlayer(String inputData, OutputStream bytes) {
+  public static TextPlayer createTextPlayer(String inputData, OutputStream bytes) {
     GameInfo g = getDefaultGame();
     BufferedReader input = new BufferedReader(new StringReader(inputData));
     PrintStream output = new PrintStream(bytes, true);
     return new TextPlayer("Red", g, input, output);
   }
-  protected TextPlayer createWinner(String inputData, OutputStream bytes) {
+  public static TextPlayer createWinner(String inputData, OutputStream bytes) {
     GameInfo g = getEmptyGame();
     BufferedReader input = new BufferedReader(new StringReader(inputData));
     PrintStream output = new PrintStream(bytes, true);
     return new TextPlayer("Blue", g, input, output);
   }
-  protected TextPlayer createLoser(String inputData, OutputStream bytes) {
+  public static TextPlayer createLoser(String inputData, OutputStream bytes) {
     GameInfo g = getEmptyGame();
     BufferedReader input = new BufferedReader(new StringReader(inputData));
     PrintStream output = new PrintStream(bytes, true);

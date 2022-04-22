@@ -192,6 +192,7 @@ public class RoomPaneController {
         controllers.put(PlacementPaneController.class, new PlacementPaneController());
         controllers.put(ActionPaneController.class, new ActionPaneController());
         controllers.put(UpgradePaneController.class, new UpgradePaneController());
+        controllers.put(TopBarController.class, new TopBarController());
         loader.setControllerFactory((c) -> {
             return controllers.get(c);
         });
