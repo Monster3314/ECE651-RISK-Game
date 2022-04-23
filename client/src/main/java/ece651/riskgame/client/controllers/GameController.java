@@ -1,17 +1,15 @@
 package ece651.riskgame.client.controllers;
 
+import java.awt.*;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
+import java.util.List;
 
 import ece651.riskgame.client.GUIPlayer;
 import ece651.riskgame.client.GameIO;
-import ece651.riskgame.shared.Action;
-import ece651.riskgame.shared.Resource;
-import ece651.riskgame.shared.Territory;
-import ece651.riskgame.shared.Unit;
-import ece651.riskgame.shared.UpgradeTechAction;
+import ece651.riskgame.shared.*;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -25,6 +23,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Labeled;
 import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -34,8 +33,6 @@ import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
-
-import javax.swing.text.html.ImageView;
 
 public class GameController implements Initializable {
 
@@ -63,8 +60,8 @@ public class GameController implements Initializable {
   Label hint;
   @FXML
   Pane helpBox;
-  //@FXML
-  //ImageView cloakBtn;
+  @FXML
+  VBox cloakBtn;
 
 
   public GameController(GUIPlayer p, GameIO gameIO) {
@@ -141,7 +138,22 @@ public class GameController implements Initializable {
       i++;
     }
 
-    // TODO cloak thing
+    Label cloakInfo = (Label) infoView.lookup("#cloakInfo");
+    try {
+      if (guiPlayer.occupyTerritory(territoryName)) {
+        int remainingCloaks = guiPlayer.getTerritory(territoryName).getCloakNum();
+        if (remainingCloaks <= 0) {
+          cloakInfo.setText("Not cloaked");
+        } else {
+          cloakInfo.setText("Cloak : " + remainingCloaks);
+        }
+      }
+      else {
+        cloakInfo.setText("Unknown");
+      }
+    } catch (NullPointerException e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -175,10 +187,13 @@ public class GameController implements Initializable {
     try {
       updateTerritoryInfo(((Label) infoView.lookup("#territoryName")).getText());
     } catch (NullPointerException e) {
+      e.printStackTrace();
     } catch (IllegalStateException e) {
-      hint.setText("Please click on territory to show correct information.");
+      hint.setText("Action done. Please click on territory to show correct information.");
+      e.printStackTrace();
     } catch (IllegalArgumentException e) {
-      hint.setText("Please click on territory to show correct information.");
+      hint.setText("Action done. Please click on territory to show correct information.");
+      e.printStackTrace();
     }
   }
 
@@ -220,7 +235,7 @@ public class GameController implements Initializable {
         Arrays.asList("nextTurn", "moveButton", "attackButton", "upgradeButton"));
     btns.stream().forEach(s -> scene.lookup("#" + s).setDisable(true));
     topBarController.inactivateLevelUpButton();
-    //cloakBtn.setDisable(true);
+    cloakBtn.setDisable(true);
   }
 
   /**
@@ -257,7 +272,21 @@ public class GameController implements Initializable {
   }
 
   public void activateCloakDevelopButtons() {
-    // TODO
+    ImageView cloakImg = (ImageView) cloakBtn.lookup("#img");
+    if (guiPlayer.hasCloakAbility()) {
+      try {
+        cloakImg.setImage(new javafx.scene.image.Image(getClass().getResource("/img/cloak.png").toURI().toString()));
+        cloakBtn.setDisable(false);
+      } catch (URISyntaxException e) {
+        e.printStackTrace();
+      }
+    } else {
+      if (guiPlayer.getTechLevel() >= 3) {
+        cloakBtn.setDisable(false);
+      } else {
+        cloakBtn.setDisable(true);
+      }
+    }
   }
 
   /**
@@ -494,7 +523,31 @@ public class GameController implements Initializable {
 
   @FXML
   public void cloak() {
-    // TODO what happens after clicking on the cloak
+    if (guiPlayer.hasCloakAbility()) {
+      String territoryName = ((Label)infoView.lookup("#territoryName")).getText();
+      DoCloakAction doCloakAction = new DoCloakAction(guiPlayer.getColor(), territoryName);
+      String result = guiPlayer.tryApplyAction(doCloakAction);
+      if (result == null) {
+        guiPlayer.addActionToSend(doCloakAction);
+        guiPlayer.addActionToSend(doCloakAction);
+        updateCurrentTerritoryInfo();
+        activateCloakDevelopButtons();
+        updateHint("Territory cloaked!");
+      } else {
+        updateHint(result);
+      }
+    } else {
+      GetCloakAction getCloakAction  = new GetCloakAction(guiPlayer.getColor());
+      String result = guiPlayer.tryApplyAction(getCloakAction);
+      if (result == null) {
+        guiPlayer.addActionToSend(getCloakAction);
+        updateCurrentTerritoryInfo();
+        activateCloakDevelopButtons();
+        updateHint("Cloak ability developed.");
+      } else {
+        updateHint(result);
+      }
+    }
   }
 
   @FXML

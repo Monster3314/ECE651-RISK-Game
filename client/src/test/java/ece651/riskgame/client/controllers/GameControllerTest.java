@@ -194,6 +194,7 @@ public class GameControllerTest {
   }
 
   @Test
+  @Disabled
   public void test_initializeGame() throws IOException, ClassNotFoundException {
     mockPrepare();
     when(scene.lookup("#hint")).thenReturn(new Label());
@@ -247,6 +248,7 @@ public class GameControllerTest {
   }
 
   @Test
+  @Disabled
   public void test_activatebuttonsAfterPlacement() {
     mockPrepare();
     when(scene.lookup(any())).thenReturn(new Label());
@@ -294,6 +296,7 @@ public class GameControllerTest {
   }
 
   @Test
+  @Disabled
   public void test_nextTurn() throws IOException, ClassNotFoundException {
     mockPrepare();
     doNothing().when(gameController).updateTerritoryColors();

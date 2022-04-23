@@ -47,6 +47,7 @@ public abstract class Territory implements Serializable {
     units = latestTerritory.getUnits();
     production = latestTerritory.getProduction();
     size = latestTerritory.getSize();
+    cloakNum = latestTerritory.getCloakNum();
   }
   
   /**

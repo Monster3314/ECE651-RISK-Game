@@ -93,17 +93,20 @@ public abstract class Actable implements Serializable{
     if (getClans().get(color).occupyTerritory(territoryName)) {
       return true;
     }
+    //Spy
+    if (getClans().get(color).getSpy(territoryName, false) != null) {
+      return true;
+    }
+    //cloak
+    if (toCheck.getCloakNum() != 0) {
+      return false;
+    }
     //Adjacency
     for (Territory neighbour: getBoard().getNeighbors(toCheck)) {
       if (getClans().get(color).occupyTerritory(neighbour.getName())) {
         return true;
       }
     }
-    //Spy
-    if (getClans().get(color).getSpy(territoryName, false) != null) {
-      return true;
-    }
-    //TODO:cloak
     return false;
   }
 }
