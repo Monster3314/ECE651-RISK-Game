@@ -114,11 +114,11 @@ public class Login implements Runnable{
                 }
             } else {  //user register
                 if(!userTable.containsKey(userinfo.getUsername())) {
-                    logger.writeLog("LogIn : " + userinfo.getUsername() + " register");
+                    logger.writeLog("[LogIn] : " + userinfo.getUsername() + " register");
                     userTable.put(userinfo.getUsername(), userinfo.getPassword());
                     writeToText(userinfo.getUsername() + "," + userinfo.getPassword() + "\n");
                 }
-                logger.writeLog("LogIn : " + userinfo.getUsername() + " try to register but the username has already been used");
+                logger.writeLog("[LogIn] : " + userinfo.getUsername() + " try to register but the username has already been used");
                 oos.writeObject("no");
             }
             oos.flush();
