@@ -148,7 +148,7 @@ public class GameController implements Initializable {
         if (remainingCloaks <= 0) {
           cloakInfo.setText("Not cloaked");
         } else {
-          cloakInfo.setText("Cloak : " + remainingCloaks);
+          cloakInfo.setText("Cloak : " + (remainingCloaks-1));
         }
       }
       else {
