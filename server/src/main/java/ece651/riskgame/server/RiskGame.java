@@ -228,6 +228,7 @@ public class RiskGame implements Runnable{
         logger.writeLog("[RiscGame Room] : failed to apply getcloakAction");
       }
     }
+    logger.flushBuffer();
   }
 
   private void doDoCloakAction(List<DoCloakAction> doCloakActions) {
@@ -244,6 +245,7 @@ public class RiskGame implements Runnable{
         logger.writeLog("[RiscGame Room] : failed to apply docloakAction");
       }
     }
+    logger.flushBuffer();
   }
 
   private void doUpgradeLevelAction(List<UpgradeTechAction> upgradeTechActions) {
@@ -259,8 +261,8 @@ public class RiskGame implements Runnable{
       } catch (Exception e) {
         logger.writeLog("[RiscGame Room] : failed to apply upgradelevelAction");
       }
-
     }
+    logger.flushBuffer();
   }
 
   private void doMoveAndUpgradeUnitAction(List<Action> movesAndUpgradeUnits) {
@@ -278,6 +280,7 @@ public class RiskGame implements Runnable{
         doAction(a, upgradeUnitChecker);
       }
     }
+    logger.flushBuffer();
   }
 
   private void doAction(Action action, ActionRuleChecker checker) {
@@ -292,7 +295,7 @@ public class RiskGame implements Runnable{
     } catch (Exception e) {
       logger.writeLog("[RiscGame Room] : failed to apply moveandupgradeAction");
     }
-
+    logger.flushBuffer();
   }
 
   /**
@@ -378,6 +381,7 @@ public class RiskGame implements Runnable{
         logger.writeLog("[RiscGame Room] : " + i.getKey() + " doesn't have enough food or gold to lost");
       }
     }
+    logger.flushBuffer();
   }
 
   private void randomDecTroops() {
@@ -403,7 +407,7 @@ public class RiskGame implements Runnable{
     } catch (Exception e) {
       logger.writeLog("[RiscGame Room] : " + t_max.getName() + " doesn't have enough troops");
     }
-
+    logger.flushBuffer();
   }
 
   /**
