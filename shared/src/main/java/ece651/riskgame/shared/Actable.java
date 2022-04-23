@@ -1,51 +1,83 @@
 package ece651.riskgame.shared;
 
+import java.io.Serializable;
 import java.util.*;
 
 /**
  * Implemented by World and GameInfo
  */
-public interface Actable {
+public abstract class Actable implements Serializable{
+  protected Board board;
+  protected Map<String, Clan> clans;  //the map for color of player and his clan
+    protected Map<String, List<String>> mesg = new HashMap<>();
 
-    /**
-     * @return Board topology relationship between territories
-     */
-    Board getBoard();
+  public Actable(Board board, Map<String, Clan> clans) {
+    this.board = board;
+    this.clans = clans;
+  }
+  /**
+   * @return Board topology relationship between territories
+   */
+  public Board getBoard() {
+    return board;
+  }
+  /**
+   * @return Map from color to Clan
+   */
+  public Map<String, Clan> getClans() {
+    return clans;
+  }
+  /**
+   * @param name of territory
+   * @return Clan who occupies the territory (color)
+   */
+  public String getTerritoryOwnership(String name) {
+    for (Map.Entry<String, Clan> clan : clans.entrySet()) {
+      if (clan.getValue().occupyTerritory(name)) {
+        return clan.getKey();
+      }
+    }
+    return null;
+  }
 
-    /**
-     * @return Map from color to Clan
-     */
-    Map<String, Clan> getClans();
+  public Map<String, List<String>> getMesg() {
+       return mesg;
+  }
 
-    /**
-     * @param name of territory
-     * @return Clan who occupies the territory (color)
-     */
-    String getTerritoryOwnership(String name);
-
-    default Map<String, Integer> getUnitMoveCost(String src, String color) {
-        Map<String, Integer> ret = new HashMap<>();
+  /**
+   * @return color of winner. return null if game is not end.
+   */
+ public String getWinner() {
+    ArrayList<String> alivePlayer = new ArrayList<>();
+    for(Map.Entry<String, Clan> clan : clans.entrySet()) {
+      if(clan.getValue().isActive()) alivePlayer.add(clan.getKey());
+    }
+    if(alivePlayer.size() > 1) return null;
+    else return alivePlayer.get(0);
+ }
+  public Map<String, Integer> getUnitMoveCost(String src, String color) {
+    Map<String, Integer> ret = new HashMap<>();
         Board board = getBoard();
         Territory t = board.getTerritory(src);
         int cost = t.getSize();
         if (!board.containsTerritory(src) || !getTerritoryOwnership(src).equals(color)) {
-            throw new IllegalArgumentException("Source territory not found or not belonging to this clan.");
+          throw new IllegalArgumentException("Source territory not found or not belonging to this clan.");
         }
         ret.put(src, cost);
         PriorityQueue<Map.Entry<String, Integer>> treeMap = new PriorityQueue<>(Comparator.comparingInt(entry -> board.getTerritory(entry.getKey()).getSize()));
         HashMap<String, Integer> distance = new HashMap<>();
         for (Territory territory : board.getNeighbors(t)) {
-            if (getTerritoryOwnership(territory.getName()).equals(color)) {
-                treeMap.add(Map.entry(territory.getName(), cost + territory.getSize()));
-                distance.put(territory.getName(), cost + territory.getSize());
-            }
+          if (getTerritoryOwnership(territory.getName()).equals(color)) {
+            treeMap.add(Map.entry(territory.getName(), cost + territory.getSize()));
+            distance.put(territory.getName(), cost + territory.getSize());
+          }
         }
         while (!treeMap.isEmpty()) {
-            Map.Entry<String, Integer> entry = treeMap.poll();
-            cost = entry.getValue();
+          Map.Entry<String, Integer> entry = treeMap.poll();
+          cost = entry.getValue();
             ret.put(entry.getKey(), cost);
             for (Territory territory : board.getNeighbors(board.getTerritory(entry.getKey()))) {
-                if (!ret.containsKey(territory.getName()) && getTerritoryOwnership(territory.getName()).equals(color)) {
+              if (!ret.containsKey(territory.getName()) && getTerritoryOwnership(territory.getName()).equals(color)) {
                     Integer value = distance.get(territory.getName());
                     int newCost = cost + territory.getSize();
                     int newValue = value == null ? newCost : Math.min(newCost, value);
@@ -56,5 +88,44 @@ public interface Actable {
         }
         ret.remove(src);
         return ret;
+  }
+  public boolean hasVisibilityOf(String color, String territoryName) throws IllegalArgumentException {
+    Territory toCheck = getBoard().getTerritory(territoryName);
+    //Specatate
+    if (!getClans().get(color).isActive()) {
+      return true;
+    }
+    //Ownership
+    if (getClans().get(color).occupyTerritory(territoryName)) {
+      return true;
+    }
+    //Spy
+    if (getClans().get(color).getSpy(territoryName, false) != null) {
+      return true;
+    }
+    //cloak
+    if (toCheck.getCloakNum() != 0) {
+      return false;
+    }
+    //Adjacency
+    for (Territory neighbour: getBoard().getNeighbors(toCheck)) {
+      if (getClans().get(color).occupyTerritory(neighbour.getName())) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+    public void writeMesg(String color, String log) {
+        if(!mesg.containsKey(color)) {
+            mesg.put(color, new ArrayList<>());
+        }
+        mesg.get(color).add(log);
+    }
+
+    public void clearMesg() {
+        for(String s : mesg.keySet()) {
+            mesg.put(s, new ArrayList<>());
+        }
     }
 }

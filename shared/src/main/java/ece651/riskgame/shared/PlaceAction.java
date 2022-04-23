@@ -24,4 +24,8 @@ public class PlaceAction implements Action {
     apply(game);
   }
 
+  @Override
+  public String getColor() {
+    return null;
+  }
 }

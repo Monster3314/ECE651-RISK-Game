@@ -1,4 +1,4 @@
-package ece651.riskgame.server;
+package ece651.riskgame.shared;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,7 +32,7 @@ public class Logger {
         return logger;
     }
 
-    public void writeLog(String log) {
+    synchronized public void writeLog(String log) {
         Date date = new Date();
         buffer.add(sdf.format(date) + "  |  " + log);
     }
@@ -40,7 +40,7 @@ public class Logger {
     /**
      * @return String logs in buffer
      */
-    public Iterable<String> getBuffer() {
+    synchronized public Iterable<String> getBuffer() {
         //filter
         return buffer;
     }
@@ -48,7 +48,7 @@ public class Logger {
     /**
      * Clear the buffer and write logs in buffer into log file
      */
-    public void flushBuffer() {
+    synchronized public void flushBuffer() {
         for (String s : buffer) {
             writer.println(s);
         }

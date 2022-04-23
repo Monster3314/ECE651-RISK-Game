@@ -1,24 +1,8 @@
 package ece651.riskgame.client.controllers;
 
-import com.sun.javafx.stage.EmbeddedWindow;
-import ece651.riskgame.client.GUIPlayer;
-import ece651.riskgame.client.GameIO;
-import ece651.riskgame.client.Room;
-import javafx.event.ActionEvent;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import ece651.riskgame.shared.GameInfo;
-import ece651.riskgame.shared.UserInit;
-import javafx.scene.layout.Pane;
-
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.OutputStream;
 import java.net.ConnectException;
 import java.net.Socket;
 import java.net.URL;
@@ -28,7 +12,23 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import ece651.riskgame.client.ClientWorld;
+import ece651.riskgame.client.GUIPlayer;
+import ece651.riskgame.client.Room;
+import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.UserInit;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+
 public class LoginController {
+
+    static final String ip = "vcm-25368.vm.duke.edu";
+    //static final String ip = "vcm-25368.vm.duke.edu";
+
 
     @FXML
     private PasswordField password;
@@ -62,7 +62,6 @@ public class LoginController {
 
     @FXML
     void login(ActionEvent event) throws IOException, ClassNotFoundException {
-        String ip = "0.0.0.0";
         int port = 1651;
         // connect to server
         Socket serverSocket = null;
@@ -95,6 +94,7 @@ public class LoginController {
             List<Integer> roomNums = (ArrayList<Integer>) ois.readObject();
             @SuppressWarnings("unchecked")
             List<GameInfo> gameInfos = (ArrayList<GameInfo>) ois.readObject();
+            
             @SuppressWarnings("unchecked")
             List<String> colorInfo = (ArrayList<String>) ois.readObject();
 
@@ -102,7 +102,7 @@ public class LoginController {
             Map<Integer, Room> rooms = new HashMap<>();
 
             for(int i = 0; i < roomNums.size(); i++) {
-                GUIPlayer guiPlayer = new GUIPlayer(colorInfo.get(i), gameInfos.get(i));
+              GUIPlayer guiPlayer = new GUIPlayer(colorInfo.get(i), new ClientWorld(gameInfos.get(i)));
                 GameController gameController = new GameController(guiPlayer);
 
                 URL xmlResource = getClass().getResource("/ui/main.fxml");
@@ -134,8 +134,6 @@ public class LoginController {
 
     @FXML
     void register(ActionEvent event) throws IOException, ClassNotFoundException {
-
-        String ip = "0.0.0.0";
         int port = 1651;
         // connect to server
         Socket serverSocket = null;
@@ -179,6 +177,7 @@ public class LoginController {
         controllers.put(PlacementPaneController.class, new PlacementPaneController());
         controllers.put(ActionPaneController.class, new ActionPaneController());
         controllers.put(UpgradePaneController.class, new UpgradePaneController());
+        controllers.put(TopBarController.class, new TopBarController());
         loader.setControllerFactory((c) -> {
             return controllers.get(c);
         });

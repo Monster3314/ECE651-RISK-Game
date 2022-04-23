@@ -46,14 +46,15 @@ public class TextPlayerTest extends PlayerTest{
    TextPlayer player = createTextPlayer(input, bytes);
    player.doOneSpectation();
   }
+  //@Override
   @Test
-  public void test_update() {
+  public void test_updateGame() {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     String input = "";
-    GameInfo oldGame = getDefaultGame();
+    ClientWorld oldWorld = getDefaultWorld();
     TextPlayer player = createTextPlayer(input, bytes);
-    GameInfo newGame = getEmptyGame();
-    player.updateGame(newGame);    
+    //Client newGame = getEmptyGame();
+    //player.updateGame(newGame);    
   }
   
   @Test
@@ -71,7 +72,6 @@ public class TextPlayerTest extends PlayerTest{
     player = createTextPlayer(input, bytes);
     assertFalse(player.isLost());
   }
-
   @Test
   public void test_doGameOverPhase() throws IOException{
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
@@ -158,15 +158,15 @@ public class TextPlayerTest extends PlayerTest{
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     String input;
     //valid testcases
-    input = "M\nDurham\nCary\n2\nD\n";
+    input = "M\nDurham\nChapel Hill\n2\nD\n";
     TextPlayer player = createTextPlayer(input, bytes);
     assertEquals(1, player.readActions().size());
     //valid testcases
-    input = "A\nDurham\nRaleigh\n2\nM\nDurham\nCary\n2\nD\n";
+    input = "A\nDurham\nRaleigh\n2\nM\nChapel Hill\nDurham\n2\nD\n";
     player = createTextPlayer(input, bytes);
     assertEquals(2, player.readActions().size());
     //invalid testcases
-    input = "A\nDurham\nCary\n2\nM\nDurham\nCary\n2\nD\n";
+    input = "A\nDurham\nRaleigh\n2\nM\nDurham\nRaleigh\n2\nD\n";
     player = createTextPlayer(input, bytes);
     assertEquals(1, player.readActions().size());
   }
@@ -193,7 +193,7 @@ public class TextPlayerTest extends PlayerTest{
     player.readOneAction();
   }
   @Test
-  public void test_readAttack() {
+  public void test_readAttackAction() {
     ByteArrayOutputStream bytes = new ByteArrayOutputStream();
     String input;
     Attack toAdd;
@@ -230,42 +230,42 @@ public class TextPlayerTest extends PlayerTest{
 
     Move toAdd;
     //valid testcase
-    input = "Durham\nCary\n0\n";
+    input = "Durham\nRaleigh\n0\n";
     TextPlayer player = createTextPlayer(input, bytes);
     toAdd = player.readMoveAction();
     assertEquals(0, toAdd.getUnit().size());
     assertEquals("Durham", toAdd.getFromTerritory());
-    assertEquals("Cary", toAdd.getToTerritory());
+    assertEquals("Raleigh", toAdd.getToTerritory());
     assertEquals("Red", toAdd.getColor());
 
     //invalid testcase
-    input = "Durham\nCary\n5\n4\n";
+    input = "Durham\nRaleigh\n5\n4\n";
     player = createTextPlayer(input, bytes);
     toAdd = player.readMoveAction();
     assertEquals(1, toAdd.getUnit().size());
     assertEquals("Durham", toAdd.getFromTerritory());
-    assertEquals("Cary", toAdd.getToTerritory());
+    assertEquals("Raleigh", toAdd.getToTerritory());
     assertEquals("Red", toAdd.getColor());
 
     //invalid testcase
-    input = "Durham\nCary\nsdhoih\n4\n";
+    input = "Durham\nRaleigh\nsdhoih\n4\n";
     player = createTextPlayer(input, bytes);
     toAdd = player.readMoveAction();
     assertEquals(1, toAdd.getUnit().size());
     assertEquals("Durham", toAdd.getFromTerritory());
-    assertEquals("Cary", toAdd.getToTerritory());
+    assertEquals("Raleigh", toAdd.getToTerritory());
     assertEquals("Red", toAdd.getColor());
     //invalid testcase
-    input = "Durham\nCary\n-1\n4\n";
+    input = "Durham\nRaleigh\n-1\n4\n";
     player = createTextPlayer(input, bytes);
     toAdd = player.readMoveAction();
     assertEquals(1, toAdd.getUnit().size());
     assertEquals("Durham", toAdd.getFromTerritory());
-    assertEquals("Cary", toAdd.getToTerritory());
+    assertEquals("Raleigh", toAdd.getToTerritory());
     assertEquals("Red", toAdd.getColor());
 
     //EOF testcase
-    input = "Durham\nCary\n";
+    input = "Durham\nRaleigh\n";
     player = createTextPlayer(input, bytes);
     toAdd = player.readMoveAction();
     assertNull(toAdd);
@@ -381,23 +381,23 @@ public class TextPlayerTest extends PlayerTest{
 
 
 
-  protected TextPlayer createTextPlayer(String inputData, OutputStream bytes) {
-    GameInfo g = getDefaultGame();
+  public static TextPlayer createTextPlayer(String inputData, OutputStream bytes) {
+    ClientWorld w = getDefaultWorld();
     BufferedReader input = new BufferedReader(new StringReader(inputData));
     PrintStream output = new PrintStream(bytes, true);
-    return new TextPlayer("Red", g, input, output);
+    return new TextPlayer("Red", w, input, output);
   }
-  protected TextPlayer createWinner(String inputData, OutputStream bytes) {
-    GameInfo g = getEmptyGame();
+  public static TextPlayer createWinner(String inputData, OutputStream bytes) {
+    ClientWorld w = getEmptyWorld();
     BufferedReader input = new BufferedReader(new StringReader(inputData));
     PrintStream output = new PrintStream(bytes, true);
-    return new TextPlayer("Blue", g, input, output);
+    return new TextPlayer("Blue", w, input, output);
   }
-  protected TextPlayer createLoser(String inputData, OutputStream bytes) {
-    GameInfo g = getEmptyGame();
+  public static TextPlayer createLoser(String inputData, OutputStream bytes) {
+    ClientWorld w = getEmptyWorld();
     BufferedReader input = new BufferedReader(new StringReader(inputData));
     PrintStream output = new PrintStream(bytes, true);
-    return new TextPlayer("Red", g, input, output);
+    return new TextPlayer("Red", w, input, output);
   }
     
     

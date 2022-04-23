@@ -13,8 +13,8 @@ plugins {
 }
 
 javafx {
-    version = "17.0.1"
-    modules = [ 'javafx.controls', 'javafx.fxml'  ]
+    version = "18.0.1"
+    modules = [ 'javafx.controls', 'javafx.fxml', 'javafx.media'  ]
 }
 
 repositories {
@@ -32,6 +32,10 @@ dependencies {
     testImplementation group:'org.mockito', name:'mockito-junit-jupiter', version: '3.9.0'
     testImplementation group:'org.powermock', name:'powermock-core', version: '2.0.9'
     testImplementation project(':server')
+
+    // https://mvnrepository.com/artifact/org.openjfx/javafx-media
+    implementation 'org.openjfx:javafx-media:15'
+
 
     testImplementation "org.testfx:testfx-core:4.0.16-alpha"
     testImplementation "org.testfx:testfx-junit5:4.0.16-alpha"

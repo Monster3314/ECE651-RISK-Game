@@ -1,7 +1,7 @@
 package ece651.riskgame.server;
 
-
 import ece651.riskgame.shared.GameInfo;
+import ece651.riskgame.shared.Logger;
 import ece651.riskgame.shared.UserInit;
 
 import java.io.*;
@@ -24,6 +24,8 @@ public class Login implements Runnable{
     private String tableTxt;
 
     private Map<Integer, serverRoom> gameRooms;
+
+    private Logger logger = Logger.getInstance();
 
     public Login(String tableTxt) throws IOException {
         userTable = new ConcurrentHashMap<>();
@@ -76,7 +78,7 @@ public class Login implements Runnable{
                 if(userTable.containsKey(userinfo.getUsername())) {
                     if(userTable.get(userinfo.getUsername()).equals(userinfo.getPassword())) {
                         oos.writeObject("yes");
-
+                        logger.writeLog("[LogIn] : " + userinfo.getUsername() + " has loged in");
                         List<Integer> roomNums = new ArrayList<>();
                         List<GameInfo> gameInfos = new ArrayList<>();
                         List<String> colorInfo = new ArrayList<>();
@@ -112,9 +114,11 @@ public class Login implements Runnable{
                 }
             } else {  //user register
                 if(!userTable.containsKey(userinfo.getUsername())) {
+                    logger.writeLog("[LogIn] : " + userinfo.getUsername() + " register");
                     userTable.put(userinfo.getUsername(), userinfo.getPassword());
                     writeToText(userinfo.getUsername() + "," + userinfo.getPassword() + "\n");
                 }
+                logger.writeLog("[LogIn] : " + userinfo.getUsername() + " try to register but the username has already been used");
                 oos.writeObject("no");
             }
             oos.flush();

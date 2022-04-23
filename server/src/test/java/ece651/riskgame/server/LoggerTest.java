@@ -1,10 +1,9 @@
 package ece651.riskgame.server;
 
+import ece651.riskgame.shared.Logger;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class LoggerTest {
   private final Logger logger = Logger.getInstance();

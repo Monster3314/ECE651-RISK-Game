@@ -12,7 +12,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.testfx.framework.junit5.Start;
 
 import ece651.riskgame.shared.Action;
 import ece651.riskgame.shared.Board;
@@ -21,6 +23,10 @@ import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.Unit;
 
 public class GameIOTest {
+  @BeforeAll
+  public static void start() {
+    System.out.println("GameIOTest starting...");
+  }
   @Test
   public void test_GameIO_Socket() throws Exception {
     Thread serverThread = new Thread() {
@@ -79,6 +85,7 @@ public class GameIOTest {
             client.close();
             ss.close();
           } catch (Exception e) {
+            e.printStackTrace();
           }
         }
       };

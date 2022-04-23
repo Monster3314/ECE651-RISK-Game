@@ -10,6 +10,7 @@ public abstract class Territory implements Serializable {
   protected List<Unit> units;
   protected Resource production;
   protected int size;
+  protected int cloakNum = 0;
 
   public Territory(String name) {
     this(name, 0, new Resource(new int[]{0, 0}));
@@ -34,6 +35,21 @@ public abstract class Territory implements Serializable {
     return this.size;
   }
 
+  /**
+   * update the status of territory
+   * @param  latestTerritory is the latest territory used to update
+   * @throws IllegalArgumentException if toUpdate doesn't have the same name  
+   */  
+  public void update(Territory latestTerritory) {
+    if (!latestTerritory.getName().equals(name)) {
+      throw new IllegalArgumentException("Territory used to update should share the same name.");
+    }
+    units = latestTerritory.getUnits();
+    production = latestTerritory.getProduction();
+    size = latestTerritory.getSize();
+    cloakNum = latestTerritory.getCloakNum();
+  }
+  
   /**
    * Add a single unit to the territory
    */
@@ -121,6 +137,7 @@ public abstract class Territory implements Serializable {
     }
     if (units.size() == 0) {
       addUnitList(attacker);
+      cloakNum = 0;
       return true;
     }
     else {
@@ -173,5 +190,19 @@ public abstract class Territory implements Serializable {
     }
     return true;
 
+  }
+
+  public void setCloakNum(int cloakNum) {
+    this.cloakNum = cloakNum;
+  }
+
+  public void decCloakNum() {
+    if(cloakNum != 0) {
+      cloakNum -= 1;
+    }
+  }
+
+  public int getCloakNum() {
+    return cloakNum;
   }
 }

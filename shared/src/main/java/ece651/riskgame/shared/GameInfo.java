@@ -2,6 +2,7 @@ package ece651.riskgame.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -9,56 +10,32 @@ import java.util.Map;
  * board: topology relationship between territories
  * players: map from color to Clan
  */
-public class GameInfo implements Serializable, Actable{
-  private Board board;
-  private Map<String, Clan> players;// clan
+public class GameInfo extends Actable{
+
+  private Map<String, List<String>> mesg;
 
   public GameInfo(Board b, Map<String, Clan> players) {
-    this.board = b;
-    this.players = players;
+    super(b, players);
   }
-  @Override
-  public Board getBoard() {
-    return board;
-  }
-  @Override
-  public Map<String, Clan> getClans() {
-    return players;
+
+  public GameInfo(Board b, Map<String, Clan> players, Map<String, List<String>> mesg) {
+    super(b, players);
+    this.mesg = mesg;
   }
   public void setBoard(Board b) {
     board = b;
   }
 
   public Map<String, Clan> getPlayers() {
-    return players;
+    return clans;
   }
 
   public void setPlayers(Map<String, Clan> players) {
-    this.players = players;
+    this.clans = players;
   }
 
-  /**
-   * @param name of territory
-   * @return Clan's color
-   */
-  public String getTerritoryOwnership(String name) {
-    for (Map.Entry<String, Clan> clan : players.entrySet()) {
-      if (clan.getValue().occupyTerritory(name)) {
-        return clan.getKey();
-      }
-    }
-    return null;
+  public Map<String, List<String>> getMesg() {
+    return mesg;
   }
 
-  /**
-   * @return color of winner. return null if game is not end.
-   */
- public String getWinner() {
-    ArrayList<String> alivePlayer = new ArrayList<>();
-    for(Map.Entry<String, Clan> clan : players.entrySet()) {
-      if(clan.getValue().isActive()) alivePlayer.add(clan.getKey());
-    }
-    if(alivePlayer.size() > 1) return null;
-    else return alivePlayer.get(0);
- }
 }

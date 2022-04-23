@@ -10,17 +10,17 @@ import ece651.riskgame.shared.Territory;
 import ece651.riskgame.shared.Unit;
 
 public class GameTextView implements GameView {
-  private final GameInfo theGame;
+  private final ClientWorld theGame;
   private final Board theBoard;
   private final Map<String, Clan> clans;
   /**
    * Constructs a GameTextView, given the board it will display
    * @param toDisplay is the Board to display  
    */
-  public GameTextView(GameInfo toDisplay) {
+  public GameTextView(ClientWorld toDisplay) {
     this.theGame = toDisplay;
     this.theBoard = toDisplay.getBoard();
-    this.clans = toDisplay.getPlayers();
+    this.clans = toDisplay.getClans();
   }
 
   /**
