@@ -536,6 +536,7 @@ public class GameController implements Initializable {
         guiPlayer.addActionToSend(doCloakAction);
         updateCurrentTerritoryInfo();
         activateCloakDevelopButtons();
+        topBarController.updateTopBar();
         updateHint("Territory cloaked!");
       } else {
         updateHint(result);
@@ -547,6 +548,7 @@ public class GameController implements Initializable {
         guiPlayer.addActionToSend(getCloakAction);
         updateCurrentTerritoryInfo();
         activateCloakDevelopButtons();
+        topBarController.updateTopBar();
         updateHint("Cloak ability developed.");
       } else {
         updateHint(result);
