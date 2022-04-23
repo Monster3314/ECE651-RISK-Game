@@ -144,7 +144,7 @@ public abstract class Player {
 
     //Update Visible Territory
     for (Territory latestTerritory: latestGame.getBoard().getTerritoriesList()) {
-      if (hasVisibilityOf(latestTerritory.getName())) {
+      if (latestGame.hasVisibilityOf(color, latestTerritory.getName())) {
         theWorld.updateTerritory(latestTerritory);
         theWorld.updateTerritoryOwnership(latestTerritory.getName(), latestGame.getTerritoryOwnership(latestTerritory.getName()));
       }
@@ -292,13 +292,7 @@ public abstract class Player {
    */
 
   public boolean hasVisibilityOf(String territoryName) throws IllegalArgumentException {
-    if (isLost()) {
-      Territory toCheck = getTerritory(territoryName);
-      return true;
-    }
-    else {
       return theWorld.hasVisibilityOf(color, territoryName);
-    }
   }
 
 }
