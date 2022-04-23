@@ -148,7 +148,7 @@ public class GameController implements Initializable {
         if (remainingCloaks <= 0) {
           cloakInfo.setText("Not cloaked");
         } else {
-          cloakInfo.setText("Cloak : " + remainingCloaks);
+          cloakInfo.setText("Cloak : " + (remainingCloaks-1));
         }
       }
       else {
@@ -532,7 +532,6 @@ public class GameController implements Initializable {
       DoCloakAction doCloakAction = new DoCloakAction(guiPlayer.getColor(), territoryName);
       String result = guiPlayer.tryApplyAction(doCloakAction);
       if (result == null) {
-        guiPlayer.addActionToSend(doCloakAction);
         guiPlayer.addActionToSend(doCloakAction);
         updateCurrentTerritoryInfo();
         activateCloakDevelopButtons();
