@@ -144,6 +144,10 @@ public abstract class Player {
 
     //Update Visible Territory
     for (Territory latestTerritory: latestGame.getBoard().getTerritoriesList()) {
+      if (hasVisibilityOf(latestTerritory.getName())) {
+        theWorld.updateTerritory(latestTerritory);
+        theWorld.updateTerritoryOwnership(latestTerritory.getName(), latestGame.getTerritoryOwnership(latestTerritory.getName()));
+      }
       if (latestGame.hasVisibilityOf(color, latestTerritory.getName())) {
         theWorld.updateTerritory(latestTerritory);
         theWorld.updateTerritoryOwnership(latestTerritory.getName(), latestGame.getTerritoryOwnership(latestTerritory.getName()));
