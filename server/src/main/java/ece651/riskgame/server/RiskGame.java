@@ -332,6 +332,7 @@ public class RiskGame implements Runnable{
       attack.onTheWay(world);
       validAttacks.add(attack);
       logger.writeLog("[RiscGame Room] : " + attack.getColor() + " player attacks " + attack.getToTerritory() + " from " + attack.getFromTerritory() + " by " + attack.getUnit() + ". Cost food " + attack.getTotalUnits());
+      world.writeMesg(world.getTerritoryOwnership(attack.getToTerritory()), "[Be Attacked] : " + attack.getToTerritory() + " be attacked by " + attack.getColor());
     }
 
     for (Attack attack : validAttacks) {
