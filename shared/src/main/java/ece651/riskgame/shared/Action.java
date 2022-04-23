@@ -10,4 +10,6 @@ public interface Action {
      * @param game apply method used by Client
      */
     void clientApply(Actable game);
+
+    String getColor();
 }

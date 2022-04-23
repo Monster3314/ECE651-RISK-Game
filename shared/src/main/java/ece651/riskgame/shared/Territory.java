@@ -37,7 +37,7 @@ public abstract class Territory implements Serializable {
 
   /**
    * update the status of territory
-   * @param toUpdate is the latest territory used to update
+   * @param  latestTerritory is the latest territory used to update
    * @throws IllegalArgumentException if toUpdate doesn't have the same name  
    */  
   public void update(Territory latestTerritory) {
@@ -137,6 +137,7 @@ public abstract class Territory implements Serializable {
     }
     if (units.size() == 0) {
       addUnitList(attacker);
+      cloakNum = 0;
       return true;
     }
     else {

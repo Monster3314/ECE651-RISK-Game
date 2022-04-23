@@ -1,5 +1,7 @@
 package ece651.riskgame.server;
 
+import ece651.riskgame.shared.Logger;
+
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -14,6 +16,7 @@ public class RoomManager implements Runnable{
     private int latestRoomNum;
     private Map<Integer, serverRoom> gameRooms;
     private int playerNum = 2;
+    private Logger logger = Logger.getInstance();
 
     public RoomManager(int port) throws IOException {
         this.port = port;
@@ -45,6 +48,7 @@ public class RoomManager implements Runnable{
                     if(latestRoom.getNumber() != playerNum) {
                         ObjectOutputStream oos = new ObjectOutputStream(player.getOutputStream());
                         oos.writeObject(latestRoomNum);
+                        logger.writeLog("[RoomManager] : " + username + " participates the RISC ROOM " + latestRoomNum);
                         latestRoom.addNewPlayer(player, username);
                         latestRoom.oisMap.put(player, ois);
                         latestRoom.oosMap.put(player, oos);
@@ -53,6 +57,7 @@ public class RoomManager implements Runnable{
                         latestRoomNum++;
                         ObjectOutputStream oos = new ObjectOutputStream(player.getOutputStream());
                         oos.writeObject(latestRoomNum);
+                        logger.writeLog("[RoomManager] : " + username + " participates the RISC ROOM " + latestRoomNum);
                         latestRoom.addNewPlayer(player, username);
                         latestRoom.oisMap.put(player, ois);
                         latestRoom.oosMap.put(player, oos);
@@ -79,6 +84,7 @@ public class RoomManager implements Runnable{
                         temp.oisMap.put(player, ois);
                         temp.oosMap.put(player, oos);
                         temp.online.put(tempcolor, true);
+                        logger.writeLog("[RoomManager] : " + username + " return to the RISC ROOM " + roomnumber);
 
                     } else {
                         ObjectOutputStream oos = new ObjectOutputStream(player.getOutputStream());
