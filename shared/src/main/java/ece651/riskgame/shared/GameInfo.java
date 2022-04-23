@@ -2,6 +2,7 @@ package ece651.riskgame.shared;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -11,8 +12,15 @@ import java.util.Map;
  */
 public class GameInfo extends Actable{
 
+  private Map<String, List<String>> mesg;
+
   public GameInfo(Board b, Map<String, Clan> players) {
     super(b, players);
+  }
+
+  public GameInfo(Board b, Map<String, Clan> players, Map<String, List<String>> mesg) {
+    super(b, players);
+    this.mesg = mesg;
   }
   public void setBoard(Board b) {
     board = b;
@@ -26,6 +34,8 @@ public class GameInfo extends Actable{
     this.clans = players;
   }
 
-
+  public Map<String, List<String>> getMesg() {
+    return mesg;
+  }
 
 }
