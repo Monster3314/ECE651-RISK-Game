@@ -264,7 +264,7 @@
                               <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                            </VBox.margin>
                         </Label>
-                        <Label fx:id="cloakDeveloped" alignment="CENTER" prefHeight="23.0" prefWidth="90.0" text="Undeveloped" textFill="WHITE">
+                        <Label fx:id="cloakInfo" alignment="CENTER" prefHeight="23.0" prefWidth="90.0" text="Undeveloped" textFill="WHITE">
                            <font>
                               <Font size="11.0" />
                            </font>
@@ -272,9 +272,9 @@
                               <Insets bottom="5.0" top="5.0" />
                            </VBox.margin>
                         </Label>
-                        <VBox fx:id="cloakBtn" prefHeight="42.0" prefWidth="60.0">
+                        <VBox fx:id="cloakBtn" prefHeight="41.0" prefWidth="60.0">
                            <children>
-                              <ImageView fitHeight="36.0" fitWidth="69.0" onMouseClicked="#cloak" pickOnBounds="true" preserveRatio="true">
+                              <ImageView fx:id="img" fitHeight="36.0" fitWidth="69.0" onMouseClicked="#cloak" pickOnBounds="true" preserveRatio="true">
                                  <image>
                                     <Image url="@../img/develop_cloak.png" />
                                  </image>
@@ -580,7 +580,7 @@
       </Pane>
       <Text fx:id="logText" fill="WHITE" layoutX="35.0" layoutY="528.0" strokeType="OUTSIDE" strokeWidth="0.0" text="If your ship doesn't come in, swim out and meet it." wrappingWidth="159.21630859375">
          <font>
-            <Font name="American Typewriter" size="10.0" />
+            <Font name="American Typewriter" size="12.0" />
          </font>
       </Text>
    </children>
