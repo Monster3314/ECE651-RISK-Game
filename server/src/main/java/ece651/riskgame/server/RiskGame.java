@@ -381,17 +381,29 @@ public class RiskGame implements Runnable{
   }
 
   private void randomDecTroops() {
-    Random random = new Random();
+    int max = 0;
+    Territory t_max = null;
     for(Territory t: world.getBoard().getTerritoriesList()) {
-      try {
-        int index = random.nextInt(t.getUnits().size());
-        t.getUnits().get(index).decSoldiers(1);
-        world.writeMesg(world.getTerritoryOwnership(t.getName()), "[COVID] : You Lost 1 unit of Your " + Unit.NAME[t.getUnits().get(index).getLevel()]);
-        logger.writeLog("[RiscGame Room] : " + t.getName() + " lost  1 unit of " + Unit.NAME[t.getUnits().get(index).getLevel()]);
-      } catch (Exception e) {
-        logger.writeLog("[RiscGame Room] : " + t.getName() + " doesn't have enough troops");
+      int sum = 0;
+      for (Unit u : t.getUnits()) {
+        sum += u.getNum();
+      }
+      if (sum > max) {
+        max = sum;
+        t_max = t;
       }
     }
+
+    try {
+      for(Unit u : t_max.getUnits()) {
+        u.decSoldiers(u.getNum() / 2);
+      }
+      world.writeMesg(world.getTerritoryOwnership(t_max.getName()), "[COVID] : You lost half of your troops in territory: " + t_max.getName());
+      logger.writeLog("[RiscGame Room] : " + t_max.getName() + " lost half troops in territory: " + t_max.getName());
+    } catch (Exception e) {
+      logger.writeLog("[RiscGame Room] : " + t_max.getName() + " doesn't have enough troops");
+    }
+
   }
 
   /**
