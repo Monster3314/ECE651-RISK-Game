@@ -533,7 +533,6 @@ public class GameController implements Initializable {
       String result = guiPlayer.tryApplyAction(doCloakAction);
       if (result == null) {
         guiPlayer.addActionToSend(doCloakAction);
-        guiPlayer.addActionToSend(doCloakAction);
         updateCurrentTerritoryInfo();
         activateCloakDevelopButtons();
         topBarController.updateTopBar();
