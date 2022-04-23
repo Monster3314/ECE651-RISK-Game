@@ -1,11 +1,7 @@
 package ece651.riskgame.shared;
 
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Implemented by World and GameInfo
@@ -13,6 +9,7 @@ import java.util.PriorityQueue;
 public abstract class Actable implements Serializable{
   protected Board board;
   protected Map<String, Clan> clans;  //the map for color of player and his clan
+    protected Map<String, List<String>> mesg = new HashMap<>();
 
   public Actable(Board board, Map<String, Clan> clans) {
     this.board = board;
@@ -42,6 +39,11 @@ public abstract class Actable implements Serializable{
     }
     return null;
   }
+
+  public Map<String, List<String>> getMesg() {
+       return mesg;
+  }
+
   /**
    * @return color of winner. return null if game is not end.
    */
@@ -109,4 +111,17 @@ public abstract class Actable implements Serializable{
     }
     return false;
   }
+
+    public void writeMesg(String color, String log) {
+        if(!mesg.containsKey(color)) {
+            mesg.put(color, new ArrayList<>());
+        }
+        mesg.get(color).add(log);
+    }
+
+    public void clearMesg() {
+        for(String s : mesg.keySet()) {
+            mesg.put(s, new ArrayList<>());
+        }
+    }
 }
