@@ -386,7 +386,7 @@ public class RiskGame implements Runnable{
         int index = random.nextInt(t.getUnits().size());
         t.getUnits().get(index).decSoldiers(1);
         world.writeMesg(world.getTerritoryOwnership(t.getName()), "[COVID] : You Lost 1 unit of Your " + Unit.NAME[t.getUnits().get(index).getLevel()]);
-        logger.writeLog("[RiscGame Room] : " + t.getName() + " lost " + Unit.NAME[t.getUnits().get(index).getLevel()]);
+        logger.writeLog("[RiscGame Room] : " + t.getName() + " lost  1 unit of " + Unit.NAME[t.getUnits().get(index).getLevel()]);
       } catch (Exception e) {
         logger.writeLog("[RiscGame Room] : " + t.getName() + " doesn't have enough troops");
       }

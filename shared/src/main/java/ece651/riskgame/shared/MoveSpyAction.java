@@ -7,7 +7,6 @@ public class MoveSpyAction implements Action, Serializable {
     private final String fromTerritory;
     private final String toTerritory;
 
-    private Logger logger = Logger.getInstance();
     public MoveSpyAction(String color, String fromTerritory, String toTerritory) {
         this.color = color;
         this.fromTerritory = fromTerritory;
@@ -45,7 +44,7 @@ public class MoveSpyAction implements Action, Serializable {
             s += ". Cost food " + cost;
             spy.setCanMove(false);
         }
-        logger.writeLog(s);
+        Logger.getInstance().writeLog(s);
     }
 
     @Override

@@ -5,7 +5,6 @@ import java.io.Serializable;
 public class GetCloakAction implements Action, Serializable {
 
     private final String color;
-    private Logger logger = Logger.getInstance();
 
     public GetCloakAction(String color) {
         this.color = color;
@@ -20,7 +19,7 @@ public class GetCloakAction implements Action, Serializable {
     public void apply(Actable world) {
         Clan clan = world.getClans().get(color);
         clan.getCloakAbility();
-        logger.writeLog("[RiscGame Room] : " + color + " get cloak ability. Cost 100 gold");
+        Logger.getInstance().writeLog("[RiscGame Room] : " + color + " get cloak ability. Cost 100 gold");
     }
 
     @Override
