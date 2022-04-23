@@ -8,7 +8,6 @@ public class UpgradeUnitAction implements Action, Serializable {
     private final int targetLevel;
     private final int num;
     private final String color;
-
     public UpgradeUnitAction(String territoryName, int baseLevel, int targetLevel, int num, String color) {
         if (num <= 0) {
             throw new IllegalArgumentException("Please enter a positive number.");
@@ -53,6 +52,7 @@ public class UpgradeUnitAction implements Action, Serializable {
         Unit targetUnit = new BasicUnit(num, targetLevel);
         territory.decUnit(baseUnit);
         territory.addUnit(targetUnit);
+        Logger.getInstance().writeLog("[RiscGame Room] : " + color + " upgrade " + num + " units from " + baseLevel + " level to " + targetLevel + " level. Cost gold " + cost);
     }
 
     @Override
