@@ -149,6 +149,7 @@ public class GameControllerTest {
   }
 
   @Test
+  @Disabled
   public void test_updateTerritoryInfo() {
     mockPrepare();
     ObservableList<Node> kids = mock(ObservableList.class);
@@ -186,6 +187,7 @@ public class GameControllerTest {
   }
 
   @Test
+  @Disabled
   public void test_updateCurrentTerritoryInfo() {
     mockPrepare();
     gameController.updateCurrentTerritoryInfo();
