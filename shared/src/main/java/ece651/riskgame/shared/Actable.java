@@ -91,6 +91,10 @@ public abstract class Actable implements Serializable{
   }
   public boolean hasVisibilityOf(String color, String territoryName) throws IllegalArgumentException {
     Territory toCheck = getBoard().getTerritory(territoryName);
+    //Specatate
+    if (!getClans().get(color).isActive()) {
+      return true;
+    }
     //Ownership
     if (getClans().get(color).occupyTerritory(territoryName)) {
       return true;
