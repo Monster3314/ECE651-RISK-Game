@@ -63,6 +63,7 @@ public abstract class Player {
     this.color = color;
     this.theWorld = game;
     this.actionCheckers = new HashMap<Class, ActionRuleChecker>();
+    this.messages = new ArrayList<>();
     setupActionCheckers();
   }
 
@@ -149,7 +150,11 @@ public abstract class Player {
       }
     }
     //Update Server Message
-    messages = latestGame.getMesg().get(color);
+    try {
+      messages = latestGame.getMesg().get(color);
+    } catch (Exception e) {
+      messages = new ArrayList<>();
+    }
   }
 
   //adapting from list of moves to map(territory string to list of placed units)
