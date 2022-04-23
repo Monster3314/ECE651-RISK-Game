@@ -30,6 +30,7 @@ public class Attack extends MigrationAction implements Serializable {
         }
 
         if(t.beAttacked(getUnit())) {
+            world.writeMesg(world.getTerritoryOwnership(toTerritory), "[Attack Result] : You lost territory: " + toTerritory);
             for(Clan i : clans.values()) {
                 if(i.occupyTerritory(toTerritory)) {
                     i.removeTerritory(t);
