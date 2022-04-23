@@ -32,6 +32,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 
 public class GameController implements Initializable {
@@ -62,6 +63,8 @@ public class GameController implements Initializable {
   Pane helpBox;
   @FXML
   VBox cloakBtn;
+  @FXML
+  Text logText;
 
 
   public GameController(GUIPlayer p, GameIO gameIO) {
@@ -415,6 +418,7 @@ public class GameController implements Initializable {
   public void goToNextTurn() throws IOException, ClassNotFoundException {
     // update game
     hint.setText("New Turn! Do your actions!");
+    updateLog();
     updateClouds();
     updateTerritoryColors();
     //updateCurrentTerritoryInfo();
@@ -577,5 +581,9 @@ public class GameController implements Initializable {
   @FXML
   public void hideHelp() {
     helpBox.setVisible(false);
+  }
+
+  public void updateLog() {
+    logText.setText(guiPlayer.getMessage());
   }
 }

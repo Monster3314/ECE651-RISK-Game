@@ -20,6 +20,7 @@ import ece651.riskgame.shared.Board;
 import ece651.riskgame.shared.Clan;
 import ece651.riskgame.shared.DoCloakAction;
 import ece651.riskgame.shared.EnemyTerritoryChecker;
+import ece651.riskgame.shared.GameInfo;
 import ece651.riskgame.shared.GetCloakAction;
 import ece651.riskgame.shared.MovableSpyChecker;
 import ece651.riskgame.shared.Move;
@@ -41,7 +42,7 @@ public abstract class Player {
   protected String color;
   protected ClientWorld theWorld;
   protected final Map<Class, ActionRuleChecker> actionCheckers;
-
+  protected List<String> messages;
   /**
    * Player Constructor
    * @param color is the player's clan
@@ -62,6 +63,7 @@ public abstract class Player {
     this.color = color;
     this.theWorld = game;
     this.actionCheckers = new HashMap<Class, ActionRuleChecker>();
+    this.messages = new ArrayList<>();
     setupActionCheckers();
   }
 
@@ -124,7 +126,7 @@ public abstract class Player {
    * @param latestGame is the game recieved from server
    * @throws IllegalArgumentException when latestGame is null or player is not in this game(Not even dead) 
    */
-  public void updateGame(Actable latestGame) {
+  public void updateGame(GameInfo latestGame) {
     if (latestGame == null) {
       throw new IllegalArgumentException("LatestGame can not be null");
     }
@@ -146,6 +148,12 @@ public abstract class Player {
         theWorld.updateTerritory(latestTerritory);
         theWorld.updateTerritoryOwnership(latestTerritory.getName(), latestGame.getTerritoryOwnership(latestTerritory.getName()));
       }
+    }
+    //Update Server Message
+    try {
+      messages = latestGame.getMesg().get(color);
+    } catch (Exception e) {
+      messages = new ArrayList<>();
     }
   }
 
@@ -192,6 +200,19 @@ public abstract class Player {
     return new HashSet(theWorld.getClans().get(color).getOccupies());
   }
 
+  /**
+   * getMessage will get the message from server which describes which happened last round
+   * @return a string that concatenate all the message to a string 
+   */
+  public String getMessage() {
+    StringBuilder builder = new StringBuilder();
+    for (String line: messages) {
+      builder.append(line);
+      builder.append('\n');
+    }
+    return builder.toString();
+  }
+  
   /**
    * getEnemyTerritoryNames get the enemy territory names 
    * @return a set of string that represent the territory names of all the enemy  
