@@ -17,7 +17,7 @@
 
 <Pane fx:id="scene" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="823.0" prefWidth="1138.0" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="ece651.riskgame.client.controllers.GameController">
    <children>
-      <ImageView fx:id="logText" fitHeight="829.0" fitWidth="1138.0" pickOnBounds="true">
+      <ImageView fitHeight="829.0" fitWidth="1138.0" pickOnBounds="true">
          <image>
             <Image url="@css/img/map.jpeg" />
          </image>

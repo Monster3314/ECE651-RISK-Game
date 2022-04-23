@@ -26,8 +26,8 @@ import javafx.scene.control.TextField;
 
 public class LoginController {
 
-    //static final String ip = "0.0.0.0";
-    static final String ip = "vcm-25368.vm.duke.edu";
+    static final String ip = "0.0.0.0";
+    //static final String ip = "vcm-25368.vm.duke.edu";
 
 
     @FXML
